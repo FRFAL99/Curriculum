@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Francesco Fallavena - Software Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-20px, -20px) rotate(360deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .title {
+            font-size: 1.25rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-actions {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .language-switcher {
+            display: flex;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            padding: 0.25rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lang-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .download-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 0;
+        }
+
+        .sidebar {
+            background: #f8fafc;
+            padding: 2rem;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: #764ba2;
+        }
+
+        .profile-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-text::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 50%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        .skills-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .skill-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-category h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: transform 0.2s ease;
+        }
+
+        .skill-tag:hover {
+            transform: translateY(-2px);
+        }
+
+        .experience-item {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #667eea;
+            background: #f8fafc;
+            border-radius: 0 10px 10px 0;
+            transition: all 0.3s ease;
+        }
+
+        .experience-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .job-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .company {
+            font-weight: 500;
+            color: #667eea;
+        }
+
+        .date {
+            font-size: 0.9rem;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .job-description {
+            color: #4a5568;
+            margin-bottom: 1rem;
+        }
+
+        .responsibilities {
+            list-style: none;
+        }
+
+        .responsibilities li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #4a5568;
+        }
+
+        .responsibilities li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .education-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 4px solid #764ba2;
+        }
+
+        .degree {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.25rem;
+        }
+
+        .institution {
+            color: #667eea;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .grade {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .thesis {
+            color: #4a5568;
+            font-size: 0.85rem;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        .languages {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .language-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .language-name {
+            font-weight: 500;
+            color: #1a202c;
+        }
+
+        .language-level {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .availability {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            .name {
+                font-size: 2rem;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .header-actions {
+                position: static;
+                margin-top: 1.5rem;
+                justify-content: center;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .language-switcher {
+                order: 1;
+            }
+            
+            .download-btn {
+                order: 2;
+                display: inline-block;
+            }
+            
+            .job-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8fafc;
+            color: #718096;
+            font-size: 0.8rem;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="name">Francesco Fallavena</h1>
+                <p class="title" data-key="title">Software Engineer</p>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <span>📧</span> francesco.fallavena@gmail.com
+                    </div>
+                    <div class="contact-item">
+                        <span>📱</span> (+39) 320 878 7258
+                    </div>
+                    <div class="contact-item">
+                        <span>📍</span> Pieve di Cento (BO), Italia
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="language-switcher">
+                    <button class="lang-btn active" onclick="switchLanguage('it')" data-lang="it">
+                        🇮🇹 ITA
+                    </button>
+                    <button class="lang-btn" onclick="switchLanguage('en')" data-lang="en">
+                        🇬🇧 ENG
+                    </button>
+                </div>
+                <a href="#" class="download-btn" onclick="window.print(); return false;">
+                    <span data-key="download">📄 Scarica PDF</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <section class="section">
+                    <h2 class="section-title" data-key="skillsTitle">Competenze Tecniche</h2>
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h4 data-key="skillsLang">Linguaggi</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">C#</span>
+                                <span class="skill-tag">JavaScript</span>
+                                <span class="skill-tag">SQL</span>
+                                <span class="skill-tag">HTML</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4 data-key="skillsFramework">Framework & Tech</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">.NET</span>
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">Azure</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4 data-key="skillsCloud">Cloud & Azure</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Logic Apps</span>
+                                <span class="skill-tag">Function Apps</span>
+                                <span class="skill-tag">AKS</span>
+                                <span class="skill-tag">Blob Storage</span>
+                                <span class="skill-tag">App Insights</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4 data-key="skillsDatabase">Database & Tools</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">SQL Server</span>
+                                <span class="skill-tag">Oracle</span>
+                                <span class="skill-tag">Git</span>
+                                <span class="skill-tag">Visual Studio</span>
+                                <span class="skill-tag">Azure DevOps</span>
+                                <span class="skill-tag">Postman</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4 data-key="skillsMethodology">Metodologie</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Agile/Scrum</span>
+                                <span class="skill-tag">CI/CD</span>
+                                <span class="skill-tag">DevOps</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title" data-key="educationTitle">Formazione</h2>
+                    <div class="education-item">
+                        <div class="degree" data-key="degree1">Laurea Triennale in Matematica</div>
+                        <div class="institution">Università degli Studi di Ferrara</div>
+                        <div class="grade">Settembre 2018 - Marzo 2022 | Voto: 96/110</div>
+                        <div class="thesis" data-key="thesis">Tesi: "Metodo Monte Carlo e soluzione dell'equazione di Boltzmann"</div>
+                    </div>
+                    <div class="education-item">
+                        <div class="degree" data-key="degree2">Perito in Informatica e Telecomunicazioni</div>
+                        <div class="institution">ISIT Bassi-Burgatti, Cento</div>
+                        <div class="grade">Settembre 2013 - Giugno 2018 | Voto: 88/100</div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title" data-key="languagesTitle">Lingue</h2>
+                    <div class="languages">
+                        <div class="language-item">
+                            <span class="language-name" data-key="italian">Italiano</span>
+                            <span class="language-level" data-key="motherTongue">Madrelingua</span>
+                        </div>
+                        <div class="language-item">
+                            <span class="language-name" data-key="english">Inglese</span>
+                            <span class="language-level" data-key="professionalUse">Uso professionale</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="availability" data-key="availabilityText">
+                    🌍 Disponibile al trasferimento<br>(Italia/Estero)
+                </div>
+            </aside>
+
+            <main class="content">
+                <section class="section">
+                    <h2 class="section-title" data-key="profileTitle">Profilo</h2>
+                    <div class="profile-text">
+                        <span data-key="profile">Software engineer con forte orientamento alla crescita e curiosità verso nuove tecnologie. Unisco competenze tecniche a un approccio metodico e analitico per la risoluzione di problemi complessi. Esperienza consolidata nel lavoro con team internazionali e nella gestione di progetti per clienti enterprise. Sempre aperto ad apprendere nuovi stack tecnologici e ad assumere responsabilità crescenti.</span>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title" data-key="experienceTitle">Esperienza Professionale</h2>
+                    <div class="experience-item">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Software Engineer</div>
+                                <div class="company">Xtel</div>
+                            </div>
+                            <div class="date">Giugno 2022 - <span data-key="present">Presente</span></div>
+                        </div>
+                        <div class="job-description" data-key="jobDesc">
+                            Full-stack developer specializzato nello sviluppo di applicazioni web per CPG companies. Progettazione e implementazione di soluzioni software scalabili per la gestione di TPM, Trade Terms e Business Plan, con deployment di successo per clienti enterprise di livello internazionale come <strong>Kellogg</strong> ed <strong>Energizer</strong>.
+                        </div>
+                        <ul class="responsibilities">
+                            <li data-key="resp1">Sviluppo full-stack di web application su piattaforma <strong>Azure Cloud</strong> con deployment su <strong>AKS (Azure Kubernetes Service)</strong></li>
+                            <li data-key="resp2">Implementazione di <strong>Logic Apps</strong> e <strong>Function Apps</strong> per automazione e integrazione di processi business</li>
+                            <li data-key="resp3">Gestione <strong>Azure DevOps</strong>: work items, repository e utilizzo di pipeline CI/CD per deployment automatizzato</li>
+                            <li data-key="resp4">Contributo alle diverse fasi di sviluppo: design, build, deploy e maintenance</li>
+                            <li data-key="resp5">Analisi dati e gestione di database <strong>SQL Server</strong> e <strong>Oracle</strong></li>
+                            <li data-key="resp6">Monitoraggio applicazioni e troubleshooting tramite <strong>Application Insights</strong> e sistemi di logging</li>
+                            <li data-key="resp7">Collaborazione in team internazionale utilizzando <strong>metodologie Agile</strong> e approcci Waterfall</li>
+                            <li data-key="resp8">Integrazione e consumo di API REST per comunicazione tra servizi</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title" data-key="additionalExpTitle">Esperienza Aggiuntiva</h2>
+                    <div class="experience-item">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Tutor di Matematica</div>
+                                <div class="company">ISIT Bassi-Burgatti</div>
+                            </div>
+                            <div class="date">Marzo 2021 - Aprile 2021</div>
+                        </div>
+                        <div class="job-description" data-key="tutorDesc">
+                            Supporto didattico e lezioni individuali di recupero per studenti con difficoltà in matematica. Esperienza in didattica a distanza su piattaforme digitali.
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title" data-key="softSkillsTitle">Competenze Trasversali</h2>
+                    <ul class="responsibilities">
+                        <li data-key="soft1"><strong>Lavoro in team internazionale</strong> - Collaborazione quotidiana con colleghi da diverse parti del mondo</li>
+                        <li data-key="soft2"><strong>Gestione progetti</strong> - Coordinamento delle diverse fasi di sviluppo software</li>
+                        <li data-key="soft3"><strong>Problem solving</strong> - Analisi e risoluzione di problematiche tecniche complesse</li>
+                        <li data-key="soft4"><strong>Comunicazione</strong> - Interfaccia diretta con clienti enterprise per implementazioni software</li>
+                    </ul>
+                </section>
+            </main>
+        </div>
+
+        <footer class="footer">
+            <span data-key="footer">Autorizzo il trattamento dei miei dati personali ai sensi del GDPR 679/16.</span>
+        </footer>
+    </div>
+
+    <script>
+        // Traduzioni
+        const translations = {
+            it: {
+                title: "Software Engineer",
+                download: "📄 Scarica PDF",
+                profileTitle: "Profilo",
+                profile: "Software engineer con forte orientamento alla crescita e curiosità verso nuove tecnologie. Unisco competenze tecniche a un approccio metodico e analitico per la risoluzione di problemi complessi. Esperienza consolidata nel lavoro con team internazionali e nella gestione di progetti per clienti enterprise. Sempre aperto ad apprendere nuovi stack tecnologici e ad assumere responsabilità crescenti.",
+                skillsTitle: "Competenze Tecniche",
+                skillsLang: "Linguaggi",
+                skillsFramework: "Framework & Tech",
+                skillsCloud: "Cloud & Azure",
+                skillsDatabase: "Database & Tools",
+                skillsMethodology: "Metodologie",
+                educationTitle: "Formazione",
+                languagesTitle: "Lingue",
+                availabilityText: "🌍 Disponibile al trasferimento<br>(Italia/Estero)",
+                experienceTitle: "Esperienza Professionale",
+                additionalExpTitle: "Esperienza Aggiuntiva",
+                softSkillsTitle: "Competenze Trasversali",
+                present: "Presente",
+                degree1: "Laurea Triennale in Matematica",
+                degree2: "Perito in Informatica e Telecomunicazioni",
+                thesis: "Tesi: \"Metodo Monte Carlo e soluzione dell'equazione di Boltzmann\"",
+                italian: "Italiano",
+                english: "Inglese",
+                motherTongue: "Madrelingua",
+                professionalUse: "Uso professionale",
+                jobDesc: "Full-stack developer specializzato nello sviluppo di applicazioni web per CPG companies. Progettazione e implementazione di soluzioni software scalabili per la gestione di TPM, Trade Terms e Business Plan, con deployment di successo per clienti enterprise di livello internazionale come <strong>Kellogg</strong> ed <strong>Energizer</strong>.",
+                tutorDesc: "Supporto didattico e lezioni individuali di recupero per studenti con difficoltà in matematica. Esperienza in didattica a distanza su piattaforme digitali.",
+                resp1: "Sviluppo full-stack di web application su piattaforma <strong>Azure Cloud</strong> con deployment su <strong>AKS (Azure Kubernetes Service)</strong>",
+                resp2: "Implementazione di <strong>Logic Apps</strong> e <strong>Function Apps</strong> per automazione e integrazione di processi business",
+                resp3: "Gestione <strong>Azure DevOps</strong>: work items, repository e utilizzo di pipeline CI/CD per deployment automatizzato",
+                resp4: "Contributo alle diverse fasi di sviluppo: design, build, deploy e maintenance",
+                resp5: "Analisi dati e gestione di database <strong>SQL Server</strong> e <strong>Oracle</strong>",
+                resp6: "Monitoraggio applicazioni e troubleshooting tramite <strong>Application Insights</strong> e sistemi di logging",
+                resp7: "Collaborazione in team internazionale utilizzando <strong>metodologie Agile</strong> e approcci Waterfall",
+                resp8: "Integrazione e consumo di API REST per comunicazione tra servizi",
+                soft1: "<strong>Lavoro in team internazionale</strong> - Collaborazione quotidiana con colleghi da diverse parti del mondo",
+                soft2: "<strong>Gestione progetti</strong> - Coordinamento delle diverse fasi di sviluppo software",
+                soft3: "<strong>Problem solving</strong> - Analisi e risoluzione di problematiche tecniche complesse",
+                soft4: "<strong>Comunicazione</strong> - Interfaccia diretta con clienti enterprise per implementazioni software",
+                footer: "Autorizzo il trattamento dei miei dati personali ai sensi del GDPR 679/16."
+            },
+            en: {
+                title: "Software Engineer",
+                download: "📄 Download PDF",
+                profileTitle: "Profile",
+                profile: "Software engineer with strong growth orientation and curiosity towards new technologies. I combine technical skills with a methodical and analytical approach to solve complex problems. Consolidated experience working with international teams and managing projects for enterprise clients. Always open to learning new technology stacks and taking on growing responsibilities.",
+                skillsTitle: "Technical Skills",
+                skillsLang: "Languages",
+                skillsFramework: "Framework & Tech",
+                skillsCloud: "Cloud & Azure",
+                skillsDatabase: "Database & Tools",
+                skillsMethodology: "Methodologies",
+                educationTitle: "Education",
+                languagesTitle: "Languages",
+                availabilityText: "🌍 Available for relocation<br>(Italy/Abroad)",
+                experienceTitle: "Professional Experience",
+                additionalExpTitle: "Additional Experience",
+                softSkillsTitle: "Soft Skills",
+                present: "Present",
+                degree1: "Bachelor's Degree in Mathematics",
+                degree2: "IT and Telecommunications Diploma",
+                thesis: "Thesis: \"Monte Carlo Method and Boltzmann Equation Solution\"",
+                italian: "Italian",
+                english: "English",
+                motherTongue: "Native",
+                professionalUse: "Professional use",
+                jobDesc: "Full-stack developer specialized in web application development for CPG companies. Design and implementation of scalable software solutions for TPM, Trade Terms and Business Plan management, with successful deployment for international enterprise clients like <strong>Kellogg</strong> and <strong>Energizer</strong>.",
+                tutorDesc: "Educational support and individual tutoring sessions for students with mathematics difficulties. Experience in remote teaching on digital platforms.",
+                resp1: "Full-stack development of web applications on <strong>Azure Cloud</strong> platform with deployment on <strong>AKS (Azure Kubernetes Service)</strong>",
+                resp2: "Implementation of <strong>Logic Apps</strong> and <strong>Function Apps</strong> for business process automation and integration",
+                resp3: "<strong>Azure DevOps</strong> management: work items, repositories and CI/CD pipeline usage for automated deployment",
+                resp4: "Contributing to different development phases: design, build, deploy and maintenance",
+                resp5: "Data analysis and <strong>SQL Server</strong> and <strong>Oracle</strong> database management",
+                resp6: "Application monitoring and troubleshooting through <strong>Application Insights</strong> and logging systems",
+                resp7: "Collaboration in international team using <strong>Agile methodologies</strong> and Waterfall approaches",
+                resp8: "REST API integration and consumption for service communication",
+                soft1: "<strong>International teamwork</strong> - Daily collaboration with colleagues from different parts of the world",
+                soft2: "<strong>Project management</strong> - Coordination of different software development phases",
+                soft3: "<strong>Problem solving</strong> - Analysis and resolution of complex technical issues",
+                soft4: "<strong>Communication</strong> - Direct interface with enterprise clients for software implementations",
+                footer: "I authorize the processing of my personal data pursuant to GDPR 679/16."
+            }
+        };
+
+        let currentLang = 'it';
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+            
+            // Update page language
+            document.documentElement.lang = lang;
+            
+            // Update all translatable elements
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[lang][key]) {
+                    element.innerHTML = translations[lang][key];
+                }
+            });
+
+            // Animate the change
+            document.body.style.opacity = '0.8';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 200);
+        }
+
+        // Smooth scroll per i link interni
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Animazione fade-in per le sezioni quando entrano nella viewport
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Applica l'animazione a tutti gli elementi esperienza
+        document.querySelectorAll('.experience-item, .education-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Detect browser language and set default
+        document.addEventListener('DOMContentLoaded', function() {
+            const browserLang = navigator.language.substring(0, 2);
+            if (browserLang === 'en' && translations.en) {
+                switchLanguage('en');
+            }
+        });
+    </script>
+</body>
+</html>
