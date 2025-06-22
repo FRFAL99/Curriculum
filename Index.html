@@ -9,10 +9,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js" integrity="sha512-1p9BF4u+frfIdt65ctXdnQYGLP3JzHXHEHNQjy9gKlYfvxF0Hx8VKdKFdWUX2YRgUYjQnMKOUClqkQMYwOuEVw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="translations.js"></script>
 </head>
 <body>
-    <div class="container">
+    <!-- Layout Web Originale -->
+    <div class="container" id="web-layout">
         <header class="header">
             <div class="header-actions">
                 <div class="language-switcher">
@@ -197,6 +199,157 @@
         <footer class="footer">
             <span data-key="footer">Autorizzo il trattamento dei miei dati personali ai sensi del GDPR 679/16.</span>
         </footer>
+    </div>
+
+    <!-- Layout PDF (nascosto) -->
+    <div class="pdf-layout" id="pdf-layout">
+        <div class="pdf-container">
+            <header class="pdf-header">
+                <h1 class="pdf-name">Francesco Fallavena</h1>
+                <p class="pdf-title" id="pdf-title-text">Software Engineer</p>
+            </header>
+
+            <div class="pdf-profile" id="pdf-profile-text">
+                Software engineer con forte orientamento alla crescita e curiosità verso nuove tecnologie. Unisco competenze tecniche a un approccio metodico e analitico per la risoluzione di problemi complessi. Esperienza consolidata nel lavoro con team internazionali e nella gestione di progetti per clienti enterprise.
+            </div>
+
+            <div class="pdf-content">
+                <aside class="pdf-sidebar">
+                    <section class="pdf-section">
+                        <h2 class="pdf-section-title" id="pdf-contacts-title">Contatti</h2>
+                        <div class="pdf-contact-info">
+                            <div class="pdf-contact-item">francesco.fallavena@gmail.com</div>
+                            <div class="pdf-contact-item">(+39) 320 878 7258</div>
+                            <div class="pdf-contact-item">Pieve di Cento (BO), Italia</div>
+                        </div>
+                    </section>
+
+                    <section class="pdf-section">
+                        <h2 class="pdf-section-title" id="pdf-skills-title">Competenze Tecniche</h2>
+                        
+                        <div class="pdf-skills-category">
+                            <h4 id="pdf-skills-lang-title">Linguaggi</h4>
+                            <div class="pdf-skills-list">C#, JavaScript, SQL, HTML</div>
+                        </div>
+                        
+                        <div class="pdf-skills-category">
+                            <h4 id="pdf-skills-framework-title">Framework & Tech</h4>
+                            <div class="pdf-skills-list">.NET, React, Azure</div>
+                        </div>
+                        
+                        <div class="pdf-skills-category">
+                            <h4 id="pdf-skills-cloud-title">Cloud & Azure</h4>
+                            <div class="pdf-skills-list">Logic Apps, Function Apps, AKS, Blob Storage, App Insights</div>
+                        </div>
+                        
+                        <div class="pdf-skills-category">
+                            <h4 id="pdf-skills-database-title">Database & Tools</h4>
+                            <div class="pdf-skills-list">SQL Server, Oracle, Git, Visual Studio, Azure DevOps, Postman</div>
+                        </div>
+                        
+                        <div class="pdf-skills-category">
+                            <h4 id="pdf-skills-methodology-title">Metodologie</h4>
+                            <div class="pdf-skills-list">Agile/Scrum, CI/CD, DevOps</div>
+                        </div>
+                    </section>
+
+                    <section class="pdf-section">
+                        <h2 class="pdf-section-title" id="pdf-education-title">Formazione</h2>
+                        
+                        <div class="pdf-education-item">
+                            <div class="pdf-degree" id="pdf-degree1">Laurea Triennale in Matematica</div>
+                            <div class="pdf-institution">Università degli Studi di Ferrara</div>
+                            <div class="pdf-grade">Sett 2018 - Mar 2022 | Voto: 96/110</div>
+                            <div class="pdf-thesis" id="pdf-thesis">Tesi: "Metodo Monte Carlo e soluzione dell'equazione di Boltzmann"</div>
+                        </div>
+                        
+                        <div class="pdf-education-item">
+                            <div class="pdf-degree" id="pdf-degree2">Perito in Informatica e Telecomunicazioni</div>
+                            <div class="pdf-institution">ISIT Bassi-Burgatti, Cento</div>
+                            <div class="pdf-grade">Sett 2013 - Giu 2018 | Voto: 88/100</div>
+                        </div>
+                    </section>
+                </aside>
+
+                <main class="pdf-main">
+                    <section class="pdf-section">
+                        <h2 class="pdf-section-title" id="pdf-experience-title">Esperienza Professionale</h2>
+                        
+                        <div class="pdf-experience-item">
+                            <div class="pdf-job-header">
+                                <div>
+                                    <div class="pdf-job-title">Software Engineer</div>
+                                    <div class="pdf-company">Xtel</div>
+                                </div>
+                                <div class="pdf-date">Giugno 2022 - <span id="pdf-present">Presente</span></div>
+                            </div>
+                            <div class="pdf-job-description" id="pdf-job-desc">
+                                Full-stack developer specializzato nello sviluppo di applicazioni web per CPG companies. Progettazione e implementazione di soluzioni software scalabili per la gestione di TPM, Trade Terms e Business Plan, con deployment di successo per clienti enterprise di livello internazionale come <strong>Kellogg</strong> ed <strong>Energizer</strong>.
+                            </div>
+                            <ul class="pdf-responsibilities" id="pdf-responsibilities">
+                                <li>Sviluppo full-stack di web application su piattaforma <strong>Azure Cloud</strong> con deployment su <strong>AKS</strong></li>
+                                <li>Implementazione di <strong>Logic Apps</strong> e <strong>Function Apps</strong> per automazione e integrazione</li>
+                                <li>Gestione <strong>Azure DevOps</strong>: work items, repository e pipeline CI/CD</li>
+                                <li>Analisi dati e gestione di database <strong>SQL Server</strong> e <strong>Oracle</strong></li>
+                                <li>Monitoraggio applicazioni tramite <strong>Application Insights</strong></li>
+                                <li>Collaborazione in team internazionale utilizzando <strong>metodologie Agile</strong></li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="pdf-section">
+                        <h2 class="pdf-section-title" id="pdf-additional-exp-title">Esperienza Aggiuntiva</h2>
+                        
+                        <div class="pdf-experience-item">
+                            <div class="pdf-job-header">
+                                <div>
+                                    <div class="pdf-job-title">Tutor di Matematica</div>
+                                    <div class="pdf-company">ISIT Bassi-Burgatti</div>
+                                </div>
+                                <div class="pdf-date">Marzo 2021 - Aprile 2021</div>
+                            </div>
+                            <div class="pdf-job-description" id="pdf-tutor-desc">
+                                Supporto didattico e lezioni individuali di recupero per studenti con difficoltà in matematica. Esperienza in didattica a distanza su piattaforme digitali.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="pdf-section">
+                        <h2 class="pdf-section-title" id="pdf-soft-skills-title">Competenze Trasversali</h2>
+                        <ul class="pdf-soft-skills" id="pdf-soft-skills-list">
+                            <li><strong>Lavoro in team internazionale</strong> - Collaborazione quotidiana con colleghi da diverse parti del mondo</li>
+                            <li><strong>Gestione progetti</strong> - Coordinamento delle diverse fasi di sviluppo software</li>
+                            <li><strong>Problem solving</strong> - Analisi e risoluzione di problematiche tecniche complesse</li>
+                            <li><strong>Comunicazione</strong> - Interfaccia diretta con clienti enterprise</li>
+                        </ul>
+                    </section>
+
+                    <div class="pdf-right-info">
+                        <section class="pdf-section">
+                            <h2 class="pdf-section-title" id="pdf-languages-title">Lingue</h2>
+                            <div class="pdf-languages-horizontal">
+                                <div class="pdf-language-box">
+                                    <span class="pdf-language-name" id="pdf-italian">Italiano</span>
+                                    <span class="pdf-language-level" id="pdf-mother-tongue">Madrelingua</span>
+                                </div>
+                                <div class="pdf-language-box">
+                                    <span class="pdf-language-name" id="pdf-english">Inglese</span>
+                                    <span class="pdf-language-level" id="pdf-professional-use">Professionale</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="pdf-availability-horizontal" id="pdf-availability">
+                            <strong>🎯 Disponibilità:</strong> Trasferimento Italia/Estero
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <footer class="pdf-footer" id="pdf-footer">
+                Autorizzo il trattamento dei miei dati personali ai sensi del GDPR 679/16.
+            </footer>
+        </div>
     </div>
 
     <script src="script.js"></script>
