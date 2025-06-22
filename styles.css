@@ -975,12 +975,13 @@ body {
         width: 100% !important;
         height: 100% !important;
         margin: 0 !important;
-        padding: 12mm !important;
+        padding: 11mm !important;
         box-shadow: none !important;
         border-radius: 0 !important;
         overflow: visible !important;
         font-size: 12px !important;
         page-break-inside: avoid !important;
+        line-height: 1.5 !important;
     }
     
     /* Nascondi layout web completamente */
@@ -998,17 +999,120 @@ body {
         z-index: auto !important;
     }
     
-    /* Ottimizza font per stampa */
+    /* Ottimizza font per stampa - BILANCIATI */
     .pdf-name {
-        font-size: 26px !important;
+        font-size: 28px !important;
+        margin-bottom: 6px !important;
     }
     
     .pdf-title {
         font-size: 16px !important;
+        margin-bottom: 10px !important;
     }
     
     .pdf-section-title {
         font-size: 14px !important;
+        margin-bottom: 10px !important;
+        padding-bottom: 4px !important;
+    }
+    
+    .pdf-profile {
+        font-size: 11px !important;
+        padding: 14px !important;
+        margin-bottom: 20px !important;
+        line-height: 1.6 !important;
+    }
+    
+    .pdf-contact-item {
+        font-size: 11px !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .pdf-skills-list {
+        font-size: 11px !important;
+        line-height: 1.5 !important;
+    }
+    
+    .pdf-skills-category h4 {
+        font-size: 11px !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .pdf-job-title {
+        font-size: 13px !important;
+    }
+    
+    .pdf-company {
+        font-size: 12px !important;
+    }
+    
+    .pdf-job-description {
+        font-size: 11px !important;
+        line-height: 1.5 !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .pdf-responsibilities {
+        font-size: 10px !important;
+        line-height: 1.4 !important;
+    }
+    
+    .pdf-responsibilities li {
+        margin-bottom: 3px !important;
+    }
+    
+    .pdf-soft-skills {
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+    }
+    
+    .pdf-soft-skills li {
+        margin-bottom: 4px !important;
+    }
+    
+    .pdf-experience-item {
+        margin-bottom: 16px !important;
+        padding: 12px !important;
+    }
+    
+    .pdf-section {
+        margin-bottom: 18px !important;
+    }
+    
+    .pdf-content {
+        gap: 20px !important;
+    }
+    
+    .pdf-degree {
+        font-size: 11px !important;
+        margin-bottom: 3px !important;
+    }
+    
+    .pdf-institution {
+        font-size: 10px !important;
+        margin-bottom: 3px !important;
+    }
+    
+    .pdf-grade {
+        font-size: 9px !important;
+    }
+    
+    .pdf-thesis {
+        font-size: 9px !important;
+        margin-top: 4px !important;
+    }
+    
+    .pdf-language-box .pdf-language-name {
+        font-size: 11px !important;
+    }
+    
+    .pdf-language-box .pdf-language-level {
+        font-size: 10px !important;
+    }
+    
+    .pdf-availability-horizontal {
+        font-size: 11px !important;
+        padding: 10px 12px !important;
     }
     
     /* Forza colori per stampa */

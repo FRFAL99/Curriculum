@@ -315,7 +315,7 @@ function populatePDFData() {
         'Trasferimento Italia/Estero' : 
         'Relocation Italy/Abroad';
     document.getElementById('pdf-availability').innerHTML = 
-        `<strong>🎯 ${lang === 'it' ? 'Disponibilità' : 'Availability'}:</strong> ${availabilityText}`;
+        `<strong> ${lang === 'it' ? 'Disponibilità' : 'Availability'}:</strong> ${availabilityText}`;
     
     // Footer
     document.getElementById('pdf-footer').textContent = t.footer;
