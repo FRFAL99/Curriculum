@@ -999,6 +999,21 @@ body {
         z-index: auto !important;
     }
     
+    /* MOSTRA availability nella sidebar per PDF */
+    .availability {
+        display: block !important;
+        background: #e8f5e8 !important;
+        color: #2d5a2d !important;
+        padding: 10px 12px !important;
+        border-radius: 6px !important;
+        border-left: 4px solid #28a745 !important;
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        margin-top: 15px !important;
+        text-align: left !important;
+        line-height: 1.4 !important;
+    }
+    
     /* Ottimizza font per stampa - BILANCIATI */
     .pdf-name {
         font-size: 28px !important;
@@ -1110,7 +1125,7 @@ body {
         font-size: 10px !important;
     }
     
-    .pdf-availability-horizontal {
+    .pdf-availability-box {
         font-size: 11px !important;
         padding: 10px 12px !important;
     }
