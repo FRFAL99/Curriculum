@@ -116,14 +116,22 @@ finestre restano raggiungibili dal Dock, sempre visibile).
 - Nessuna ristrutturazione di `docs/` in sottocartelle (`roadmap/`,
   `adr/`, `vision/`): si resta sulla convenzione piatta già in uso nel
   repo.
-- Ricerca globale sulla Knowledge Base, cross-reference tra documenti,
-  header "Knowledge Document" con metadata (progetto/data/reading
-  time/topics) — idee ancora da decidere per l'implementazione.
+- Cross-reference tra documenti ("Related Documents") e "Open in AI" —
+  idee ancora da decidere per l'implementazione.
+- Un campo "Updated"/data ultima modifica universale: non esiste nel
+  frontmatter di tutti i tipi di documento: aggiungerlo richiederebbe
+  scrivere contenuto reale, non solo UI (vedi `docs/FASE15_LOG.md`).
+
+Implementate in Fase 15 (vedi `docs/FASE15_LOG.md`): ricerca globale sulla
+Knowledge Base (campo di ricerca sopra l'Explorer, filtra su
+titolo/tag/corpo del documento) e header con metadata sul Knowledge
+Document (badge tipo, periodo/data quando disponibile, tempo di lettura,
+tag) — adattivo per tipo di documento, nessun dato inventato.
 
 ## Riferimenti
 
 - `docs/ADR-001-knowledge-base.md` — perché la KB è Markdown/SSOT.
-- `docs/FASE8_LOG.md` … `docs/FASE14_LOG.md` — implementazione dei pezzi
+- `docs/FASE8_LOG.md` … `docs/FASE15_LOG.md` — implementazione dei pezzi
   che questa vision ricompone: KB loader, Document Viewer, backend
   OpenRouter, Assistant window, fonti cliccabili, Knowledge Explorer,
-  layout a tre colonne.
+  layout a tre colonne, ricerca globale, header metadata.
