@@ -1,11 +1,13 @@
 import {
   createContext,
   useCallback,
+  useEffect,
   useMemo,
   useReducer,
   type ReactNode,
 } from "react";
 import { windowsConfig } from "../config/windows";
+import { readJSON, writeJSON } from "../utils/storage";
 
 export interface WindowState {
   id: string;
@@ -27,7 +29,28 @@ type Action =
   | { type: "RESTORE"; id: string }
   | { type: "MOVE"; id: string; position: { x: number; y: number } };
 
+const STORAGE_KEY = "windowManagerState";
 const BASE_Z = 10;
+
+/**
+ * Stato iniziale: legge da localStorage e scarta eventuali finestre il cui
+ * id non esiste più in `config/windows.ts` (es. dopo una modifica alla
+ * config), per evitare finestre "fantasma" senza componente/config associati.
+ */
+function getInitialState(): ManagerState {
+  const saved = readJSON<ManagerState | null>(STORAGE_KEY, null);
+  if (!saved) return { windows: {}, nextZIndex: BASE_Z };
+
+  const validIds = new Set(windowsConfig.map((w) => w.id));
+  const windows = Object.fromEntries(
+    Object.entries(saved.windows ?? {}).filter(([id]) => validIds.has(id)),
+  );
+
+  return {
+    windows,
+    nextZIndex: saved.nextZIndex ?? BASE_Z,
+  };
+}
 
 function reducer(state: ManagerState, action: Action): ManagerState {
   switch (action.type) {
@@ -139,10 +162,11 @@ const WindowManagerContext = createContext<WindowManagerContextValue | null>(
 );
 
 export function WindowManagerProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, {
-    windows: {},
-    nextZIndex: BASE_Z,
-  });
+  const [state, dispatch] = useReducer(reducer, undefined, getInitialState);
+
+  useEffect(() => {
+    writeJSON(STORAGE_KEY, state);
+  }, [state]);
 
   const openWindow = useCallback((id: string) => dispatch({ type: "OPEN", id }), []);
   const closeWindow = useCallback((id: string) => dispatch({ type: "CLOSE", id }), []);

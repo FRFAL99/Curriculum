@@ -6,17 +6,31 @@ import { Dock } from "./Dock";
 import { WindowManager } from "./WindowManager";
 import { useWindowManager } from "./useWindowManager";
 import { useLanguage } from "../context/useLanguage";
+import { readJSON, writeJSON } from "../utils/storage";
 import "./Desktop.css";
 
 type Theme = "light" | "dark";
 
+const THEME_KEY = "theme";
+
+function getInitialTheme(): Theme {
+  const saved = readJSON<Theme | null>(THEME_KEY, null);
+  if (saved === "light" || saved === "dark") return saved;
+
+  const prefersLight =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-color-scheme: light)").matches;
+  return prefersLight ? "light" : "dark";
+}
+
 export function Desktop() {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { windows, openWindow, toggleFromDock } = useWindowManager();
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
+    writeJSON(THEME_KEY, theme);
   }, [theme]);
 
   function handleDesktopClick(e: React.MouseEvent<HTMLDivElement>) {

@@ -81,13 +81,26 @@ che produceva un foglio bianco, bundle gonfiato da un import a wildcard
 di `lucide-react`, icone brand non più esportate dalla libreria, alcuni
 errori TypeScript).
 
-## Cosa resta (Fase 5)
+## Stato — Fase 5 (completata) — 🎉 roadmap completa
 
-- Nessuna **persistenza** per finestre aperte/finestra a fuoco/tema (la
-  lingua è già persistita) — reimpostare tutto al reload è il comportamento
-  atteso fino a quando non si implementa la Fase 5.
+Log: [`docs/FASE5_LOG.md`](./docs/FASE5_LOG.md).
+
+- [x] Tema persistito in `localStorage`, con fallback a `prefers-color-scheme`
+      di sistema se non c'è nulla di salvato
+- [x] Finestre aperte, posizione e stato minimizzato persistiti in
+      `localStorage` (si ripristinano esattamente come le hai lasciate)
+- [x] Finestra attiva ripristinata automaticamente (derivata dal suo `zIndex`,
+      nessun dato extra da gestire)
+- [x] Lingua già persistita dalla Fase 4
+
+Tutti i punti della roadmap `Curriculum_Portfolio_v2_Roadmap.md` sono ora
+implementati.
+
+## Cosa resta (rifiniture opzionali, non richieste dalla roadmap)
+
 - Titoli di finestre/icone e l'etichetta del toggle tema nel Dock non sono
-  ancora collegati al sistema di traduzioni (dettagli nel log Fase 4).
+  ancora collegati al sistema di traduzioni (vedi log Fase 4)
+- Nessun resize delle finestre (scelta esplicita della roadmap per la v1)
 
 ## Struttura
 
@@ -119,6 +132,8 @@ src/
     windows.ts        Config centrale delle finestre
   data/
     resume.json, projects.json, skills.json
+  utils/
+    storage.ts        Wrapper sicuro su localStorage (get/set JSON)
   styles/
     tokens.css        Palette, font, ombre, radius
 ```
