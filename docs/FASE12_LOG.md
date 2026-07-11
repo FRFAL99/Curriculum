@@ -1,7 +1,7 @@
 # Fase 12 — Explainability — Log di avanzamento
 
 Riferimento: documento di visione "Portfolio Architecture — Knowledge Base +
-AI Assistant" (stesso citato nei log precedenti). Ultima fase della
+AI Assistant" (vedi `docs/VISION.md`, stesso citato nei log precedenti). Ultima fase della
 roadmap originale: rende cliccabili le fonti già restituite dall'AI
 Assistant (Fase 10) e già mostrate come testo semplice in `AssistantWindow`
 (Fase 11), così l'utente può aprire direttamente il documento citato.

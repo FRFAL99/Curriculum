@@ -1,7 +1,8 @@
 # Fase 11 — Finestra AI Assistant — Log di avanzamento
 
 Riferimento: documento di visione "Portfolio Architecture — Knowledge Base +
-AI Assistant" (stesso citato in `FASE8_LOG.md`/`FASE9_LOG.md`/`FASE10_LOG.md`).
+AI Assistant" (vedi `docs/VISION.md`, stesso citato in
+`FASE8_LOG.md`/`FASE9_LOG.md`/`FASE10_LOG.md`).
 Collega il backend della Fase 10 (`/api/assistant`) a una finestra vera nel
 desktop — la prima UI conversazionale del portfolio.
 

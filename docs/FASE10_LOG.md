@@ -1,7 +1,8 @@
 # Fase 10 — Netlify Function per OpenRouter — Log di avanzamento
 
 Riferimento: documento di visione "Portfolio Architecture — Knowledge Base +
-AI Assistant" (stesso citato in `FASE8_LOG.md`/`FASE9_LOG.md`). Prima fase
+AI Assistant" (vedi `docs/VISION.md`, stesso citato in
+`FASE8_LOG.md`/`FASE9_LOG.md`). Prima fase
 di backend: nessuna UI ancora (quella è Fase 11), solo la function e il
 suo contratto request/response.
 

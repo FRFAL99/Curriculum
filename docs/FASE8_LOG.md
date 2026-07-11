@@ -1,9 +1,9 @@
 # Fase 8 — Knowledge Base — Log di avanzamento
 
 Riferimento: documento di visione "Portfolio Architecture — Knowledge Base +
-AI Assistant" (condiviso in sessione, non ancora committato nel repo — vedi
-nota in fondo). Prosegue la numerazione delle fasi già presente in questo
-repo (Fase 1-7 completate secondo `Curriculum_Portfolio_v2_Roadmap.md`).
+AI Assistant" (vedi `docs/VISION.md`). Prosegue la numerazione delle fasi
+già presente in questo repo (Fase 1-7 completate secondo
+`Curriculum_Portfolio_v2_Roadmap.md`).
 
 Obiettivo della fase: introdurre `knowledge-base/` come Single Source of
 Truth per tutti i contenuti "di fatto" su Francesco (profilo, esperienze,
@@ -222,10 +222,9 @@ in console, contenuti della Knowledge Base renderizzati correttamente.
 ## Nota sul documento di visione originale
 
 Il documento "Portfolio Architecture — Knowledge Base + AI Assistant" da
-cui parte questa fase non è ancora stato committato nel repo: per ora
-esiste solo nella cronologia della sessione. Consiglio di aggiungerlo come
-`docs/VISION.md` (o simile) alla prossima occasione, così anche questo log
-può linkarlo come gli altri fanno con `Curriculum_Portfolio_v2_Roadmap.md`.
+cui parte questa fase è ora committato come `docs/VISION.md`, che ne
+formalizza anche l'evoluzione successiva (Knowledge Explorer, layout a tre
+colonne).
 
 ## Cosa resta (Fasi successive, non in scope qui)
 

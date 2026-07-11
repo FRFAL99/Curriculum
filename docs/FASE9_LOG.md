@@ -1,7 +1,7 @@
 # Fase 9 — Knowledge Document Viewer — Log di avanzamento
 
 Riferimento: documento di visione "Portfolio Architecture — Knowledge Base +
-AI Assistant" (stesso documento citato in `FASE8_LOG.md`). Prosegue
+AI Assistant" (vedi `docs/VISION.md`, stesso citato in `FASE8_LOG.md`). Prosegue
 direttamente dalla Fase 8: la Knowledge Base esiste già come dati, questa
 fase aggiunge la prima vista che la usa per intero, non solo a teaser.
 
