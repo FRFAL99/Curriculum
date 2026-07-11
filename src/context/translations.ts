@@ -22,6 +22,8 @@ export const translations = {
     close: "Chiudi",
     contactTitle: "Contatti",
     developerNotesTitle: "Developer Notes",
+    knowledgeExplorerTitle: "Knowledge Base",
+    knowledgeExplorerToggle: "Apri/chiudi la Knowledge Base",
 
     // Resume / CV — solo etichette di sezione/chrome
     download: "Scarica PDF",
@@ -62,6 +64,8 @@ export const translations = {
     close: "Close",
     contactTitle: "Contact Info",
     developerNotesTitle: "Developer Notes",
+    knowledgeExplorerTitle: "Knowledge Base",
+    knowledgeExplorerToggle: "Open/close the Knowledge Base",
 
     // Resume / CV — chrome labels only
     download: "Download PDF",

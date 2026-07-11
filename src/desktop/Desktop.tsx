@@ -3,6 +3,7 @@ import { windowsConfig } from "../config/windows";
 import { Wallpaper } from "./Wallpaper";
 import { DesktopIcon } from "./DesktopIcon";
 import { Dock } from "./Dock";
+import { KnowledgeExplorer } from "./KnowledgeExplorer";
 import { WindowManager } from "./WindowManager";
 import { useWindowManager } from "./useWindowManager";
 import { useLanguage } from "../context/useLanguage";
@@ -63,6 +64,8 @@ export function Desktop() {
           />
         ))}
       </div>
+
+      <KnowledgeExplorer />
 
       <WindowManager />
 
