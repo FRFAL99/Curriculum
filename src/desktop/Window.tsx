@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, type ReactNode } from "react";
 import { Minus, X } from "lucide-react";
+import { useIsMobile } from "../utils/useIsMobile";
 import "./Window.css";
 
 export interface WindowProps {
@@ -32,10 +33,12 @@ export function Window({
     startY: number;
     origin: { x: number; y: number };
   } | null>(null);
+  const isMobile = useIsMobile();
 
   const handleTitlebarPointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       onFocus(id);
+      if (isMobile) return; // su mobile la finestra è ancorata via CSS, niente drag
       dragRef.current = {
         startX: e.clientX,
         startY: e.clientY,
@@ -43,7 +46,7 @@ export function Window({
       };
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
     },
-    [id, onFocus, position],
+    [id, onFocus, position, isMobile],
   );
 
   const handlePointerMove = useCallback(
@@ -77,7 +80,7 @@ export function Window({
 
   return (
     <div
-      className="window"
+      className={`window${isMobile ? " window--mobile" : ""}`}
       style={{
         left: position.x,
         top: position.y,

@@ -118,6 +118,25 @@ Log: [`docs/FASE5_LOG.md`](./docs/FASE5_LOG.md).
 Tutti i punti della roadmap `Curriculum_Portfolio_v2_Roadmap.md` sono ora
 implementati.
 
+## Stato — Fase 6 (completata) — fix mobile
+
+- [x] **Finestre non più tagliate/irraggiungibili su schermi piccoli**: sotto i
+      640px le finestre (larghezza fissa 420–680px in `config/windows.ts`,
+      pensata per desktop) venivano posizionate/trascinate fuori dai bordi
+      dello schermo, rendendo la titlebar — e quindi il pulsante di chiusura —
+      irraggiungibile. Ora sotto il breakpoint mobile ogni `Window` viene
+      ancorata a un riquadro fisso sempre interamente visibile (vedi
+      `.window--mobile` in `src/desktop/Window.css`), il corpo scrolla
+      internamente con un'altezza calcolata via `100dvh`, e il drag dalla
+      titlebar è disabilitato (inutile: la posizione è fissa) tramite l'hook
+      `useIsMobile` (`src/utils/useIsMobile.ts`). I pulsanti minimizza/chiudi
+      sono anche più grandi (32×32) per un tocco più preciso.
+- [x] **Apertura icone su touch**: le icone desktop si aprivano solo con
+      `onDoubleClick`, gesto poco affidabile su mobile. Ora il primo tap
+      seleziona l'icona e un secondo tap (icona già selezionata) la apre —
+      comportamento che funziona sia su touch sia su desktop, dove resta
+      anche il doppio click diretto (`src/desktop/DesktopIcon.tsx`).
+
 ## Cosa resta (rifiniture opzionali, non richieste dalla roadmap)
 
 - Titoli di finestre/icone e l'etichetta del toggle tema nel Dock non sono
@@ -156,6 +175,7 @@ src/
     resume.json, projects.json, skills.json
   utils/
     storage.ts        Wrapper sicuro su localStorage (get/set JSON)
+    useIsMobile.ts     Hook breakpoint mobile (640px), sincronizzato col CSS
   styles/
     tokens.css        Palette, font, ombre, radius
 ```

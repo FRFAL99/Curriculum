@@ -81,3 +81,36 @@
   overflow-y: auto;
   max-height: 60vh;
 }
+
+/*
+  Mobile: le finestre a larghezza fissa (420–680px, vedi config/windows.ts)
+  escono dai bordi su viewport stretti e la titlebar — con il pulsante di
+  chiusura — finisce fuori schermo, rendendo impossibile chiuderle.
+  Qui la finestra viene ancorata a un riquadro fisso, sempre interamente
+  visibile (dock esclusa), a prescindere dalla larghezza/posizione salvata.
+  Il drag è disabilitato via JS (vedi Window.tsx) quando questa classe è
+  attiva, quindi `left`/`top`/`width` inline diventano irrilevanti.
+*/
+@media (max-width: 640px) {
+  .window--mobile {
+    left: 8px !important;
+    top: 64px !important;
+    width: auto !important;
+    right: 8px;
+    max-width: none;
+  }
+
+  .window--mobile .window__titlebar {
+    cursor: default;
+    padding: 10px 8px 10px 14px;
+  }
+
+  .window--mobile .window__body {
+    max-height: calc(100dvh - 64px - 46px - 96px);
+  }
+
+  .window--mobile .window__control {
+    width: 32px;
+    height: 32px;
+  }
+}

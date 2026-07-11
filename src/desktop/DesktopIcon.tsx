@@ -18,11 +18,22 @@ export function DesktopIcon({
   onSelect,
   onOpen,
 }: DesktopIconProps) {
+  function handleClick() {
+    // Su touch il dblclick nativo non è affidabile: il primo tap seleziona,
+    // il secondo tap (icona già selezionata) apre la finestra. Su desktop
+    // questo comportamento convive con onDoubleClick qui sotto.
+    if (selected) {
+      onOpen(id);
+    } else {
+      onSelect(id);
+    }
+  }
+
   return (
     <button
       type="button"
       className={`desktop-icon ${selected ? "desktop-icon--selected" : ""}`}
-      onClick={() => onSelect(id)}
+      onClick={handleClick}
       onDoubleClick={() => onOpen(id)}
       aria-pressed={selected}
     >
