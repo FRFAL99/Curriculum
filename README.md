@@ -228,11 +228,26 @@ Solo backend in questa fase, nessuna UI (arriva in Fase 11).
 - [x] `tsconfig.functions.json` referenziato dal `tsconfig.json` radice:
       `npx tsc -b` valida anche le function
 
+## Stato — Fase 11 (completata) — Finestra AI Assistant
+
+Log dettagliato: [`docs/FASE11_LOG.md`](./docs/FASE11_LOG.md).
+
+- [x] Nuova finestra "Ask about Francesco" (`src/windows/Assistant/`),
+      dock-visibile: collega `/api/assistant` (Fase 10) a una vera UI
+      conversazionale, con suggerimenti di conversazione dal documento di
+      visione quando la chat è vuota
+- [x] Conversazione persistita in localStorage (come lo stato delle altre
+      finestre); bottone "Nuova conversazione" per svuotarla
+- [x] Risposte renderizzate con `renderBlock()` (markdown → HTML, stesso
+      helper del Knowledge Document Viewer); fonti mostrate come testo
+      semplice (collegamento cliccabile rimandato a Fase 12)
+- [x] Gestione errori con banner + "Riprova" (non duplica il turno utente)
+
 ### Prossimi passi (non ancora implementati)
 
-- **Fase 11** — Finestra AI Assistant
 - **Fase 12** — Explainability (fonti citate, cliccabili — il footer
-  sorgente in `KnowledgeDocumentWindow` esiste già come testo statico)
+  sorgente in `KnowledgeDocumentWindow` e in `AssistantWindow` esiste già
+  come testo statico)
 
 ## Cosa resta (rifiniture opzionali, non richieste dalla roadmap)
 

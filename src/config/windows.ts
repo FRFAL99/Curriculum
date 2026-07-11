@@ -8,6 +8,7 @@ import {
   Mail,
   Terminal,
   BookOpen,
+  Bot,
 } from "lucide-react";
 import { ResumeWindow } from "../windows/Resume";
 import { ProjectsWindow } from "../windows/Projects";
@@ -16,6 +17,7 @@ import { SkillsWindow } from "../windows/Skills";
 import { ContactWindow } from "../windows/Contact";
 import { DeveloperNotesWindow } from "../windows/DeveloperNotes";
 import { KnowledgeDocumentWindow } from "../windows/KnowledgeDocument";
+import { AssistantWindow } from "../windows/Assistant";
 
 /**
  * Ogni voce rappresenta una finestra dell'app.
@@ -86,6 +88,15 @@ export const windowsConfig: WindowConfig[] = [
     component: ContactWindow,
     inDock: true,
     width: 420,
+  },
+  {
+    id: "assistant",
+    title: "Ask about Francesco",
+    icon: Bot,
+    component: AssistantWindow,
+    inDock: true,
+    width: 420,
+    allowMaximize: true,
   },
   {
     id: "developer-notes",

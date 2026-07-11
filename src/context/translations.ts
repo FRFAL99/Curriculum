@@ -43,6 +43,14 @@ export const translations = {
 
     // Projects Window — Knowledge Document Viewer (Fase 9)
     viewCaseStudy: "Leggi il case study",
+
+    // Assistant Window (Fase 11)
+    assistantIntro: "Chiedimi dei progetti, dell'esperienza o delle competenze di Francesco.",
+    assistantPlaceholder: "Scrivi un messaggio...",
+    assistantThinking: "Sto pensando...",
+    retry: "Riprova",
+    send: "Invia",
+    resetConversation: "Nuova conversazione",
   },
   en: {
     // Topbar & System
@@ -75,7 +83,41 @@ export const translations = {
 
     // Projects Window — Knowledge Document Viewer (Fase 9)
     viewCaseStudy: "Read case study",
+
+    // Assistant Window (Fase 11)
+    assistantIntro: "Ask me about Francesco's projects, experience or technical skills.",
+    assistantPlaceholder: "Type a message...",
+    assistantThinking: "Thinking...",
+    retry: "Retry",
+    send: "Send",
+    resetConversation: "New conversation",
   }
 };
 
 export type TranslationKey = keyof typeof translations.it;
+
+/**
+ * Suggerimenti di conversazione (documento di visione "Knowledge Base +
+ * AI Assistant"). Array, non stringa: tenuto fuori da `translations` per
+ * non alterare il tipo di ritorno `string` di `t()` in `LanguageContext.tsx`.
+ */
+export const conversationStarters: Record<Language, string[]> = {
+  it: [
+    "Raccontami della tua esperienza",
+    "Di quale progetto sei più orgoglioso?",
+    "Spiegami Antichità Fallavena",
+    "Mostrami la tua esperienza backend",
+    "Quali tecnologie usi di più?",
+    "Come hai costruito questo portfolio?",
+    "Cosa stai imparando ora?",
+  ],
+  en: [
+    "Tell me about your experience",
+    "Which project are you most proud of?",
+    "Explain Antichità Fallavena",
+    "Show your backend experience",
+    "Which technologies do you use the most?",
+    "How did you build this portfolio?",
+    "What are you currently learning?",
+  ],
+};
