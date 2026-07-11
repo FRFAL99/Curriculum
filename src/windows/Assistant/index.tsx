@@ -16,6 +16,7 @@ interface ChatMessage {
 
 const STORAGE_KEY = "assistantConversation";
 const MAX_HISTORY = 10;
+const MAX_STARTERS = 4;
 
 export function AssistantWindow() {
   const { language, t } = useLanguage();
@@ -85,11 +86,28 @@ export function AssistantWindow() {
 
   return (
     <div className="assistant-window">
+      <div className="assistant-window__header">
+        <div className="assistant-window__header-title">
+          <Bot size={16} strokeWidth={1.8} />
+          <span>Ask about Francesco</span>
+        </div>
+        {messages.length > 0 && (
+          <button
+            type="button"
+            className="assistant-window__reset"
+            onClick={handleReset}
+            aria-label={t("resetConversation")}
+          >
+            <RotateCcw size={14} />
+          </button>
+        )}
+      </div>
+
       <div className="assistant-window__messages" ref={messagesRef}>
         {messages.length === 0 && (
           <div className="assistant-window__starters">
             <p className="assistant-window__starters-intro">{t("assistantIntro")}</p>
-            {conversationStarters[language].map((starter) => (
+            {conversationStarters[language].slice(0, MAX_STARTERS).map((starter) => (
               <button
                 key={starter}
                 type="button"
@@ -162,13 +180,6 @@ export function AssistantWindow() {
           <Send size={16} />
         </button>
       </form>
-
-      {messages.length > 0 && (
-        <button type="button" className="assistant-window__reset" onClick={handleReset}>
-          <RotateCcw size={12} />
-          {t("resetConversation")}
-        </button>
-      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { WindowManager } from "./WindowManager";
 import { useWindowManager } from "./useWindowManager";
 import { useLanguage } from "../context/useLanguage";
 import { readJSON, writeJSON } from "../utils/storage";
+import { AssistantWindow } from "../windows/Assistant";
 import "./Desktop.css";
 
 type Theme = "light" | "dark";
@@ -51,18 +52,24 @@ export function Desktop() {
         </div>
       </div>
 
-      <div className="desktop__icons" onClick={handleDesktopClick}>
-        {windowsConfig.filter((w) => !w.hidden).map((w) => (
-          <DesktopIcon
-            key={w.id}
-            id={w.id}
-            label={w.title}
-            icon={w.icon}
-            selected={selectedId === w.id}
-            onSelect={setSelectedId}
-            onOpen={openWindow}
-          />
-        ))}
+      <div className="desktop__icons-col">
+        <div className="desktop__icons" onClick={handleDesktopClick}>
+          {windowsConfig.filter((w) => !w.hidden).map((w) => (
+            <DesktopIcon
+              key={w.id}
+              id={w.id}
+              label={w.title}
+              icon={w.icon}
+              selected={selectedId === w.id}
+              onSelect={setSelectedId}
+              onOpen={openWindow}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="desktop__assistant-col">
+        <AssistantWindow />
       </div>
 
       <KnowledgeExplorer />

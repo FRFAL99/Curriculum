@@ -30,11 +30,12 @@ Le Fasi 8-12 hanno già costruito i pezzi fondamentali:
   l'ultima posizione salvata — non esiste oggi un layout fisso né un
   elemento "protagonista".
 
-Quello che **non esiste ancora** è una sidebar di navigazione strutturata
-per la Knowledge Base: oggi i contenuti sono raggruppati per categoria solo
-a livello di frontmatter (`type: about|experience|project|...`) e vengono
-consumati da finestre dedicate (Resume, Projects, Experience, Skills), non
-da un unico esploratore ad albero.
+Le Fasi 13-14 hanno poi implementato il layout descritto in questo
+documento (vedi `docs/FASE13_LOG.md` e `docs/FASE14_LOG.md`): Knowledge
+Explorer come sidebar ad albero, AI Assistant come pannello centrale
+sempre aperto, layout a tre colonne. La sezione "Layout target" più sotto
+descrive la struttura effettivamente implementata, non più solo un
+obiettivo.
 
 ## La direzione: da portfolio a Personal Knowledge System
 
@@ -54,46 +55,75 @@ interfacce sugli stessi file:
    macOS-style resta, ma smette di essere l'elemento su cui si concentra
    l'attenzione del visitatore.
 2. **Il Knowledge Explorer diventa il punto di ingresso principale alla
-   documentazione.** Sidebar sinistra con categorie espandibili (About,
-   Experience, Projects, Skills, Education, ...) che aprono i documenti
-   nel Knowledge Document Viewer. *Non ancora implementato* — è la vera
-   novità di questa vision, non una feature esistente da ridocumentare.
+   documentazione.** Sidebar con categorie espandibili (About, Experience,
+   Projects, Skills, Education, Developer Notes) che aprono i documenti
+   nel Knowledge Document Viewer. Implementata in Fase 13 (sidebar
+   sinistra), poi spostata a destra in Fase 14 per fare spazio alle icone
+   desktop a sinistra.
 3. **"Ask about Francesco" (AI Assistant) diventa l'elemento centrale del
-   desktop**, non solo una finestra tra le altre.
+   desktop**, non solo una finestra tra le altre. Implementato in Fase 14:
+   non è più una finestra apribile/chiudibile, ma un pannello centrale
+   sempre visibile, stile chatbot (header fisso, cronologia scrollabile,
+   input ancorato in basso).
 4. **La Knowledge Base resta la Single Source of Truth.** Knowledge
    Explorer, Document Viewer e AI Assistant sono tre modi diversi di
    esplorarla — nessuno dei tre introduce una fonte di dati propria.
 
-## Layout target: tre colonne
+## Layout a tre colonne (implementato in Fase 14)
+
+Il mockup iniziale (Knowledge Explorer | AI Assistant | Document Viewer)
+è stato corretto in fase di implementazione: le icone desktop esistenti
+restano a sinistra invece di essere sostituite dall'Explorer, che si
+sposta a destra. Il Document Viewer **non** è una quarta colonna fissa:
+resta una finestra libera (comportamento Fase 9/13 invariato), che si apre
+sopra le tre colonne quando si clicca un documento nell'Explorer o una
+fonte citata dall'Assistant.
 
 ```
 ┌──────────────┬──────────────────────────────┬────────────────────┐
-│ Knowledge    │        AI Assistant          │      Document      │
-│ Explorer     │                              │      Viewer        │
+│ Icone        │        AI Assistant          │      Knowledge     │
+│ desktop      │                              │      Explorer      │
 │              │ Ask about Francesco          │                    │
-│ 📂 Projects  │                              │ Antichità          │
-│ 📂 Skills    │ Suggested questions          │                    │
-│ 📂 Experience│                              │ Overview           │
-│ 📂 Education │                              │ Architecture       │
-│ 📂 ...       │                              │ Challenges         │
+│ 📄 Resume    │                              │ ▼ Experience       │
+│ 📂 Projects  │ Suggested questions          │ ▼ Projects         │
+│ 🕐 Experience│                              │ ▼ Education        │
+│ ✨ Skills    │                              │ ▼ Developer Notes  │
+│ ✉ Contact    │                              │                    │
 └──────────────┴──────────────────────────────┴────────────────────┘
+              Dock (Resume, Projects, Experience, Skills, Contact)
+
+Click su un documento (da Explorer o da una fonte dell'Assistant) →
+si apre come finestra libera sopra il layout, trascinabile e chiudibile.
 ```
 
-- Sinistra → esplori la Knowledge Base.
-- Centro → interroghi l'AI Assistant.
-- Destra → leggi il documento selezionato.
+- Sinistra → le finestre esistenti (Resume, Projects, Experience, Skills,
+  Contact, Developer Notes), raggiungibili anche dal Dock sotto.
+- Centro → l'AI Assistant, sempre aperto.
+- Destra → esplori la Knowledge Base per categoria.
+
+Su mobile (sotto 640px, dove tre colonne fisse non ci stanno): l'AI
+Assistant è la vista di apertura a schermo intero, il Knowledge Explorer
+resta dietro il toggle di Fase 13, la colonna icone si nasconde (le stesse
+finestre restano raggiungibili dal Dock, sempre visibile).
 
 ## Cosa NON è in scope in questa vision
 
 - Nessuna nuova finestra oltre a quelle esistenti (Resume, Projects,
-  Experience, Contact, Developer Notes, Assistant).
+  Experience, Skills, Contact, Developer Notes) più il Knowledge Document
+  Viewer.
+- Fondere Knowledge Explorer e Document Viewer in un unico pannello: il
+  Viewer resta una finestra libera (deciso in Fase 14).
 - Nessuna ristrutturazione di `docs/` in sottocartelle (`roadmap/`,
   `adr/`, `vision/`): si resta sulla convenzione piatta già in uso nel
   repo.
+- Ricerca globale sulla Knowledge Base, cross-reference tra documenti,
+  header "Knowledge Document" con metadata (progetto/data/reading
+  time/topics) — idee ancora da decidere per l'implementazione.
 
 ## Riferimenti
 
 - `docs/ADR-001-knowledge-base.md` — perché la KB è Markdown/SSOT.
-- `docs/FASE8_LOG.md` … `docs/FASE12_LOG.md` — implementazione dei pezzi
+- `docs/FASE8_LOG.md` … `docs/FASE14_LOG.md` — implementazione dei pezzi
   che questa vision ricompone: KB loader, Document Viewer, backend
-  OpenRouter, Assistant window, fonti cliccabili.
+  OpenRouter, Assistant window, fonti cliccabili, Knowledge Explorer,
+  layout a tre colonne.
