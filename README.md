@@ -19,6 +19,28 @@ npm run build   # genera dist/
 npm run preview # per verificare la build in locale
 ```
 
+## Deploy su Netlify
+
+Il repo include `netlify.toml`, quindi Netlify dovrebbe configurarsi da solo.
+Se il sito risulta **bianco** dopo il deploy, controlla comunque queste
+impostazioni in Netlify → Site settings → Build & deploy → Build settings
+(le impostazioni salvate manualmente nella dashboard hanno la precedenza
+su `netlify.toml`):
+
+- **Base directory**: vuoto (il progetto è alla radice del repo)
+- **Build command**: `npm run build`
+- **Publish directory**: `dist` ⚠️ — è la causa più comune di pagina bianca:
+  l'`index.html` alla radice del repo referenzia `/src/main.tsx` (un file
+  `.tsx` grezzo, eseguibile solo da Vite in sviluppo). Se Netlify pubblica
+  la radice del repo invece di `dist/`, il browser prova a caricare quel
+  file grezzo e fallisce silenziosamente. `dist/index.html` (generato da
+  `vite build`) referenzia invece il bundle già compilato ed è quello giusto
+  da pubblicare.
+
+Se il problema persiste, apri la Console del browser (F12) sulla pagina
+bianca: un errore su `/src/main.tsx` o un "Unexpected token" conferma
+esattamente questa causa.
+
 ## Stato — Fase 1 (completata in questa consegna)
 
 - [x] Layout Desktop (`src/desktop/Desktop.tsx`)

@@ -1,0 +1,11 @@
+[build]
+  # Il progetto Vite è alla radice del repo (package.json qui)
+  base = ""
+  command = "npm run build"
+  # vite build genera l'HTML compilato (con i bundle JS/CSS reali) in dist/,
+  # NON alla radice del repo. È il valore più comune sbagliato quando una
+  # pagina Netlify risulta bianca per un progetto Vite.
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
