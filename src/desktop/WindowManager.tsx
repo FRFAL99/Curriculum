@@ -41,7 +41,7 @@ export function WindowManager() {
             onMove={moveWindow}
             onToggleMaximize={toggleMaximize}
           >
-            <Content />
+            <Content payload={win.payload} />
           </Window>
         );
       })}

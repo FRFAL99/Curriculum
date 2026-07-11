@@ -51,7 +51,7 @@ export function Desktop() {
       </div>
 
       <div className="desktop__icons" onClick={handleDesktopClick}>
-        {windowsConfig.map((w) => (
+        {windowsConfig.filter((w) => !w.hidden).map((w) => (
           <DesktopIcon
             key={w.id}
             id={w.id}

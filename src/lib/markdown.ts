@@ -22,3 +22,14 @@ export function renderInline(markdown: string): string {
 export function renderBlock(markdown: string): string {
   return marked.parse(markdown, { async: false }) as string;
 }
+
+/**
+ * Estrae la sezione "## Overview" da un body multi-sezione (Fase 9, es.
+ * i progetti con Overview/Problem/Solution/Challenges), da usare come
+ * teaser breve nelle card. Se il body non ha sezioni (es. developer
+ * notes, ancora a paragrafo singolo), ritorna il body intero.
+ */
+export function getOverviewExcerpt(body: string): string {
+  const match = body.match(/##\s+Overview\s*\n([\s\S]*?)(?=\n##\s|$)/i);
+  return (match ? match[1] : body).trim();
+}

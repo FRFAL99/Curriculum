@@ -122,3 +122,26 @@
   padding: 2px 6px;
   border-radius: var(--radius-sm);
 }
+
+.project-card__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.project-card__cta:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--surface);
+}

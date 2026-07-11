@@ -15,6 +15,8 @@ export interface WindowState {
   minimized: boolean;
   maximized: boolean;
   position: { x: number; y: number };
+  /** Dati opzionali passati all'apertura (es. quale documento mostrare). */
+  payload?: unknown;
 }
 
 interface ManagerState {
@@ -23,7 +25,7 @@ interface ManagerState {
 }
 
 type Action =
-  | { type: "OPEN"; id: string }
+  | { type: "OPEN"; id: string; payload?: unknown }
   | { type: "CLOSE"; id: string }
   | { type: "FOCUS"; id: string }
   | { type: "MINIMIZE"; id: string }
@@ -69,7 +71,9 @@ function reducer(state: ManagerState, action: Action): ManagerState {
     case "OPEN": {
       const existing = state.windows[action.id];
       if (existing) {
-        // Già aperta: portala a fuoco e ripristinala se minimizzata.
+        // Già aperta: portala a fuoco, ripristinala se minimizzata, e
+        // aggiorna il payload se ne è stato fornito uno nuovo (es. click
+        // su un altro progetto mentre il Viewer è già aperto).
         return {
           ...state,
           windows: {
@@ -78,6 +82,7 @@ function reducer(state: ManagerState, action: Action): ManagerState {
               ...existing,
               minimized: false,
               zIndex: state.nextZIndex,
+              payload: action.payload ?? existing.payload,
             },
           },
           nextZIndex: state.nextZIndex + 1,
@@ -94,6 +99,7 @@ function reducer(state: ManagerState, action: Action): ManagerState {
             minimized: false,
             maximized: false,
             position: config?.defaultPosition ?? CENTER_ON_OPEN,
+            payload: action.payload,
           },
         },
         nextZIndex: state.nextZIndex + 1,
@@ -171,7 +177,7 @@ function reducer(state: ManagerState, action: Action): ManagerState {
 
 export interface WindowManagerContextValue {
   windows: Record<string, WindowState>;
-  openWindow: (id: string) => void;
+  openWindow: (id: string, payload?: unknown) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
   minimizeWindow: (id: string) => void;
@@ -194,7 +200,10 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
     writeJSON(STORAGE_KEY, state);
   }, [state]);
 
-  const openWindow = useCallback((id: string) => dispatch({ type: "OPEN", id }), []);
+  const openWindow = useCallback(
+    (id: string, payload?: unknown) => dispatch({ type: "OPEN", id, payload }),
+    [],
+  );
   const closeWindow = useCallback((id: string) => dispatch({ type: "CLOSE", id }), []);
   const focusWindow = useCallback((id: string) => dispatch({ type: "FOCUS", id }), []);
   const minimizeWindow = useCallback(

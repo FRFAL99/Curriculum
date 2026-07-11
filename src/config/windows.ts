@@ -7,6 +7,7 @@ import {
   Sparkles,
   Mail,
   Terminal,
+  BookOpen,
 } from "lucide-react";
 import { ResumeWindow } from "../windows/Resume";
 import { ProjectsWindow } from "../windows/Projects";
@@ -14,6 +15,7 @@ import { ExperienceWindow } from "../windows/Experience";
 import { SkillsWindow } from "../windows/Skills";
 import { ContactWindow } from "../windows/Contact";
 import { DeveloperNotesWindow } from "../windows/DeveloperNotes";
+import { KnowledgeDocumentWindow } from "../windows/KnowledgeDocument";
 
 /**
  * Ogni voce rappresenta una finestra dell'app.
@@ -25,7 +27,8 @@ export interface WindowConfig {
   id: string;
   title: string;
   icon: LucideIcon;
-  component: ComponentType;
+  /** Riceve `payload` opzionale impostato da `openWindow(id, payload)`. */
+  component: ComponentType<{ payload?: unknown }>;
   /**
    * Posizione iniziale fissa, opzionale. Se omessa (caso comune) la finestra
    * viene centrata automaticamente all'apertura, in base alla sua altezza
@@ -38,6 +41,8 @@ export interface WindowConfig {
   width?: number;
   /** true = mostra il pulsante schermo intero nella titlebar (solo desktop) */
   allowMaximize?: boolean;
+  /** true = nessuna icona sul desktop; apribile solo via openWindow(id, payload) */
+  hidden?: boolean;
 }
 
 export const windowsConfig: WindowConfig[] = [
@@ -89,5 +94,15 @@ export const windowsConfig: WindowConfig[] = [
     component: DeveloperNotesWindow,
     inDock: false,
     width: 520,
+  },
+  {
+    id: "knowledge-document",
+    title: "Case Study",
+    icon: BookOpen,
+    component: KnowledgeDocumentWindow,
+    inDock: false,
+    hidden: true,
+    width: 620,
+    allowMaximize: true,
   },
 ];

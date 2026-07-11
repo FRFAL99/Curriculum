@@ -40,6 +40,9 @@ export const translations = {
 
     // Developer Notes Window
     devNotesIntro: "In questa sezione condivido appunti e dettagli tecnici su sfide reali di problem solving affrontate nel mio percorso professionale.",
+
+    // Projects Window — Knowledge Document Viewer (Fase 9)
+    viewCaseStudy: "Leggi il case study",
   },
   en: {
     // Topbar & System
@@ -69,6 +72,9 @@ export const translations = {
 
     // Developer Notes Window
     devNotesIntro: "In this section, I share technical notes on real-world problem-solving challenges encountered throughout my professional journey.",
+
+    // Projects Window — Knowledge Document Viewer (Fase 9)
+    viewCaseStudy: "Read case study",
   }
 };
 

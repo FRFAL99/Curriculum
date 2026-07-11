@@ -189,14 +189,32 @@ visione condiviso in sessione, da committare — vedi nota nel log).
       usa `Buffer` internamente, assente nel browser — polyfill in
       `src/polyfills.ts` (vedi `FASE8_LOG.md`, Step 6)
 
+## Stato — Fase 9 (completata) — Knowledge Document Viewer
+
+Log dettagliato: [`docs/FASE9_LOG.md`](./docs/FASE9_LOG.md).
+
+- [x] Contenuto dei progetti arricchito con sezioni Overview/Problem/
+      Solution/Challenges/Future Improvements (IT + EN); corretto lo
+      `stack` di Antichità Fallavena (era HTML/CSS/JS, in realtà
+      Next.js + Firebase + Netlify)
+- [x] `WindowManager` esteso con un payload opzionale per finestra
+      (`openWindow(id, payload)`), meccanismo generico riusabile in
+      Fase 12 per aprire un documento da una citazione dell'AI Assistant
+- [x] Nuova finestra `KnowledgeDocumentWindow` (nascosta dal desktop,
+      apribile solo via payload): renderizza il body Markdown intero di
+      un documento con `renderBlock()`, distinta dalla card teaser di
+      `ProjectsWindow`
+- [x] `ProjectsWindow`: teaser ridotto alla sola sezione Overview
+      (`getOverviewExcerpt()`), nuovo bottone "Leggi il case study" per
+      aprire il Viewer
+
 ### Prossimi passi (non ancora implementati)
 
-- **Fase 9** — Knowledge Document Viewer (finestra che mostra un progetto
-  come documentazione tecnica, distinta dalla card della finestra Projects)
 - **Fase 10** — Netlify Function per la chiamata a OpenRouter (scope
   classification + retrieval + key server-side)
 - **Fase 11** — Finestra AI Assistant
-- **Fase 12** — Explainability (fonti citate, cliccabili)
+- **Fase 12** — Explainability (fonti citate, cliccabili — il footer
+  sorgente in `KnowledgeDocumentWindow` esiste già come testo statico)
 
 ## Cosa resta (rifiniture opzionali, non richieste dalla roadmap)
 

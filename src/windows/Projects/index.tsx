@@ -1,12 +1,14 @@
 import { useLanguage } from "../../context/useLanguage";
+import { useWindowManager } from "../../desktop/useWindowManager";
 import { getProjects } from "../../lib/knowledgeBase";
-import { renderInline } from "../../lib/markdown";
-import { ExternalLink, Code } from "lucide-react";
+import { renderInline, getOverviewExcerpt } from "../../lib/markdown";
+import { ExternalLink, Code, FileText } from "lucide-react";
 import { GithubIcon } from "../../components/SocialIcons";
 import "./Projects.css";
 
 export function ProjectsWindow() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
+  const { openWindow } = useWindowManager();
   const projects = getProjects(language);
 
   return (
@@ -59,7 +61,9 @@ export function ProjectsWindow() {
 
                 <p
                   className="project-card__desc"
-                  dangerouslySetInnerHTML={{ __html: renderInline(proj.body) }}
+                  dangerouslySetInnerHTML={{
+                    __html: renderInline(getOverviewExcerpt(proj.body)),
+                  }}
                 />
 
                 {/* Tech Stack badges */}
@@ -73,6 +77,15 @@ export function ProjectsWindow() {
                     ))}
                   </div>
                 </div>
+
+                <button
+                  type="button"
+                  className="project-card__cta"
+                  onClick={() => openWindow("knowledge-document", { path: proj.path })}
+                >
+                  <FileText size={13} />
+                  <span>{t("viewCaseStudy")}</span>
+                </button>
               </div>
             </article>
           );
