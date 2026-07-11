@@ -243,11 +243,23 @@ Log dettagliato: [`docs/FASE11_LOG.md`](./docs/FASE11_LOG.md).
       semplice (collegamento cliccabile rimandato a Fase 12)
 - [x] Gestione errori con banner + "Riprova" (non duplica il turno utente)
 
-### Prossimi passi (non ancora implementati)
+## Stato — Fase 12 (completata) — Explainability
 
-- **Fase 12** — Explainability (fonti citate, cliccabili — il footer
-  sorgente in `KnowledgeDocumentWindow` e in `AssistantWindow` esiste già
-  come testo statico)
+Log dettagliato: [`docs/FASE12_LOG.md`](./docs/FASE12_LOG.md).
+
+Ultima fase della roadmap "Knowledge Base + AI Assistant" (Fasi 8-12).
+
+- [x] Le fonti mostrate sotto le risposte dell'assistente in
+      `AssistantWindow` sono ora cliccabili: aprono
+      `KnowledgeDocumentWindow` per quel documento (stesso meccanismo
+      payload già usato da "Leggi il case study" in `ProjectsWindow`)
+
+### Idee non implementate (possibili sviluppi futuri, non richieste dalla roadmap)
+
+- Evidenziare la sezione specifica del documento citata (oggi si apre
+  l'intero documento)
+- Confidence score sulla risposta, streaming, rate limiting reale sulla
+  function (vedi "Cosa resta" in `FASE12_LOG.md`)
 
 ## Cosa resta (rifiniture opzionali, non richieste dalla roadmap)
 
