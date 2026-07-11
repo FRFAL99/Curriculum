@@ -1,10 +1,20 @@
 import { useLanguage } from "../../context/useLanguage";
 import { Download, Mail, Phone, MapPin } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "../../components/SocialIcons";
+import { getAbout, getContacts, getSocials, getExperience, getEducation } from "../../lib/knowledgeBase";
+import { renderInline } from "../../lib/markdown";
 import "./Resume.css";
 
 export function ResumeWindow() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  const about = getAbout(language);
+  const contacts = getContacts();
+  const socials = getSocials();
+  const experience = getExperience(language);
+  const education = getEducation(language);
+  const mainJob = experience[0];
+  const additionalJob = experience[1];
 
   const handleDownload = () => {
     window.print();
@@ -26,8 +36,8 @@ export function ResumeWindow() {
         <aside className="resume-window__sidebar">
           {/* Hero */}
           <div className="resume-window__hero">
-            <h1 className="resume-window__name">Francesco Fallavena</h1>
-            <p className="resume-window__title">{t("title")}</p>
+            <h1 className="resume-window__name">{about?.frontmatter.name}</h1>
+            <p className="resume-window__title">{about?.frontmatter.role}</p>
           </div>
 
           {/* Contact Info */}
@@ -36,26 +46,26 @@ export function ResumeWindow() {
             <ul className="resume-window__contacts">
               <li>
                 <Mail size={14} className="resume-window__icon" />
-                <a href="mailto:francesco.fallavena@gmail.com">francesco.fallavena@gmail.com</a>
+                <a href={`mailto:${contacts?.frontmatter.email}`}>{contacts?.frontmatter.email}</a>
               </li>
               <li>
                 <Phone size={14} className="resume-window__icon" />
-                <a href="tel:+393208787258">(+39) 320 878 7258</a>
+                <a href={`tel:${contacts?.frontmatter.phoneHref}`}>{contacts?.frontmatter.phone}</a>
               </li>
               <li>
                 <MapPin size={14} className="resume-window__icon" />
-                <span>Pieve di Cento (BO), Italia</span>
+                <span>{contacts?.frontmatter.location}</span>
               </li>
               <li>
                 <GithubIcon width={14} height={14} className="resume-window__icon" />
-                <a href="https://github.com/FRFAL99" target="_blank" rel="noopener noreferrer">
-                  github.com/FRFAL99
+                <a href={socials?.frontmatter.github} target="_blank" rel="noopener noreferrer">
+                  {socials?.frontmatter.githubLabel}
                 </a>
               </li>
               <li>
                 <LinkedinIcon width={14} height={14} className="resume-window__icon" />
-                <a href="https://www.linkedin.com/in/francesco-fallavena" target="_blank" rel="noopener noreferrer">
-                  linkedin.com/in/francesco-fallavena
+                <a href={socials?.frontmatter.linkedin} target="_blank" rel="noopener noreferrer">
+                  {socials?.frontmatter.linkedinLabel}
                 </a>
               </li>
             </ul>
@@ -65,20 +75,18 @@ export function ResumeWindow() {
           <section className="resume-window__section">
             <h2 className="resume-window__section-title">{t("languagesTitle")}</h2>
             <div className="resume-window__lang-list">
-              <div className="resume-window__lang-item">
-                <span className="resume-window__lang-name">{t("italian")}</span>
-                <span className="resume-window__lang-level">{t("motherTongue")}</span>
-              </div>
-              <div className="resume-window__lang-item">
-                <span className="resume-window__lang-name">{t("english")}</span>
-                <span className="resume-window__lang-level">{t("professionalUse")}</span>
-              </div>
+              {about?.frontmatter.languages.map((l) => (
+                <div className="resume-window__lang-item" key={l.name}>
+                  <span className="resume-window__lang-name">{l.name}</span>
+                  <span className="resume-window__lang-level">{l.level}</span>
+                </div>
+              ))}
             </div>
           </section>
 
           {/* Relocation Availability */}
           <div className="resume-window__availability">
-            {t("availabilityText")}
+            {about?.frontmatter.availability}
           </div>
         </aside>
 
@@ -87,82 +95,81 @@ export function ResumeWindow() {
           {/* Profile */}
           <section className="resume-window__section">
             <h2 className="resume-window__section-title">{t("profileTitle")}</h2>
-            <p className="resume-window__text">{t("profile")}</p>
+            <p className="resume-window__text">{about?.body}</p>
           </section>
 
           {/* Experience */}
           <section className="resume-window__section">
             <h2 className="resume-window__section-title">{t("experienceTitle")}</h2>
-            <div className="resume-window__exp-item">
-              <div className="resume-window__exp-header">
-                <div>
-                  <h3 className="resume-window__exp-role">Software Engineer</h3>
-                  <span className="resume-window__exp-company">Xtel</span>
+            {mainJob && (
+              <div className="resume-window__exp-item">
+                <div className="resume-window__exp-header">
+                  <div>
+                    <h3 className="resume-window__exp-role">{mainJob.frontmatter.role}</h3>
+                    <span className="resume-window__exp-company">{mainJob.frontmatter.company}</span>
+                  </div>
+                  <span className="resume-window__exp-date">
+                    {mainJob.frontmatter.dateStart} - {mainJob.frontmatter.dateEnd ?? t("present")}
+                  </span>
                 </div>
-                <span className="resume-window__exp-date">
-                  Giugno 2022 - {t("present")}
-                </span>
+                <p
+                  className="resume-window__exp-desc"
+                  dangerouslySetInnerHTML={{ __html: renderInline(mainJob.body) }}
+                />
+                <ul className="resume-window__exp-resps">
+                  {mainJob.frontmatter.responsibilities.map((resp) => (
+                    <li key={resp} dangerouslySetInnerHTML={{ __html: renderInline(resp) }} />
+                  ))}
+                </ul>
               </div>
-              <p
-                className="resume-window__exp-desc"
-                dangerouslySetInnerHTML={{ __html: t("jobDesc") }}
-              />
-              <ul className="resume-window__exp-resps">
-                <li dangerouslySetInnerHTML={{ __html: t("resp1") }} />
-                <li dangerouslySetInnerHTML={{ __html: t("resp2") }} />
-                <li dangerouslySetInnerHTML={{ __html: t("resp3") }} />
-                <li dangerouslySetInnerHTML={{ __html: t("resp4") }} />
-                <li dangerouslySetInnerHTML={{ __html: t("resp5") }} />
-                <li dangerouslySetInnerHTML={{ __html: t("resp6") }} />
-                <li dangerouslySetInnerHTML={{ __html: t("resp7") }} />
-                <li dangerouslySetInnerHTML={{ __html: t("resp8") }} />
-              </ul>
-            </div>
+            )}
           </section>
 
           {/* Education */}
           <section className="resume-window__section">
             <h2 className="resume-window__section-title">{t("educationTitle")}</h2>
-            <div className="resume-window__edu-item">
-              <div className="resume-window__edu-header">
-                <h3 className="resume-window__edu-degree">{t("degree1")}</h3>
-                <span className="resume-window__edu-date">2018 - 2022</span>
+            {education.map((edu) => (
+              <div className="resume-window__edu-item" key={edu.slug}>
+                <div className="resume-window__edu-header">
+                  <h3 className="resume-window__edu-degree">{edu.frontmatter.degree}</h3>
+                  <span className="resume-window__edu-date">
+                    {edu.frontmatter.dateStart} - {edu.frontmatter.dateEnd}
+                  </span>
+                </div>
+                <p className="resume-window__edu-inst">
+                  {edu.frontmatter.institution} | {t("gradeLabel")}: {edu.frontmatter.grade}
+                </p>
+                {edu.body && <p className="resume-window__edu-thesis">{edu.body}</p>}
               </div>
-              <p className="resume-window__edu-inst">Università degli Studi di Ferrara | Voto: 96/110</p>
-              <p className="resume-window__edu-thesis">{t("thesis")}</p>
-            </div>
-            <div className="resume-window__edu-item">
-              <div className="resume-window__edu-header">
-                <h3 className="resume-window__edu-degree">{t("degree2")}</h3>
-                <span className="resume-window__edu-date">2013 - 2018</span>
-              </div>
-              <p className="resume-window__edu-inst">ISIT Bassi-Burgatti, Cento | Voto: 88/100</p>
-            </div>
+            ))}
           </section>
 
           {/* Additional Experience */}
           <section className="resume-window__section">
             <h2 className="resume-window__section-title">{t("additionalExpTitle")}</h2>
-            <div className="resume-window__exp-item">
-              <div className="resume-window__exp-header">
-                <div>
-                  <h3 className="resume-window__exp-role">Tutor di Matematica</h3>
-                  <span className="resume-window__exp-company">ISIT Bassi-Burgatti</span>
+            {additionalJob && (
+              <div className="resume-window__exp-item">
+                <div className="resume-window__exp-header">
+                  <div>
+                    <h3 className="resume-window__exp-role">{additionalJob.frontmatter.role}</h3>
+                    <span className="resume-window__exp-company">{additionalJob.frontmatter.company}</span>
+                  </div>
+                  <span className="resume-window__exp-date">
+                    {additionalJob.frontmatter.dateStart} - {additionalJob.frontmatter.dateEnd}
+                  </span>
                 </div>
-                <span className="resume-window__exp-date">Marzo 2021 - Aprile 2021</span>
+                <p className="resume-window__exp-desc">{additionalJob.body}</p>
               </div>
-              <p className="resume-window__exp-desc">{t("tutorDesc")}</p>
-            </div>
+            )}
           </section>
 
           {/* Soft Skills */}
           <section className="resume-window__section">
             <h2 className="resume-window__section-title">{t("softSkillsTitle")}</h2>
             <ul className="resume-window__exp-resps">
-              <li dangerouslySetInnerHTML={{ __html: t("soft1") }} />
-              <li dangerouslySetInnerHTML={{ __html: t("soft2") }} />
-              <li dangerouslySetInnerHTML={{ __html: t("soft3") }} />
-              <li dangerouslySetInnerHTML={{ __html: t("soft4") }} />
+              {about?.frontmatter.softSkills.map((skill) => (
+                <li key={skill} dangerouslySetInnerHTML={{ __html: renderInline(skill) }} />
+              ))}
             </ul>
           </section>
         </main>

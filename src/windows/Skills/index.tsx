@@ -1,21 +1,14 @@
 import { useLanguage } from "../../context/useLanguage";
-import type { TranslationKey } from "../../context/translations";
-import skillsData from "../../data/skills.json";
+import { getSkills } from "../../lib/knowledgeBase";
 import { Terminal, Layers, Cloud, Database, GitBranch, Sparkles, Code } from "lucide-react";
 import type { ComponentType } from "react";
 import "./Skills.css";
-
-interface SkillCategory {
-  categoryKey: string;
-  icon: string;
-  skills: string[];
-}
 
 /**
  * Mapping esplicito invece di `import * as Icons from "lucide-react"`:
  * l'import a wildcard impedisce il tree-shaking e portava l'intera libreria
  * di icone nel bundle finale (+~650 KB). Aggiungere una nuova icona qui
- * quando si aggiunge una categoria in skills.json.
+ * quando si aggiunge una categoria in knowledge-base/skills.md.
  */
 const ICONS: Record<string, ComponentType<{ size?: number | string; className?: string }>> = {
   Terminal,
@@ -27,8 +20,9 @@ const ICONS: Record<string, ComponentType<{ size?: number | string; className?: 
 };
 
 export function SkillsWindow() {
-  const { t } = useLanguage();
-  const categories = skillsData as SkillCategory[];
+  const { language } = useLanguage();
+  const skills = getSkills();
+  const categories = skills?.frontmatter.categories ?? [];
 
   return (
     <div className="skills-window">
@@ -37,12 +31,10 @@ export function SkillsWindow() {
           const Icon = ICONS[cat.icon] ?? Code;
 
           return (
-            <div key={cat.categoryKey} className="skills-category">
+            <div key={cat.key} className="skills-category">
               <header className="skills-category__header">
                 <Icon className="skills-category__icon" size={16} />
-                <h3 className="skills-category__title">
-                  {t(cat.categoryKey as TranslationKey)}
-                </h3>
+                <h3 className="skills-category__title">{cat.labels[language]}</h3>
               </header>
 
               <div className="skills-category__tags">

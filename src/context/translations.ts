@@ -3,6 +3,13 @@ export type Language = "it" | "en";
  * Dati di traduzione, in file separato da LanguageContext.tsx per evitare
  * il warning oxlint "only-export-components" (file che esportano sia
  * componenti che costanti rompono il fast refresh di Vite).
+ *
+ * Fase 8 — Knowledge Base: qui restano SOLO le stringhe di UI/chrome
+ * (etichette di pulsanti, titoli di sezione, testo di sistema). Tutti i
+ * contenuti "di fatto" su Francesco (profilo, esperienze, formazione,
+ * competenze, progetti, developer notes) sono stati spostati in
+ * `knowledge-base/` e si leggono tramite `src/lib/knowledgeBase.ts`.
+ * Vedi `docs/ADR-001-knowledge-base.md` per il criterio di separazione.
  */
 export const translations = {
   it: {
@@ -16,59 +23,23 @@ export const translations = {
     contactTitle: "Contatti",
     developerNotesTitle: "Developer Notes",
 
-    // Resume / CV
-    title: "Software Engineer",
+    // Resume / CV — solo etichette di sezione/chrome
     download: "Scarica PDF",
     downloading: "Preparando anteprima...",
     skillsTitle: "Competenze Tecniche",
-    skillsLang: "Linguaggi",
-    skillsFramework: "Framework & Tech",
-    skillsCloud: "Cloud & Azure",
-    skillsDatabase: "Database & Tools",
-    skillsMethodology: "Metodologie",
-    skillsAI: "Strumenti AI",
     projectsTitle: "Progetti",
-    project1Title: "Antichità Fallavena",
-    project1Desc: "Sito vetrina per un'attività di famiglia, sviluppato in autonomia con approccio AI-assisted (<strong>GitHub Copilot</strong>, <strong>Claude</strong>, <strong>ChatGPT</strong>) per accelerare lo sviluppo, mantenendo il controllo diretto su architettura, contenuti e scelte tecniche.",
-    project1Link: "Visita il sito →",
     educationTitle: "Formazione",
-    degree1: "Laurea Triennale in Matematica",
-    degree2: "Perito in Informatica e Telecomunicazioni",
-    thesis: "Tesi: \"Metodo Monte Carlo e soluzione dell'equazione di Boltzmann\" — simulazione numerica e modellazione statistica",
+    gradeLabel: "Voto",
     languagesTitle: "Lingue",
-    italian: "Italiano",
-    english: "Inglese",
-    motherTongue: "Madrelingua",
-    professionalUse: "Uso professionale",
-    availabilityText: "🌍 Disponibile al trasferimento (Italia/Estero)",
     profileTitle: "Profilo",
-    profile: "Software engineer con formazione in Matematica e forte propensione all'analisi. Progetto e sviluppo soluzioni software scalabili su infrastrutture cloud, unendo rigore analitico e attenzione all'affidabilità dei sistemi. Esperienza consolidata nel lavoro con team internazionali e nella gestione di progetti per clienti enterprise. Sempre aperto ad apprendere nuovi stack tecnologici e ad assumere responsabilità crescenti.",
     experienceTitle: "Esperienza Professionale",
     present: "Presente",
-    jobDesc: "Full-stack developer specializzato nello sviluppo di applicazioni web per aziende multinazionali del settore <strong>Consumer Packaged Goods (CPG)</strong>. Progettazione e implementazione di soluzioni software scalabili per la gestione di TPM, Trade Terms e Business Plan, con deployment di successo per clienti enterprise di livello internazionale.",
-    resp1: "Sviluppo full-stack di web application su piattaforma <strong>Azure Cloud</strong> con deployment su <strong>AKS (Azure Kubernetes Service)</strong>",
-    resp2: "Implementazione di <strong>Logic Apps</strong> e <strong>Function Apps</strong> per automazione e integrazione di processi business",
-    resp3: "Gestione <strong>Azure DevOps</strong>: work items, repository e utilizzo di pipeline CI/CD per deployment automatizzato",
-    resp4: "Contributo alle diverse fasi di sviluppo: design, build, deploy e maintenance",
-    resp5: "Analisi dati e gestione di database <strong>SQL Server</strong> e <strong>Oracle</strong>",
-    resp6: "Monitoraggio applicazioni e troubleshooting tramite <strong>Application Insights</strong> e sistemi di logging",
-    resp7: "Collaborazione in team internazionale utilizzando <strong>metodologie Agile</strong> e approcci Waterfall",
-    resp8: "Integrazione e consumo di API REST per comunicazione tra servizi",
     additionalExpTitle: "Esperienza Aggiuntiva",
-    tutorDesc: "Supporto didattico e lezioni individuali di recupero per studenti con difficoltà in matematica. Esperienza in didattica a distanza su piattaforme digitali.",
     softSkillsTitle: "Competenze Trasversali",
-    soft1: "<strong>Lavoro in team internazionale</strong> - Collaborazione quotidiana con colleghi da diverse parti del mondo",
-    soft2: "<strong>Gestione progetti</strong> - Coordinamento delle diverse fasi di sviluppo software",
-    soft3: "<strong>Problem solving</strong> - Analisi e risoluzione di problematiche tecniche complesse",
-    soft4: "<strong>Comunicazione</strong> - Interfaccia diretta con clienti enterprise per implementazioni software",
     footer: "Autorizzo il trattamento dei miei dati personali ai sensi del GDPR 679/16.",
 
     // Developer Notes Window
     devNotesIntro: "In questa sezione condivido appunti e dettagli tecnici su sfide reali di problem solving affrontate nel mio percorso professionale.",
-    note1Title: "Ottimizzazione Query e Concorrenza su Database Enterprise",
-    note1Body: "Analisi ed eliminazione di deadlock ricorrenti su transazioni TPM ad alto volume tramite ottimizzazione degli indici SQL e tuning del livello di isolamento delle transazioni.",
-    note2Title: "Integrazione Dati via Azure Logic Apps",
-    note2Body: "Progettazione di flussi serverless per l'importazione quotidiana di listini e trade terms da sistemi legacy a repository cloud Azure, migliorando la resilienza con policy di retry automatiche.",
   },
   en: {
     // Topbar & System
@@ -81,59 +52,23 @@ export const translations = {
     contactTitle: "Contact Info",
     developerNotesTitle: "Developer Notes",
 
-    // Resume / CV
-    title: "Software Engineer",
+    // Resume / CV — chrome labels only
     download: "Download PDF",
     downloading: "Preparing preview...",
     skillsTitle: "Technical Skills",
-    skillsLang: "Languages",
-    skillsFramework: "Framework & Tech",
-    skillsCloud: "Cloud & Azure",
-    skillsDatabase: "Database & Tools",
-    skillsMethodology: "Methodologies",
-    skillsAI: "AI Tools",
     projectsTitle: "Projects",
-    project1Title: "Antichità Fallavena",
-    project1Desc: "Showcase website for a family business, built independently with an AI-assisted approach (<strong>GitHub Copilot</strong>, <strong>Claude</strong>, <strong>ChatGPT</strong>) to speed up development, while keeping direct control over architecture, content and technical choices.",
-    project1Link: "Visit the site →",
     educationTitle: "Education",
-    degree1: "Bachelor's Degree in Mathematics",
-    degree2: "Computer Science and Telecommunications Diploma",
-    thesis: "Thesis: \"Monte Carlo method and solution of Boltzmann equation\" — numerical simulation and statistical modeling",
+    gradeLabel: "Grade",
     languagesTitle: "Languages",
-    italian: "Italian",
-    english: "English",
-    motherTongue: "Native",
-    professionalUse: "Professional Use",
-    availabilityText: "🌍 Available for relocation (Italy/Abroad)",
     profileTitle: "Profile",
-    profile: "Software engineer with a background in Mathematics and a strong analytical mindset. I design and build scalable software solutions on cloud infrastructure, combining analytical rigor with close attention to system reliability. Solid experience working with international teams and managing projects for enterprise clients. Always open to learning new technology stacks and taking on increasing responsibilities.",
     experienceTitle: "Professional Experience",
     present: "Present",
-    jobDesc: "Full-stack developer specialized in developing web applications for multinational companies in the <strong>Consumer Packaged Goods (CPG)</strong> sector. Design and implementation of scalable software solutions for TPM, Trade Terms and Business Plan management, with successful deployment for international enterprise clients.",
-    resp1: "Full-stack development of web applications on <strong>Azure Cloud</strong> platform with deployment on <strong>AKS (Azure Kubernetes Service)</strong>",
-    resp2: "Implementation of <strong>Logic Apps</strong> and <strong>Function Apps</strong> for business process automation and integration",
-    resp3: "Management of <strong>Azure DevOps</strong>: work items, repositories and use of CI/CD pipelines for automated deployment",
-    resp4: "Contribution to various development phases: design, build, deploy and maintenance",
-    resp5: "Data analysis and management of <strong>SQL Server</strong> and <strong>Oracle</strong> databases",
-    resp6: "Application monitoring and troubleshooting through <strong>Application Insights</strong> and logging systems",
-    resp7: "Collaboration in international teams using <strong>Agile methodologies</strong> and Waterfall approaches",
-    resp8: "Integration and consumption of REST APIs for inter-service communication",
     additionalExpTitle: "Additional Experience",
-    tutorDesc: "Educational support and individual tutoring for students with difficulties in mathematics. Experience in distance learning on digital platforms.",
     softSkillsTitle: "Soft Skills",
-    soft1: "<strong>International teamwork</strong> - Daily collaboration with colleagues from different parts of the world",
-    soft2: "<strong>Project management</strong> - Coordination of different phases of software development",
-    soft3: "<strong>Problem solving</strong> - Analysis and resolution of complex technical issues",
-    soft4: "<strong>Communication</strong> - Direct interface with enterprise clients for software implementations",
     footer: "I authorize the processing of my personal data in accordance with GDPR 679/16.",
 
     // Developer Notes Window
     devNotesIntro: "In this section, I share technical notes on real-world problem-solving challenges encountered throughout my professional journey.",
-    note1Title: "Query Optimization and Concurrency in Enterprise Databases",
-    note1Body: "Analysis and elimination of recurring deadlocks in high-volume TPM transactions by optimizing SQL indexes and tuning transaction isolation levels.",
-    note2Title: "Data Integration via Azure Logic Apps",
-    note2Body: "Design of serverless workflows for daily importing of price lists and trade terms from legacy systems to Azure cloud repositories, enhancing resilience with automatic retry policies.",
   }
 };
 

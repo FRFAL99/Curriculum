@@ -1,39 +1,27 @@
 import { useLanguage } from "../../context/useLanguage";
-import projectsData from "../../data/projects.json";
+import { getProjects } from "../../lib/knowledgeBase";
+import { renderInline } from "../../lib/markdown";
 import { ExternalLink, Code } from "lucide-react";
 import { GithubIcon } from "../../components/SocialIcons";
 import "./Projects.css";
 
-interface Project {
-  id: string;
-  title: string;
-  stack: string[];
-  image: string;
-  demoUrl: string;
-  githubUrl: string;
-  description: {
-    it: string;
-    en: string;
-  };
-}
-
 export function ProjectsWindow() {
   const { language } = useLanguage();
-  const projects = projectsData as Project[];
+  const projects = getProjects(language);
 
   return (
     <div className="projects-window">
       <div className="projects-grid">
         {projects.map((proj) => {
-          const desc = language === "it" ? proj.description.it : proj.description.en;
+          const { title, image, demoUrl, githubUrl, stack } = proj.frontmatter;
 
           return (
-            <article key={proj.id} className="project-card">
+            <article key={proj.slug} className="project-card">
               {/* Image Preview Container */}
               <div className="project-card__image-container">
                 <img
-                  src={proj.image}
-                  alt={`${proj.title} Preview`}
+                  src={image}
+                  alt={`${title} Preview`}
                   className="project-card__image"
                   loading="lazy"
                 />
@@ -42,11 +30,11 @@ export function ProjectsWindow() {
               {/* Text details */}
               <div className="project-card__details">
                 <header className="project-card__header">
-                  <h3 className="project-card__title">{proj.title}</h3>
+                  <h3 className="project-card__title">{title}</h3>
                   <div className="project-card__links">
-                    {proj.githubUrl && (
+                    {githubUrl && (
                       <a
-                        href={proj.githubUrl}
+                        href={githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="project-card__link"
@@ -55,9 +43,9 @@ export function ProjectsWindow() {
                         <GithubIcon width={16} height={16} />
                       </a>
                     )}
-                    {proj.demoUrl && proj.demoUrl !== "#" && (
+                    {demoUrl && demoUrl !== "#" && (
                       <a
-                        href={proj.demoUrl}
+                        href={demoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="project-card__link"
@@ -71,14 +59,14 @@ export function ProjectsWindow() {
 
                 <p
                   className="project-card__desc"
-                  dangerouslySetInnerHTML={{ __html: desc }}
+                  dangerouslySetInnerHTML={{ __html: renderInline(proj.body) }}
                 />
 
                 {/* Tech Stack badges */}
                 <div className="project-card__footer">
                   <Code size={12} className="project-card__footer-icon" />
                   <div className="project-card__tags">
-                    {proj.stack.map((tag) => (
+                    {stack.map((tag) => (
                       <span key={tag} className="project-card__tag">
                         {tag}
                       </span>

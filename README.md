@@ -165,6 +165,36 @@ implementati.
       finestra; su desktop resta invariato il comportamento
       seleziona/apri (con anche il doppio click come scorciatoia).
 
+## Stato — Fase 8 (completata) — Knowledge Base
+
+Log dettagliato: [`docs/FASE8_LOG.md`](./docs/FASE8_LOG.md).
+Decisioni architetturali: [`docs/ADR-001-knowledge-base.md`](./docs/ADR-001-knowledge-base.md).
+
+Prima fase della roadmap "Knowledge Base + AI Assistant" (documento di
+visione condiviso in sessione, da committare — vedi nota nel log).
+
+- [x] Nuova cartella `knowledge-base/` (root del repo): documenti Markdown
+      con frontmatter, Single Source of Truth per profilo, esperienze,
+      formazione, competenze, progetti, developer notes — in italiano e
+      inglese
+- [x] Loader tipizzato `src/lib/knowledgeBase.ts` (letto a build-time via
+      `import.meta.glob`, nessuna fetch a runtime)
+- [x] `ResumeWindow`, `ExperienceWindow`, `SkillsWindow`, `ProjectsWindow`,
+      `DeveloperNotesWindow` e `PrintableResume` non contengono più testo
+      hardcoded: leggono tutti dalla Knowledge Base
+- [x] `src/data/{resume,skills,projects}.json` rimossi (sostituiti)
+- [x] `translations.ts` ridotto alle sole etichette di interfaccia (vedi
+      ADR-001 per il criterio contenuto-vs-chrome)
+
+### Prossimi passi (non ancora implementati)
+
+- **Fase 9** — Knowledge Document Viewer (finestra che mostra un progetto
+  come documentazione tecnica, distinta dalla card della finestra Projects)
+- **Fase 10** — Netlify Function per la chiamata a OpenRouter (scope
+  classification + retrieval + key server-side)
+- **Fase 11** — Finestra AI Assistant
+- **Fase 12** — Explainability (fonti citate, cliccabili)
+
 ## Cosa resta (rifiniture opzionali, non richieste dalla roadmap)
 
 - Titoli di finestre/icone e l'etichetta del toggle tema nel Dock non sono
@@ -176,6 +206,15 @@ implementati.
 ## Struttura
 
 ```
+knowledge-base/   Single Source of Truth dei contenuti (Fase 8)
+  about.it.md, about.en.md
+  config/         contacts.md, socials.md
+  experience/     un file .it.md + .en.md per ruolo
+  education/      un file .it.md + .en.md per titolo di studio
+  skills.md       lang-neutral, label di categoria bilingue in frontmatter
+  projects/       un file .it.md + .en.md per progetto
+  developer-notes/ un file .it.md + .en.md per nota
+
 src/
   desktop/
     Desktop.tsx              Layout principale, stato tema/selezione
@@ -201,8 +240,9 @@ src/
     useLanguage.ts        Hook di accesso al context lingua
   config/
     windows.ts        Config centrale delle finestre
-  data/
-    resume.json, projects.json, skills.json
+  lib/
+    knowledgeBase.ts  Loader tipizzato della Knowledge Base (Fase 8)
+    markdown.ts       Helper di rendering Markdown → HTML (renderInline/renderBlock)
   utils/
     storage.ts        Wrapper sicuro su localStorage (get/set JSON)
     useIsMobile.ts     Hook breakpoint mobile (640px), sincronizzato col CSS
