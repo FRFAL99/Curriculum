@@ -1,0 +1,32 @@
+[
+  {
+    "categoryKey": "skillsLang",
+    "icon": "Terminal",
+    "skills": ["C#", "JavaScript", "SQL", "HTML"]
+  },
+  {
+    "categoryKey": "skillsFramework",
+    "icon": "Layers",
+    "skills": [".NET", "React", "Azure"]
+  },
+  {
+    "categoryKey": "skillsCloud",
+    "icon": "Cloud",
+    "skills": ["Logic Apps", "Function Apps", "AKS", "Blob Storage", "App Insights"]
+  },
+  {
+    "categoryKey": "skillsDatabase",
+    "icon": "Database",
+    "skills": ["SQL Server", "Oracle", "Git", "Visual Studio", "Azure DevOps", "Postman"]
+  },
+  {
+    "categoryKey": "skillsMethodology",
+    "icon": "GitBranch",
+    "skills": ["Agile/Scrum", "CI/CD", "DevOps"]
+  },
+  {
+    "categoryKey": "skillsAI",
+    "icon": "Sparkles",
+    "skills": ["GitHub Copilot", "Claude", "ChatGPT"]
+  }
+]

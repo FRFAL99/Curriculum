@@ -1,0 +1,107 @@
+.contact-window {
+  max-width: 100%;
+}
+
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  transition: border-color 0.16s ease;
+}
+
+.contact-card:hover {
+  border-color: var(--border-strong);
+}
+
+.contact-card__link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  flex: 1;
+}
+
+.contact-card__icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.16s ease;
+}
+
+.contact-card:hover .contact-card__icon-wrapper {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(79, 209, 197, 0.15);
+}
+
+.contact-card__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-card__label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  letter-spacing: 0.05em;
+}
+
+.contact-card__value {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  transition: color 0.12s ease;
+}
+
+.contact-card:hover .contact-card__value {
+  color: var(--text-primary);
+}
+
+.contact-card__copy-btn {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+}
+
+.contact-card__copy-btn:hover {
+  color: var(--text-primary);
+  background: var(--surface-elevated);
+}
+
+.contact-card__copied-icon {
+  color: var(--accent);
+  animation: check-pop 0.2s ease;
+}
+
+@keyframes check-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

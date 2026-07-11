@@ -1,0 +1,907 @@
+/* ============================================================
+   Francesco Fallavena — CV
+   Palette: grafite + blu acciaio (coerente con lo stile del PDF)
+   ============================================================ */
+
+:root {
+    --ink: #1c2430;
+    --ink-soft: #4a5568;
+    --muted: #718096;
+    --line: #e2e6ea;
+    --panel: #f4f6f8;
+    --paper: #ffffff;
+    --page-bg: #eef1f4;
+    --accent: #2c5aa0;
+    --accent-soft: #eaf0f8;
+    --accent-line: #b9cde5;
+    --ok-bg: #eaf5ee;
+    --ok-text: #2d5a3d;
+    --ok-line: #bfe0cc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--page-bg);
+    min-height: 100vh;
+    padding: 2.5rem 1rem;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--paper);
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    overflow: hidden;
+}
+
+/* === HEADER === */
+.header {
+    background: var(--ink);
+    color: #f4f6f8;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Firma visiva: un unico arco sottile, statico, nessuna animazione */
+.header::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 260px;
+    height: 260px;
+    border: 1px solid rgba(180, 200, 225, 0.18);
+    border-radius: 50%;
+    transform: rotate(-18deg) scaleY(0.4);
+    pointer-events: none;
+}
+
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: -90px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(180, 200, 225, 0.12);
+    border-radius: 50%;
+    transform: rotate(12deg) scaleY(0.4);
+    pointer-events: none;
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.name {
+    font-size: 2.25rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+}
+
+.title {
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: #aebccb;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.02em;
+}
+
+/* === CONTATTI === */
+.contact-info {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #dfe6ed;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+a.contact-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.contact-icon {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+/* === SWITCH LINGUA / DOWNLOAD === */
+.header-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: flex-end;
+    z-index: 10;
+}
+
+.language-switcher {
+    display: flex;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 0.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.lang-btn {
+    background: transparent;
+    border: none;
+    color: #cbd5e0;
+    padding: 0.45rem 0.85rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    font-weight: 500;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 62px;
+    justify-content: center;
+}
+
+.flag-icon {
+    width: 18px;
+    height: 12px;
+    border-radius: 1px;
+    flex-shrink: 0;
+}
+
+.lang-btn.active {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+}
+
+.lang-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.download-btn {
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.82rem;
+    transition: background 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.download-btn:hover {
+    background: #244a86;
+}
+
+.download-btn svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+}
+
+/* === LAYOUT PRINCIPALE === */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 0;
+}
+
+.sidebar {
+    background: var(--panel);
+    padding: 2rem;
+    border-right: 1px solid var(--line);
+}
+
+.content {
+    padding: 2rem;
+}
+
+.section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    padding-left: 0.7rem;
+    border-left: 3px solid var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.profile-text {
+    background: var(--accent-soft);
+    color: var(--ink);
+    padding: 1.25rem 1.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--accent-line);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+/* === SKILLS === */
+.skills-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.skill-category {
+    margin-bottom: 1.25rem;
+}
+
+.skill-category h4 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.6rem;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.skill-tag {
+    background: var(--paper);
+    color: var(--ink-soft);
+    padding: 0.3rem 0.7rem;
+    border-radius: 5px;
+    border: 1px solid var(--line);
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+/* === ESPERIENZA === */
+.experience-item {
+    margin-bottom: 1.75rem;
+    padding: 1.25rem 1.5rem;
+    border-left: 3px solid var(--accent);
+    background: var(--panel);
+    border-radius: 0 6px 6px 0;
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.job-title {
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.company {
+    font-weight: 500;
+    color: var(--accent);
+}
+
+.date {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.job-description {
+    color: var(--ink-soft);
+    margin-bottom: 0.85rem;
+    font-size: 0.95rem;
+}
+
+.responsibilities {
+    list-style: none;
+}
+
+.responsibilities li {
+    margin-bottom: 0.45rem;
+    padding-left: 1.25rem;
+    position: relative;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+}
+
+.responsibilities li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.project-item {
+    margin-bottom: 1.75rem;
+    padding: 1.25rem 1.5rem;
+    border-left: 3px solid var(--accent);
+    background: var(--panel);
+    border-radius: 0 6px 6px 0;
+}
+
+.project-link {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.project-link:hover {
+    text-decoration: underline;
+}
+
+/* === FORMAZIONE === */
+.education-item {
+    margin-bottom: 1.25rem;
+    padding: 0.9rem 1rem;
+    background: var(--paper);
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+}
+
+.degree {
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+    font-size: 0.92rem;
+}
+
+.institution {
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+    font-size: 0.87rem;
+}
+
+.grade {
+    color: var(--muted);
+    font-size: 0.82rem;
+}
+
+.thesis {
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+    font-style: italic;
+    margin-top: 0.4rem;
+}
+
+/* === LINGUE === */
+.languages {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.language-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 0.85rem;
+    background: var(--paper);
+    border-radius: 6px;
+    border: 1px solid var(--line);
+}
+
+.language-name {
+    font-weight: 500;
+    color: var(--ink);
+    font-size: 0.88rem;
+}
+
+.language-level {
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.76rem;
+    font-weight: 500;
+    border: 1px solid var(--accent-line);
+}
+
+/* === DISPONIBILITA' === */
+.availability {
+    background: var(--ok-bg);
+    color: var(--ok-text);
+    border: 1px solid var(--ok-line);
+    padding: 0.9rem;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+}
+
+.footer {
+    text-align: center;
+    padding: 1.25rem;
+    background: var(--panel);
+    color: var(--muted);
+    font-size: 0.78rem;
+    border-top: 1px solid var(--line);
+}
+
+/* ============================================================
+   LAYOUT PDF (nascosto, usato solo per la stampa)
+   ============================================================ */
+.pdf-layout {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    z-index: 9999;
+}
+
+.pdf-container {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 auto;
+    padding: 12mm;
+    background: white;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.5;
+    color: #333;
+    font-size: 12px;
+    position: relative;
+}
+
+.pdf-header {
+    text-align: center;
+    padding-bottom: 15px;
+    margin-bottom: 18px;
+    border-bottom: 3px solid var(--accent);
+}
+
+.pdf-name {
+    font-size: 30px;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.pdf-title {
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.pdf-profile {
+    background: var(--accent);
+    color: white;
+    padding: 18px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.pdf-content {
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 15px;
+    height: calc(100% - 70px);
+}
+
+.pdf-sidebar {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.pdf-main {
+    padding-left: 10px;
+}
+
+.pdf-section {
+    margin-bottom: 14px;
+}
+
+.pdf-section-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 6px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #e0e0e0;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.pdf-contact-info {
+    margin-bottom: 10px;
+}
+
+.pdf-contact-item {
+    font-size: 10px;
+    color: #555;
+    margin-bottom: 2px;
+    line-height: 1.2;
+}
+
+.pdf-skills-category {
+    margin-bottom: 8px;
+}
+
+.pdf-skills-category h4 {
+    font-size: 10px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 3px;
+}
+
+.pdf-skills-list {
+    font-size: 10px;
+    color: #555;
+    line-height: 1.2;
+}
+
+.pdf-experience-item {
+    margin-bottom: 10px;
+    padding: 7px;
+    background: #fafafa;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 3px 3px 0;
+}
+
+.pdf-job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+}
+
+.pdf-job-title {
+    font-size: 11px;
+    font-weight: bold;
+    color: #1a1a1a;
+}
+
+.pdf-company {
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.pdf-date {
+    font-size: 9px;
+    color: #666;
+    font-weight: 500;
+}
+
+.pdf-job-description {
+    font-size: 10px;
+    color: #444;
+    margin-bottom: 4px;
+    line-height: 1.25;
+}
+
+.pdf-responsibilities {
+    list-style: none;
+    font-size: 9px;
+    color: #555;
+}
+
+.pdf-responsibilities li {
+    margin-bottom: 2px;
+    padding-left: 10px;
+    position: relative;
+}
+
+.pdf-responsibilities li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: bold;
+}
+
+.pdf-education-item {
+    margin-bottom: 10px;
+    padding: 8px;
+    background: #f9f9f9;
+    border-radius: 4px;
+    border-left: 3px solid var(--accent);
+}
+
+.pdf-degree {
+    font-size: 10px;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+}
+
+.pdf-institution {
+    font-size: 9px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.pdf-grade {
+    font-size: 8px;
+    color: #666;
+}
+
+.pdf-thesis {
+    font-size: 8px;
+    color: #555;
+    font-style: italic;
+    margin-top: 3px;
+}
+
+.pdf-soft-skills {
+    list-style: none;
+    font-size: 10px;
+    color: #555;
+}
+
+.pdf-soft-skills li {
+    margin-bottom: 3px;
+    padding-left: 10px;
+    position: relative;
+}
+
+.pdf-soft-skills li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: bold;
+}
+
+.pdf-right-info {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 12px;
+}
+
+.pdf-languages-horizontal {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.pdf-language-box {
+    background: #f0f4ff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent);
+    flex: 1;
+    min-width: 130px;
+}
+
+.pdf-language-box .pdf-language-name {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 3px;
+}
+
+.pdf-language-box .pdf-language-level {
+    display: block;
+    font-size: 10px;
+    color: #666;
+    font-weight: 400;
+}
+
+.pdf-availability-horizontal {
+    background: #e8f5e8;
+    color: #2d5a2d;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.pdf-availability-horizontal strong {
+    color: #1a1a1a;
+}
+
+.pdf-footer {
+    position: absolute;
+    bottom: 10mm;
+    left: 15mm;
+    right: 15mm;
+    text-align: center;
+    font-size: 8px;
+    color: #666;
+    border-top: 1px solid #eee;
+    padding-top: 8px;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .name {
+        font-size: 1.8rem;
+    }
+
+    .contact-info {
+        flex-direction: column;
+        gap: 0.6rem;
+        align-items: center;
+    }
+
+    .contact-item {
+        padding: 0.6rem 1rem;
+        min-width: 260px;
+        justify-content: center;
+    }
+
+    .header-actions {
+        position: static;
+        margin-top: 1.5rem;
+        justify-content: center;
+        flex-direction: column;
+        gap: 0.6rem;
+        align-items: center;
+    }
+
+    .language-switcher {
+        order: 1;
+    }
+
+    .download-btn {
+        order: 2;
+        display: inline-flex;
+    }
+
+    .job-header {
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+}
+
+/* === CSS PER STAMPA/PDF === */
+@media print {
+    body {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .pdf-container {
+        width: 100% !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 11mm !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        overflow: visible !important;
+        font-size: 12px !important;
+        page-break-inside: avoid !important;
+        line-height: 1.5 !important;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .pdf-layout {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: white !important;
+        z-index: auto !important;
+    }
+
+    .availability {
+        display: block !important;
+        background: #e8f5e8 !important;
+        color: #2d5a2d !important;
+        padding: 10px 12px !important;
+        border-radius: 6px !important;
+        border-left: 4px solid #28a745 !important;
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        margin-top: 15px !important;
+        text-align: left !important;
+        line-height: 1.4 !important;
+    }
+
+    .pdf-name { font-size: 28px !important; margin-bottom: 6px !important; }
+    .pdf-title { font-size: 16px !important; margin-bottom: 10px !important; }
+    .pdf-section-title { font-size: 14px !important; margin-bottom: 10px !important; padding-bottom: 4px !important; }
+    .pdf-profile { font-size: 11px !important; padding: 14px !important; margin-bottom: 20px !important; line-height: 1.6 !important; }
+    .pdf-contact-item { font-size: 11px !important; margin-bottom: 5px !important; }
+    .pdf-skills-list { font-size: 11px !important; line-height: 1.5 !important; }
+    .pdf-skills-category h4 { font-size: 11px !important; margin-bottom: 5px !important; }
+    .pdf-job-title { font-size: 13px !important; }
+    .pdf-company { font-size: 12px !important; }
+    .pdf-job-description { font-size: 11px !important; line-height: 1.5 !important; margin-bottom: 8px !important; }
+    .pdf-responsibilities { font-size: 10px !important; line-height: 1.4 !important; }
+    .pdf-responsibilities li { margin-bottom: 3px !important; }
+    .pdf-soft-skills { font-size: 11px !important; line-height: 1.4 !important; }
+    .pdf-soft-skills li { margin-bottom: 4px !important; }
+    .pdf-experience-item { margin-bottom: 16px !important; padding: 12px !important; }
+    .pdf-section { margin-bottom: 18px !important; }
+    .pdf-content { gap: 20px !important; }
+    .pdf-degree { font-size: 11px !important; margin-bottom: 3px !important; }
+    .pdf-institution { font-size: 10px !important; margin-bottom: 3px !important; }
+    .pdf-grade { font-size: 9px !important; }
+    .pdf-thesis { font-size: 9px !important; margin-top: 4px !important; }
+    .pdf-language-box .pdf-language-name { font-size: 11px !important; }
+    .pdf-language-box .pdf-language-level { font-size: 10px !important; }
+    .pdf-availability-box { font-size: 11px !important; padding: 10px 12px !important; }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    .pdf-experience-item,
+    .pdf-education-item,
+    .pdf-section {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    @page {
+        margin: 0 !important;
+        size: A4 !important;
+    }
+}

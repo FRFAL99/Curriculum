@@ -1,0 +1,83 @@
+.window {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-window);
+  animation: window-open 0.16s ease-out;
+  overflow: hidden;
+}
+
+@keyframes window-open {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.window__titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px 8px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.window__titlebar:active {
+  cursor: grabbing;
+}
+
+.window__title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--text-primary);
+}
+
+.window__controls {
+  display: flex;
+  gap: 4px;
+}
+
+.window__control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.window__control:hover {
+  background: var(--bg-grid-dot);
+  color: var(--text-primary);
+}
+
+.window__control--close:hover {
+  background: color-mix(in srgb, #e5484d 22%, transparent);
+  color: #e5484d;
+}
+
+.window__body {
+  padding: 18px 20px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-primary);
+  overflow-y: auto;
+  max-height: 60vh;
+}

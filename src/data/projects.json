@@ -1,0 +1,26 @@
+[
+  {
+    "id": "antichita-fallavena",
+    "title": "Antichità Fallavena",
+    "stack": ["HTML", "CSS", "JavaScript", "GitHub Copilot", "Claude", "ChatGPT"],
+    "image": "./images/antichita_fallavena.jpg",
+    "demoUrl": "https://antichitafallavena.com/",
+    "githubUrl": "https://github.com/FRFAL99",
+    "description": {
+      "it": "Sito vetrina per un'attività di famiglia, sviluppato in autonomia con approccio AI-assisted (<strong>GitHub Copilot</strong>, <strong>Claude</strong>, <strong>ChatGPT</strong>) per accelerare lo sviluppo, mantenendo il controllo diretto su architettura, contenuti e scelte tecniche.",
+      "en": "Showcase website for a family business, built independently with an AI-assisted approach (<strong>GitHub Copilot</strong>, <strong>Claude</strong>, <strong>ChatGPT</strong>) to speed up development, while keeping direct control over architecture, content and technical choices."
+    }
+  },
+  {
+    "id": "portfolio-v2",
+    "title": "Portfolio v2 — Desktop",
+    "stack": ["React", "TypeScript", "Vite", "CSS Variables", "Lucide Icons"],
+    "image": "./images/portfolio_v2.jpg",
+    "demoUrl": "#",
+    "githubUrl": "https://github.com/FRFAL99/Curriculum",
+    "description": {
+      "it": "Il mio nuovo portfolio interattivo in stile desktop engineer. Costruito con React, TypeScript e Vite, con drag delle finestre, orologio di sistema, coordinate del mouse e switch multilingua.",
+      "en": "My new interactive portfolio in a desktop engineer style. Built with React, TypeScript, and Vite, featuring draggable windows, system clock, mouse coordinate tracking, and a language switcher."
+    }
+  }
+]

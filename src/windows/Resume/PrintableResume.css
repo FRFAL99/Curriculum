@@ -1,0 +1,321 @@
+.pdf-layout {
+  display: none;
+}
+
+@media print {
+  /* .pdf-layout ora è fratello di .desktop (vedi App.tsx), non più suo
+     discendente: qui basta nascondere .desktop, senza toccare #root
+     (altrimenti .pdf-layout, annidato in #root, sparirebbe con lui). */
+  .desktop {
+    display: none !important;
+  }
+
+  .pdf-layout {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: white !important;
+    z-index: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .pdf-container {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 auto !important;
+    padding: 10mm !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+    color: #333 !important;
+    background: white !important;
+    font-family: Arial, sans-serif !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+  }
+
+  .pdf-header {
+    text-align: center !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 15px !important;
+    border-bottom: 3px solid #0f9c8f !important; /* using static accent for print */
+  }
+
+  .pdf-name {
+    font-size: 26px !important;
+    font-weight: bold !important;
+    color: #1a1a1a !important;
+    margin-bottom: 6px !important;
+  }
+
+  .pdf-title {
+    font-size: 15px !important;
+    color: #0f9c8f !important;
+    margin-bottom: 8px !important;
+    font-weight: 600 !important;
+  }
+
+  .pdf-profile {
+    background: #0f9c8f !important;
+    color: white !important;
+    padding: 12px 14px !important;
+    border-radius: 6px !important;
+    font-size: 10.5px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 18px !important;
+  }
+
+  .pdf-content {
+    display: grid !important;
+    grid-template-columns: 1fr 1.8fr !important;
+    gap: 16px !important;
+    height: auto !important;
+  }
+
+  .pdf-sidebar {
+    background: #f8f9fa !important;
+    padding: 10px !important;
+    border-radius: 6px !important;
+  }
+
+  .pdf-main {
+    padding-left: 8px !important;
+  }
+
+  .pdf-section {
+    margin-bottom: 12px !important;
+  }
+
+  .pdf-section-title {
+    font-size: 11px !important;
+    font-weight: bold !important;
+    color: #0f9c8f !important;
+    margin-bottom: 6px !important;
+    padding-bottom: 2px !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+  }
+
+  .pdf-contact-info {
+    margin-bottom: 8px !important;
+  }
+
+  .pdf-contact-item {
+    font-size: 9.5px !important;
+    color: #555 !important;
+    margin-bottom: 3px !important;
+  }
+
+  .pdf-skills-category {
+    margin-bottom: 6px !important;
+  }
+
+  .pdf-skills-category h4 {
+    font-size: 9.5px !important;
+    font-weight: bold !important;
+    color: #333 !important;
+    margin: 0 0 2px 0 !important;
+  }
+
+  .pdf-skills-list {
+    font-size: 9.5px !important;
+    color: #555 !important;
+    line-height: 1.2 !important;
+  }
+
+  .pdf-experience-item {
+    margin-bottom: 10px !important;
+    padding: 6px 8px !important;
+    background: #fafafa !important;
+    border-left: 3px solid #0f9c8f !important;
+    border-radius: 0 3px 3px 0 !important;
+  }
+
+  .pdf-job-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    margin-bottom: 4px !important;
+  }
+
+  .pdf-job-title {
+    font-size: 11px !important;
+    font-weight: bold !important;
+    color: #1a1a1a !important;
+  }
+
+  .pdf-company {
+    font-size: 9.5px !important;
+    color: #0f9c8f !important;
+    font-weight: 600 !important;
+  }
+
+  .pdf-date {
+    font-size: 8.5px !important;
+    color: #666 !important;
+    font-weight: 500 !important;
+  }
+
+  .pdf-job-description {
+    font-size: 9.5px !important;
+    color: #444 !important;
+    margin-bottom: 4px !important;
+    line-height: 1.3 !important;
+  }
+
+  .pdf-responsibilities {
+    list-style: none !important;
+    font-size: 9px !important;
+    color: #555 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .pdf-responsibilities li {
+    margin-bottom: 2px !important;
+    padding-left: 8px !important;
+    position: relative !important;
+  }
+
+  .pdf-responsibilities li::before {
+    content: "-" !important;
+    position: absolute !important;
+    left: 0 !important;
+    color: #0f9c8f !important;
+    font-weight: bold !important;
+  }
+
+  .pdf-education-item {
+    margin-bottom: 8px !important;
+    padding: 6px 8px !important;
+    background: #f9f9f9 !important;
+    border-radius: 4px !important;
+    border-left: 3px solid #0f9c8f !important;
+  }
+
+  .pdf-degree {
+    font-size: 10px !important;
+    font-weight: bold !important;
+    color: #1a1a1a !important;
+    margin-bottom: 2px !important;
+  }
+
+  .pdf-institution {
+    font-size: 9px !important;
+    color: #0f9c8f !important;
+    font-weight: 600 !important;
+    margin-bottom: 2px !important;
+  }
+
+  .pdf-grade {
+    font-size: 8px !important;
+    color: #666 !important;
+  }
+
+  .pdf-thesis {
+    font-size: 8px !important;
+    color: #555 !important;
+    font-style: italic !important;
+    margin-top: 2px !important;
+  }
+
+  .pdf-soft-skills {
+    list-style: none !important;
+    font-size: 9.5px !important;
+    color: #555 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .pdf-soft-skills li {
+    margin-bottom: 3px !important;
+    padding-left: 8px !important;
+    position: relative !important;
+  }
+
+  .pdf-soft-skills li::before {
+    content: "-" !important;
+    position: absolute !important;
+    left: 0 !important;
+    color: #0f9c8f !important;
+    font-weight: bold !important;
+  }
+
+  .pdf-right-info {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-top: 10px !important;
+  }
+
+  .pdf-languages-horizontal {
+    display: flex !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .pdf-language-box {
+    background: #f0f4ff !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+    border-left: 4px solid #0f9c8f !important;
+    flex: 1 !important;
+    min-width: 120px !important;
+  }
+
+  .pdf-language-box .pdf-language-name {
+    display: block !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+    margin-bottom: 2px !important;
+  }
+
+  .pdf-language-box .pdf-language-level {
+    display: block !important;
+    font-size: 9px !important;
+    color: #666 !important;
+  }
+
+  .pdf-footer {
+    position: absolute !important;
+    bottom: 8mm !important;
+    left: 10mm !important;
+    right: 10mm !important;
+    text-align: center !important;
+    font-size: 8px !important;
+    color: #666 !important;
+    border-top: 1px solid #eee !important;
+    padding-top: 6px !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  .pdf-experience-item,
+  .pdf-education-item,
+  .pdf-section {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  @page {
+    margin: 0 !important;
+    size: A4 !important;
+  }
+}
