@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Segreti locali (Fase 10 — OPENROUTER_API_KEY): mai committare, vedi .env.example
+.env
+.netlify
+# Generato da `netlify dev` (setup Edge Functions), non serve committarlo
+deno.lock
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -208,10 +208,28 @@ Log dettagliato: [`docs/FASE9_LOG.md`](./docs/FASE9_LOG.md).
       (`getOverviewExcerpt()`), nuovo bottone "Leggi il case study" per
       aprire il Viewer
 
+## Stato — Fase 10 (completata) — Netlify Function per OpenRouter
+
+Log dettagliato: [`docs/FASE10_LOG.md`](./docs/FASE10_LOG.md).
+
+Solo backend in questa fase, nessuna UI (arriva in Fase 11).
+
+- [x] `netlify/functions/assistant.ts`: riceve `{ message, language,
+      history? }`, classifica lo scope della domanda e risponde grounded
+      sulla Knowledge Base in un'unica chiamata a OpenRouter (modello
+      free tier di default, configurabile via `OPENROUTER_MODEL`)
+- [x] Loader KB dedicato lato server (`netlify/functions/lib/kb.ts`):
+      `src/lib/knowledgeBase.ts` usa `import.meta.glob`, solo Vite, non
+      disponibile dentro una Netlify Function
+- [x] `netlify.toml`: `[functions]` con `included_files` per i `.md`
+      letti a runtime, redirect `/api/assistant`
+- [x] Tooling locale: `netlify-cli`, script `npm run dev:full`,
+      `.env.example`, `.gitignore` aggiornato per `.env`/`.netlify`
+- [x] `tsconfig.functions.json` referenziato dal `tsconfig.json` radice:
+      `npx tsc -b` valida anche le function
+
 ### Prossimi passi (non ancora implementati)
 
-- **Fase 10** — Netlify Function per la chiamata a OpenRouter (scope
-  classification + retrieval + key server-side)
 - **Fase 11** — Finestra AI Assistant
 - **Fase 12** — Explainability (fonti citate, cliccabili — il footer
   sorgente in `KnowledgeDocumentWindow` esiste già come testo statico)

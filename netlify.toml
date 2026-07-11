@@ -9,3 +9,16 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+[functions]
+  directory = "netlify/functions"
+  # I .md sotto knowledge-base/ sono letti a runtime via fs (vedi
+  # netlify/functions/lib/kb.ts), non importati da codice: senza questa
+  # riga l'esbuild bundler della function non li includerebbe nel
+  # deploy, causando 500 in produzione pur funzionando in locale.
+  included_files = ["knowledge-base/**"]
+
+[[redirects]]
+  from = "/api/assistant"
+  to = "/.netlify/functions/assistant"
+  status = 200
