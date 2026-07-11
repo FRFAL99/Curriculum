@@ -117,7 +117,13 @@ export default async (req: Request): Promise<Response> => {
   }
   const model = process.env.OPENROUTER_MODEL ?? "openai/gpt-oss-20b:free";
 
-  const docs = loadKnowledgeBase().filter((doc) => !doc.lang || doc.lang === language);
+  let docs: ReturnType<typeof loadKnowledgeBase>;
+  try {
+    docs = loadKnowledgeBase().filter((doc) => !doc.lang || doc.lang === language);
+  } catch (err) {
+    console.error("Failed to load knowledge base:", err);
+    return jsonResponse({ error: "Server misconfigured: failed to load knowledge base" }, 500);
+  }
   const validPaths = new Set(docs.map((doc) => doc.path));
 
   const messages = [
@@ -144,7 +150,9 @@ export default async (req: Request): Promise<Response> => {
   }
 
   if (!upstream.ok) {
-    return jsonResponse({ error: `OpenRouter error: ${upstream.status}` }, 502);
+    const detail = await upstream.text().catch(() => "");
+    console.error(`OpenRouter error ${upstream.status}:`, detail);
+    return jsonResponse({ error: `OpenRouter error: ${upstream.status}`, detail: detail.slice(0, 500) }, 502);
   }
 
   const data = (await upstream.json()) as {
