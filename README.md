@@ -185,6 +185,9 @@ visione condiviso in sessione, da committare — vedi nota nel log).
 - [x] `src/data/{resume,skills,projects}.json` rimossi (sostituiti)
 - [x] `translations.ts` ridotto alle sole etichette di interfaccia (vedi
       ADR-001 per il criterio contenuto-vs-chrome)
+- [x] Fix `Buffer is not defined` a runtime (schermo bianco): `gray-matter`
+      usa `Buffer` internamente, assente nel browser — polyfill in
+      `src/polyfills.ts` (vedi `FASE8_LOG.md`, Step 6)
 
 ### Prossimi passi (non ancora implementati)
 

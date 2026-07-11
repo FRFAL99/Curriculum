@@ -93,8 +93,10 @@ che leggere un array YAML già pronto.
 
 - Nuova dipendenza: `gray-matter` (parsing frontmatter) e `marked`
   (rendering Markdown → HTML per i campi con `**grassetto**`/liste).
-  Entrambe compatibili browser via Vite (vedi nota sul warning `eval` non
-  bloccante in `docs/FASE8_LOG.md`, Step 3).
+  Compatibili browser via Vite, ma non "gratis": `gray-matter` usa
+  `Buffer` internamente, non fornito dal browser — richiede il polyfill
+  `buffer` + `src/polyfills.ts` (vedi `docs/FASE8_LOG.md`, Step 6, e il
+  warning `eval` non bloccante allo Step 3).
 - `src/data/*.json` rimossi (sostituiti).
 - Aggiungere un nuovo fatto (nuova esperienza, nuovo progetto) oggi
   significa: creare due file `.md` (it/en) nella cartella giusta — nessuna

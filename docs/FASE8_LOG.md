@@ -126,8 +126,10 @@ progetto stesso ora si autodescrive tramite la Knowledge Base):
   bundle come stringhe statiche).
 - Parsing frontmatter con `gray-matter` (dipendenza aggiunta:
   `gray-matter` dichiara `"browser": { "fs": false }` nel suo
-  `package.json`, quindi Vite lo bundla correttamente per il browser senza
-  bisogno di polyfill).
+  `package.json`, quindi Vite lo bundla senza `fs`. **Attenzione però**:
+  questo non copre anche `Buffer`, usato internamente da `gray-matter`
+  (`lib/to-file.js`) — vedi Step 6, bug trovato solo a runtime nel
+  browser reale, non dal typecheck/build).
 - Un solo tipo `KnowledgeDoc<T>` con `{ path, slug, lang?, type, frontmatter, body }`
   — il campo `path` è già pensato per l'Explainability (Fase 12): sarà la
   stringa mostrata come fonte (`📄 projects/antichita-fallavena.md`).
@@ -178,6 +180,42 @@ Formazione era hardcoded in italiano anche nella versione inglese del CV
 - `npm run lint` → 0 warning, 0 errori (oxlint, 27 file)
 - Bundle finale: `482.33 kB` (`134.57 kB` gzip) — in linea con la Fase 4
   (già ottimizzata per evitare l'import a wildcard di `lucide-react`)
+
+## Step 6 — Fix: `Buffer is not defined` a runtime
+
+**Stato: ✅ completato**
+
+Schermo bianco al primo avvio con la Knowledge Base collegata, con in
+console:
+
+```
+Uncaught ReferenceError: Buffer is not defined
+    at e.toBuffer ...
+```
+
+`npm run build` e `tsc -b` non lo intercettano (è un errore runtime, non
+di tipo): `gray-matter` chiama `Buffer.from(...)` in `lib/to-file.js` per
+normalizzare l'input, e il browser non ha `Buffer` — è un'API Node,
+diversa da `fs` (che `gray-matter` esclude già via `browser: { fs: false }`
+in `package.json`, vedi Step 3).
+
+Fix:
+
+- Aggiunta dipendenza `buffer` (polyfill browser di `Buffer`).
+- Nuovo modulo `src/polyfills.ts` che imposta `globalThis.Buffer`,
+  importato come **primo import** in `src/main.tsx`.
+
+**Perché un modulo a parte e non l'assegnazione diretta in `main.tsx`**:
+gli `import` ES vengono valutati tutti prima di qualunque statement nel
+corpo del modulo che li dichiara. Mettere `globalThis.Buffer = Buffer`
+come statement dopo `import App from './App.tsx'` in `main.tsx` esegue
+comunque **dopo** che `App.tsx` (e quindi `knowledgeBase.ts` e
+`gray-matter`) sono già stati valutati — troppo tardi. Isolare
+l'assegnazione nel proprio modulo (`polyfills.ts`) e importarlo per primo
+garantisce che venga eseguita prima di ogni altro import a cascata.
+
+Verificato con dev server + Chromium headless (Playwright): nessun errore
+in console, contenuti della Knowledge Base renderizzati correttamente.
 
 ---
 
