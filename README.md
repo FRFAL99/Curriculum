@@ -137,11 +137,41 @@ implementati.
       comportamento che funziona sia su touch sia su desktop, dove resta
       anche il doppio click diretto (`src/desktop/DesktopIcon.tsx`).
 
+## Stato — Fase 7 (completata) — centraggio, schermo intero, tap singolo
+
+- [x] **Apertura sempre centrata**: le finestre non usano più una posizione
+      iniziale fissa per config (`defaultPosition` è ora opzionale e non
+      valorizzata da nessuna voce). Ogni apertura "fresca" (non un
+      restore da minimizzata) parte da una posizione sentinella; al primo
+      render `Window.tsx` misura l'altezza reale della finestra e la centra
+      di conseguenza (orizzontalmente in base alla `width` di config,
+      verticalmente in base al contenuto effettivo), poi scrive la
+      posizione calcolata nello stato — da lì in poi è draggabile e
+      persistita come prima.
+- [x] **Schermo intero (desktop)**: nuovo pulsante nella titlebar (icona
+      Maximize2/Minimize2) per portare una finestra a occupare tutto lo
+      spazio disponibile (topbar e dock esclusi), o doppio click sulla
+      titlebar. Abilitato per ora solo sulla finestra **Resume**
+      (`allowMaximize: true` in `config/windows.ts` — basta aggiungerlo
+      alle altre finestre per estenderlo). Non è un resize libero
+      dell'utente (resta fuori scope, come da roadmap originale): è un
+      toggle preimpostato tra la dimensione di config e "tutto lo
+      schermo". Non disponibile su mobile, dove le finestre sono già
+      pressoché a schermo intero di default. Il drag è disabilitato
+      mentre una finestra è massimizzata.
+- [x] **Icone: un solo tap su mobile**: il pattern "seleziona poi apri"
+      introdotto in Fase 6 restava comunque un doppio gesto, poco
+      intuitivo. Ora su mobile un singolo tap apre direttamente la
+      finestra; su desktop resta invariato il comportamento
+      seleziona/apri (con anche il doppio click come scorciatoia).
+
 ## Cosa resta (rifiniture opzionali, non richieste dalla roadmap)
 
 - Titoli di finestre/icone e l'etichetta del toggle tema nel Dock non sono
   ancora collegati al sistema di traduzioni (vedi log Fase 4)
-- Nessun resize delle finestre (scelta esplicita della roadmap per la v1)
+- Nessun resize libero delle finestre (scelta esplicita della roadmap per
+  la v1); lo schermo intero introdotto in Fase 7 è un toggle preimpostato,
+  non un vero resize
 
 ## Struttura
 

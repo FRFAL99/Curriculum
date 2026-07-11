@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import { useIsMobile } from "../utils/useIsMobile";
 import "./DesktopIcon.css";
 
 interface DesktopIconProps {
@@ -18,10 +19,17 @@ export function DesktopIcon({
   onSelect,
   onOpen,
 }: DesktopIconProps) {
+  const isMobile = useIsMobile();
+
   function handleClick() {
-    // Su touch il dblclick nativo non è affidabile: il primo tap seleziona,
-    // il secondo tap (icona già selezionata) apre la finestra. Su desktop
-    // questo comportamento convive con onDoubleClick qui sotto.
+    // Su mobile il "doppio click" non è un gesto intuitivo: un tap singolo
+    // apre direttamente la finestra, niente passaggio intermedio di
+    // selezione. Su desktop resta il comportamento seleziona/apri (con
+    // anche il doppio click, vedi onDoubleClick qui sotto).
+    if (isMobile) {
+      onOpen(id);
+      return;
+    }
     if (selected) {
       onOpen(id);
     } else {

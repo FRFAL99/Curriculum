@@ -8,6 +8,8 @@
   box-shadow: var(--shadow-window);
   animation: window-open 0.16s ease-out;
   overflow: hidden;
+  transition: left 0.16s ease, top 0.16s ease, right 0.16s ease,
+    bottom 0.16s ease, width 0.16s ease;
 }
 
 @keyframes window-open {
@@ -80,6 +82,32 @@
   color: var(--text-primary);
   overflow-y: auto;
   max-height: 60vh;
+}
+
+/*
+  Schermo intero (solo desktop, pulsante nella titlebar — vedi
+  allowMaximize in config/windows.ts, abilitato di default per Resume).
+  Stessa tecnica del layout mobile qui sotto: si ancorano tutti e 4 i lati
+  con `!important` e si lascia che sia il browser a calcolare larghezza e
+  altezza, invece di gestire un vero "resize" (fuori scope della roadmap).
+  Non è un vero resize dell'utente: è solo un toggle preimpostato tra la
+  dimensione configurata e "tutto lo schermo disponibile".
+*/
+.window--maximized {
+  left: 16px !important;
+  right: 16px !important;
+  top: 64px !important;
+  bottom: 96px !important;
+  width: auto !important;
+}
+
+.window--maximized .window__titlebar {
+  cursor: default;
+}
+
+.window--maximized .window__body {
+  flex: 1;
+  max-height: none;
 }
 
 /*

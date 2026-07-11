@@ -26,12 +26,18 @@ export interface WindowConfig {
   title: string;
   icon: LucideIcon;
   component: ComponentType;
-  /** Posizione iniziale suggerita per la finestra */
-  defaultPosition: { x: number; y: number };
+  /**
+   * Posizione iniziale fissa, opzionale. Se omessa (caso comune) la finestra
+   * viene centrata automaticamente all'apertura, in base alla sua altezza
+   * reale (vedi CENTER_ON_OPEN in WindowManagerContext.tsx).
+   */
+  defaultPosition?: { x: number; y: number };
   /** true = presente anche nel dock, non solo come icona desktop */
   inDock?: boolean;
   /** Larghezza personalizzata della finestra */
   width?: number;
+  /** true = mostra il pulsante schermo intero nella titlebar (solo desktop) */
+  allowMaximize?: boolean;
 }
 
 export const windowsConfig: WindowConfig[] = [
@@ -40,16 +46,15 @@ export const windowsConfig: WindowConfig[] = [
     title: "Resume",
     icon: FileText,
     component: ResumeWindow,
-    defaultPosition: { x: 40, y: 60 },
     inDock: true,
     width: 680,
+    allowMaximize: true,
   },
   {
     id: "projects",
     title: "Projects",
     icon: FolderKanban,
     component: ProjectsWindow,
-    defaultPosition: { x: 100, y: 100 },
     inDock: true,
     width: 620,
   },
@@ -58,7 +63,6 @@ export const windowsConfig: WindowConfig[] = [
     title: "Experience",
     icon: History,
     component: ExperienceWindow,
-    defaultPosition: { x: 160, y: 140 },
     inDock: true,
     width: 580,
   },
@@ -67,7 +71,6 @@ export const windowsConfig: WindowConfig[] = [
     title: "Skills",
     icon: Sparkles,
     component: SkillsWindow,
-    defaultPosition: { x: 220, y: 180 },
     inDock: true,
     width: 540,
   },
@@ -76,7 +79,6 @@ export const windowsConfig: WindowConfig[] = [
     title: "Contact",
     icon: Mail,
     component: ContactWindow,
-    defaultPosition: { x: 280, y: 220 },
     inDock: true,
     width: 420,
   },
@@ -85,7 +87,6 @@ export const windowsConfig: WindowConfig[] = [
     title: "Developer Notes",
     icon: Terminal,
     component: DeveloperNotesWindow,
-    defaultPosition: { x: 340, y: 260 },
     inDock: false,
     width: 520,
   },

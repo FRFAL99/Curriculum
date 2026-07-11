@@ -8,8 +8,14 @@ import { Window } from "./Window";
  * `config.component` (Fase 3: ancora placeholder, Fase 4: contenuto vero).
  */
 export function WindowManager() {
-  const { windows, closeWindow, focusWindow, minimizeWindow, moveWindow } =
-    useWindowManager();
+  const {
+    windows,
+    closeWindow,
+    focusWindow,
+    minimizeWindow,
+    moveWindow,
+    toggleMaximize,
+  } = useWindowManager();
 
   const openEntries = Object.values(windows).filter((w) => !w.minimized);
 
@@ -27,10 +33,13 @@ export function WindowManager() {
             position={win.position}
             zIndex={win.zIndex}
             width={config.width}
+            maximized={win.maximized}
+            allowMaximize={config.allowMaximize}
             onClose={closeWindow}
             onFocus={focusWindow}
             onMinimize={minimizeWindow}
             onMove={moveWindow}
+            onToggleMaximize={toggleMaximize}
           >
             <Content />
           </Window>

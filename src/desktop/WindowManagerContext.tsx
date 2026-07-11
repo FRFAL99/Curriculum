@@ -13,6 +13,7 @@ export interface WindowState {
   id: string;
   zIndex: number;
   minimized: boolean;
+  maximized: boolean;
   position: { x: number; y: number };
 }
 
@@ -27,10 +28,21 @@ type Action =
   | { type: "FOCUS"; id: string }
   | { type: "MINIMIZE"; id: string }
   | { type: "RESTORE"; id: string }
-  | { type: "MOVE"; id: string; position: { x: number; y: number } };
+  | { type: "MOVE"; id: string; position: { x: number; y: number } }
+  | { type: "TOGGLE_MAXIMIZE"; id: string };
 
 const STORAGE_KEY = "windowManagerState";
 const BASE_Z = 10;
+
+/**
+ * Posizione "sentinella": indica che la finestra è stata appena aperta e
+ * non ha ancora una posizione definitiva. `Window.tsx` la intercetta al
+ * primo render e la sostituisce con una posizione calcolata per centrare
+ * la finestra nello schermo (in base alla sua altezza reale, nota solo
+ * dopo il render). Coordinate valide sono sempre >= 8 (vedi clamp in
+ * Window.tsx), quindi -1 è un valore sicuro da usare come marcatore.
+ */
+const CENTER_ON_OPEN = { x: -1, y: -1 };
 
 /**
  * Stato iniziale: legge da localStorage e scarta eventuali finestre il cui
@@ -80,7 +92,8 @@ function reducer(state: ManagerState, action: Action): ManagerState {
             id: action.id,
             zIndex: state.nextZIndex,
             minimized: false,
-            position: config?.defaultPosition ?? { x: 100, y: 100 },
+            maximized: false,
+            position: config?.defaultPosition ?? CENTER_ON_OPEN,
           },
         },
         nextZIndex: state.nextZIndex + 1,
@@ -140,6 +153,17 @@ function reducer(state: ManagerState, action: Action): ManagerState {
         },
       };
     }
+    case "TOGGLE_MAXIMIZE": {
+      const existing = state.windows[action.id];
+      if (!existing) return state;
+      return {
+        ...state,
+        windows: {
+          ...state.windows,
+          [action.id]: { ...existing, maximized: !existing.maximized },
+        },
+      };
+    }
     default:
       return state;
   }
@@ -155,6 +179,8 @@ export interface WindowManagerContextValue {
   moveWindow: (id: string, position: { x: number; y: number }) => void;
   /** Toggle usato dal dock: apri / porta a fuoco / minimizza a seconda dello stato corrente. */
   toggleFromDock: (id: string) => void;
+  /** Schermo intero on/off per la finestra (solo desktop, vedi allowMaximize in config/windows.ts) */
+  toggleMaximize: (id: string) => void;
 }
 
 const WindowManagerContext = createContext<WindowManagerContextValue | null>(
@@ -206,6 +232,11 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
     [state.windows, state.nextZIndex],
   );
 
+  const toggleMaximize = useCallback(
+    (id: string) => dispatch({ type: "TOGGLE_MAXIMIZE", id }),
+    [],
+  );
+
   const value = useMemo<WindowManagerContextValue>(
     () => ({
       windows: state.windows,
@@ -216,6 +247,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
       restoreWindow,
       moveWindow,
       toggleFromDock,
+      toggleMaximize,
     }),
     [
       state.windows,
@@ -226,6 +258,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
       restoreWindow,
       moveWindow,
       toggleFromDock,
+      toggleMaximize,
     ],
   );
 
