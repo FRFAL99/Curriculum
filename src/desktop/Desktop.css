@@ -37,9 +37,6 @@
   width: 264px;
   z-index: 5;
   padding-top: 62px;
-  border-right: 1px solid var(--border);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  backdrop-filter: blur(16px);
   overflow-y: auto;
 }
 

@@ -84,42 +84,81 @@ export function AssistantWindow() {
     setError(null);
   }
 
+  function renderInputRow() {
+    return (
+      <form className="assistant-window__input-row" onSubmit={handleSubmit}>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder={t("assistantPlaceholder")}
+          maxLength={2000}
+          disabled={loading}
+        />
+        <button type="submit" disabled={loading || !input.trim()} aria-label={t("send")}>
+          <Send size={16} />
+        </button>
+      </form>
+    );
+  }
+
+  const header = (
+    <div className="assistant-window__header">
+      <div className="assistant-window__header-title">
+        <Bot size={16} strokeWidth={1.8} />
+        <span>Ask about Francesco</span>
+      </div>
+      {messages.length > 0 && (
+        <button
+          type="button"
+          className="assistant-window__reset"
+          onClick={handleReset}
+          aria-label={t("resetConversation")}
+        >
+          <RotateCcw size={14} />
+        </button>
+      )}
+    </div>
+  );
+
+  if (messages.length === 0) {
+    return (
+      <div className="assistant-window">
+        {header}
+        <div className="assistant-window__empty">
+          <div className="assistant-window__empty-inner">
+            <p className="assistant-window__starters-intro">{t("assistantIntro")}</p>
+            {renderInputRow()}
+            <div className="assistant-window__starters">
+              {conversationStarters[language].slice(0, MAX_STARTERS).map((starter) => (
+                <button
+                  key={starter}
+                  type="button"
+                  className="assistant-window__starter"
+                  onClick={() => handleSend(starter)}
+                >
+                  {starter}
+                </button>
+              ))}
+            </div>
+            {error && (
+              <div className="assistant-window__error">
+                <span>{error}</span>
+                <button type="button" onClick={handleRetry}>
+                  {t("retry")}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="assistant-window">
-      <div className="assistant-window__header">
-        <div className="assistant-window__header-title">
-          <Bot size={16} strokeWidth={1.8} />
-          <span>Ask about Francesco</span>
-        </div>
-        {messages.length > 0 && (
-          <button
-            type="button"
-            className="assistant-window__reset"
-            onClick={handleReset}
-            aria-label={t("resetConversation")}
-          >
-            <RotateCcw size={14} />
-          </button>
-        )}
-      </div>
+      {header}
 
       <div className="assistant-window__messages" ref={messagesRef}>
-        {messages.length === 0 && (
-          <div className="assistant-window__starters">
-            <p className="assistant-window__starters-intro">{t("assistantIntro")}</p>
-            {conversationStarters[language].slice(0, MAX_STARTERS).map((starter) => (
-              <button
-                key={starter}
-                type="button"
-                className="assistant-window__starter"
-                onClick={() => handleSend(starter)}
-              >
-                {starter}
-              </button>
-            ))}
-          </div>
-        )}
-
         {messages.map((m, i) => (
           <div key={i} className={`assistant-msg assistant-msg--${m.role}`}>
             <div className="assistant-msg__icon">
@@ -168,18 +207,7 @@ export function AssistantWindow() {
         </div>
       )}
 
-      <form className="assistant-window__input-row" onSubmit={handleSubmit}>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={t("assistantPlaceholder")}
-          maxLength={2000}
-          disabled={loading}
-        />
-        <button type="submit" disabled={loading || !input.trim()} aria-label={t("send")}>
-          <Send size={16} />
-        </button>
-      </form>
+      {renderInputRow()}
     </div>
   );
 }
