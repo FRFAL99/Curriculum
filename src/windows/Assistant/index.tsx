@@ -190,10 +190,9 @@ export function AssistantWindow() {
   if (messages.length === 0) {
     return (
       <div className="assistant-window">
-        {header}
         <div className="assistant-window__empty">
           <div className="assistant-window__empty-inner">
-            <p className="assistant-window__starters-intro">{t("assistantIntro")}</p>
+            <h2 className="assistant-window__intro-title">Ask about Francesco</h2>
             {renderInputRow()}
             <div className="assistant-window__starters">
               {conversationStarters[language].slice(0, MAX_STARTERS).map((starter) => (

@@ -65,9 +65,11 @@
   gap: 8px;
 }
 
-.assistant-window__starters-intro {
-  font-size: 13px;
-  color: var(--text-secondary);
+.assistant-window__intro-title {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary);
   text-align: center;
   margin: 0;
 }
@@ -81,7 +83,7 @@
   color: var(--text-secondary);
   border-radius: 999px;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: all var(--duration-fast) var(--ease-smooth);
 }
 
 .assistant-window__starter:hover {
@@ -256,7 +258,7 @@
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface-elevated);
-  transition: border-color 0.12s ease;
+  transition: border-color var(--duration-fast) var(--ease-smooth);
 }
 
 .assistant-window__input-row:focus-within {
@@ -289,7 +291,7 @@
   color: var(--bg);
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: all var(--duration-fast) var(--ease-smooth);
 }
 
 .assistant-window__input-row button:hover:not(:disabled) {
@@ -313,7 +315,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition: background var(--duration-fast) var(--ease-smooth), color var(--duration-fast) var(--ease-smooth);
 }
 
 .assistant-window__reset:hover {

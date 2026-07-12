@@ -50,7 +50,6 @@ export const translations = {
     viewCaseStudy: "Leggi il case study",
 
     // Assistant Window (Fase 11)
-    assistantIntro: "Chiedimi dei progetti, dell'esperienza o delle competenze di Francesco.",
     assistantPlaceholder: "Scrivi un messaggio...",
     assistantThinking: "Sto pensando...",
     assistantRateLimited: "Abbiamo raggiunto il limite di richieste gratuite per oggi. Riprova tra qualche minuto.",
@@ -96,7 +95,6 @@ export const translations = {
     viewCaseStudy: "Read case study",
 
     // Assistant Window (Fase 11)
-    assistantIntro: "Ask me about Francesco's projects, experience or technical skills.",
     assistantPlaceholder: "Type a message...",
     assistantThinking: "Thinking...",
     assistantRateLimited: "We've hit today's free request limit. Please try again in a few minutes.",
