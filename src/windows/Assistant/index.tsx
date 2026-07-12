@@ -8,10 +8,20 @@ import { readJSON, writeJSON } from "../../utils/storage";
 import { renderBlock } from "../../lib/markdown";
 import "./Assistant.css";
 
+interface ChatStats {
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  elapsedMs: number;
+  tokensPerSecond: number;
+}
+
 interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   sources?: string[];
+  stats?: ChatStats;
 }
 
 const STORAGE_KEY = "assistantConversation";
@@ -58,6 +68,7 @@ export function AssistantWindow() {
         if (next >= fullText.length) {
           if (revealTimerRef.current) clearInterval(revealTimerRef.current);
           revealTimerRef.current = null;
+          setRevealingIndex(null);
           return fullText.length;
         }
         return next;
@@ -97,7 +108,10 @@ export function AssistantWindow() {
       }
 
       startReveal(data.answer as string, currentMessages.length);
-      setMessages((prev) => [...prev, { role: "assistant", content: data.answer, sources: data.sources }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.answer, sources: data.sources, stats: data.stats },
+      ]);
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
       setError(err instanceof Error ? err.message : String(err));
@@ -239,6 +253,16 @@ export function AssistantWindow() {
                       📄 {source}
                     </button>
                   ))}
+                </div>
+              )}
+              {m.stats && i !== revealingIndex && (
+                <div className="assistant-msg__stats">
+                  <span>{m.stats.model}</span>
+                  <span>
+                    {m.stats.inputTokens}→{m.stats.outputTokens} tok
+                  </span>
+                  <span>{(m.stats.elapsedMs / 1000).toFixed(1)}s</span>
+                  <span>{m.stats.tokensPerSecond.toFixed(1)} t/s</span>
                 </div>
               )}
             </div>

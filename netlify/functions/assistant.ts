@@ -134,6 +134,7 @@ export default async (req: Request): Promise<Response> => {
     { role: "user", parts: [{ text: message }] },
   ];
 
+  const requestStartedAt = Date.now();
   let upstream: Response;
   try {
     upstream = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
@@ -166,11 +167,23 @@ export default async (req: Request): Promise<Response> => {
 
   const data = (await upstream.json()) as {
     candidates?: { content?: { parts?: { text?: string }[] } }[];
+    usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; totalTokenCount?: number };
   };
   const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
   if (typeof raw !== "string") {
     return jsonResponse({ error: "Unexpected Gemini response shape" }, 502);
   }
 
-  return jsonResponse(parseAnswer(raw, validPaths));
+  const elapsedMs = Date.now() - requestStartedAt;
+  const outputTokens = data.usageMetadata?.candidatesTokenCount ?? 0;
+  const stats = {
+    model,
+    inputTokens: data.usageMetadata?.promptTokenCount ?? 0,
+    outputTokens,
+    totalTokens: data.usageMetadata?.totalTokenCount ?? 0,
+    elapsedMs,
+    tokensPerSecond: outputTokens > 0 ? Math.round((outputTokens / (elapsedMs / 1000)) * 10) / 10 : 0,
+  };
+
+  return jsonResponse({ ...parseAnswer(raw, validPaths), stats });
 };
