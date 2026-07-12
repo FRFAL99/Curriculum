@@ -145,7 +145,7 @@ export default async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: buildSystemPrompt(language, docs) }] },
         contents,
-        generationConfig: { temperature: 0.3, maxOutputTokens: 1000 },
+        generationConfig: { temperature: 0.3, maxOutputTokens: 1000, thinkingConfig: { thinkingBudget: 0 } },
       }),
     });
   } catch (err) {
