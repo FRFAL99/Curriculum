@@ -153,6 +153,11 @@ export default async (req: Request): Promise<Response> => {
     return jsonResponse({ error: "Failed to reach Gemini" }, 502);
   }
 
+  if (upstream.status === 429) {
+    console.error("Gemini rate limit hit");
+    return jsonResponse({ error: "rate_limited" }, 429);
+  }
+
   if (!upstream.ok) {
     const detail = await upstream.text().catch(() => "");
     console.error(`Gemini error ${upstream.status}:`, detail);

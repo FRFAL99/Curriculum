@@ -25,7 +25,11 @@ export function AssistantWindow() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [revealedLength, setRevealedLength] = useState(0);
+  const [revealingIndex, setRevealingIndex] = useState<number | null>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const revealTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     writeJSON(STORAGE_KEY, messages);
@@ -33,10 +37,40 @@ export function AssistantWindow() {
 
   useEffect(() => {
     messagesRef.current?.scrollTo({ top: messagesRef.current.scrollHeight });
-  }, [messages, loading]);
+  }, [messages, loading, revealedLength]);
+
+  useEffect(() => {
+    return () => {
+      if (revealTimerRef.current) clearInterval(revealTimerRef.current);
+    };
+  }, []);
+
+  function startReveal(fullText: string, index: number) {
+    if (revealTimerRef.current) clearInterval(revealTimerRef.current);
+    setRevealingIndex(index);
+    setRevealedLength(0);
+    const TOTAL_TICKS = 60;
+    const TICK_MS = 18;
+    const charsPerTick = Math.max(3, Math.ceil(fullText.length / TOTAL_TICKS));
+    revealTimerRef.current = setInterval(() => {
+      setRevealedLength((prev) => {
+        const next = prev + charsPerTick;
+        if (next >= fullText.length) {
+          if (revealTimerRef.current) clearInterval(revealTimerRef.current);
+          revealTimerRef.current = null;
+          return fullText.length;
+        }
+        return next;
+      });
+    }, TICK_MS);
+  }
 
   async function callAssistant(currentMessages: ChatMessage[]) {
     const lastUserMessage = currentMessages[currentMessages.length - 1];
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setError(null);
     setLoading(true);
     try {
@@ -49,15 +83,29 @@ export function AssistantWindow() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: lastUserMessage.content, language, history }),
+        signal: controller.signal,
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(typeof data.error === "string" ? data.error : "Errore sconosciuto");
+      if (!res.ok) {
+        const message =
+          res.status === 429
+            ? t("assistantRateLimited")
+            : typeof data.error === "string"
+              ? data.error
+              : "Errore sconosciuto";
+        throw new Error(message);
+      }
 
+      startReveal(data.answer as string, currentMessages.length);
       setMessages((prev) => [...prev, { role: "assistant", content: data.answer, sources: data.sources }]);
     } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       setError(err instanceof Error ? err.message : String(err));
     } finally {
-      setLoading(false);
+      if (abortRef.current === controller) {
+        setLoading(false);
+        abortRef.current = null;
+      }
     }
   }
 
@@ -80,6 +128,11 @@ export function AssistantWindow() {
   }
 
   function handleReset() {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    if (revealTimerRef.current) clearInterval(revealTimerRef.current);
+    setRevealingIndex(null);
+    setLoading(false);
     setMessages([]);
     setError(null);
   }
@@ -166,7 +219,11 @@ export function AssistantWindow() {
             </div>
             <div className="assistant-msg__bubble">
               {m.role === "assistant" ? (
-                <div dangerouslySetInnerHTML={{ __html: renderBlock(m.content) }} />
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: renderBlock(i === revealingIndex ? m.content.slice(0, revealedLength) : m.content),
+                  }}
+                />
               ) : (
                 <p>{m.content}</p>
               )}
@@ -193,7 +250,11 @@ export function AssistantWindow() {
             <div className="assistant-msg__icon">
               <Bot size={14} />
             </div>
-            <div className="assistant-msg__bubble assistant-msg__bubble--loading">{t("assistantThinking")}</div>
+            <div className="assistant-msg__bubble assistant-msg__bubble--loading" aria-label={t("assistantThinking")}>
+              <span className="assistant-dot" />
+              <span className="assistant-dot" />
+              <span className="assistant-dot" />
+            </div>
           </div>
         )}
       </div>

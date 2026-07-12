@@ -30,8 +30,11 @@ function walk(dir: string): string[] {
   });
 }
 
+let cached: KnowledgeDoc[] | null = null;
+
 export function loadKnowledgeBase(): KnowledgeDoc[] {
-  return walk(KB_ROOT).map((file) => {
+  if (cached) return cached;
+  cached = walk(KB_ROOT).map((file) => {
     const raw = fs.readFileSync(file, "utf-8");
     const { data, content } = matter(raw);
     const relPath = path.relative(process.cwd(), file).split(path.sep).join("/");
@@ -42,4 +45,5 @@ export function loadKnowledgeBase(): KnowledgeDoc[] {
       body: content.trim(),
     };
   });
+  return cached;
 }
