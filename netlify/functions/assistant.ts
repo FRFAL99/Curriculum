@@ -3,12 +3,12 @@ import { loadKnowledgeBase } from "./lib/kb";
 /**
  * AI Assistant — Fase 10.
  *
- * Un'unica chiamata a OpenRouter: lo stesso prompt classifica lo scope
+ * Un'unica chiamata a Gemini: lo stesso prompt classifica lo scope
  * della domanda (IN_SCOPE/PARTIALLY_IN_SCOPE/OUT_OF_SCOPE, criterio dal
  * documento di visione "Knowledge Base + AI Assistant") e genera la
  * risposta grounded. Niente retrieval semantico/vector DB: la Knowledge
  * Base è piccola, viene passata per intero (filtrata per lingua) come
- * contesto. Nessuna UI la consuma ancora (Fase 11).
+ * contesto.
  */
 
 const SOURCES_MARKER = "---SOURCES---";
@@ -111,11 +111,11 @@ export default async (req: Request): Promise<Response> => {
   }
   const history = (rawHistory as ChatMessage[] | undefined) ?? [];
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return jsonResponse({ error: "Server misconfigured: missing OPENROUTER_API_KEY" }, 500);
+    return jsonResponse({ error: "Server misconfigured: missing GEMINI_API_KEY" }, 500);
   }
-  const model = process.env.OPENROUTER_MODEL ?? "openai/gpt-oss-20b:free";
+  const model = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
 
   let docs: ReturnType<typeof loadKnowledgeBase>;
   try {
@@ -126,41 +126,45 @@ export default async (req: Request): Promise<Response> => {
   }
   const validPaths = new Set(docs.map((doc) => doc.path));
 
-  const messages = [
-    { role: "system", content: buildSystemPrompt(language, docs) },
-    ...history,
-    { role: "user", content: message },
+  const contents = [
+    ...history.map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    })),
+    { role: "user", parts: [{ text: message }] },
   ];
 
   let upstream: Response;
   try {
-    upstream = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    upstream = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        "x-goog-api-key": apiKey,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://github.com/FRFAL99/Curriculum",
-        "X-Title": "Francesco Fallavena - Portfolio Assistant",
       },
-      body: JSON.stringify({ model, messages, temperature: 0.3, max_tokens: 1000 }),
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: buildSystemPrompt(language, docs) }] },
+        contents,
+        generationConfig: { temperature: 0.3, maxOutputTokens: 1000 },
+      }),
     });
   } catch (err) {
-    console.error("OpenRouter fetch failed:", err);
-    return jsonResponse({ error: "Failed to reach OpenRouter" }, 502);
+    console.error("Gemini fetch failed:", err);
+    return jsonResponse({ error: "Failed to reach Gemini" }, 502);
   }
 
   if (!upstream.ok) {
     const detail = await upstream.text().catch(() => "");
-    console.error(`OpenRouter error ${upstream.status}:`, detail);
-    return jsonResponse({ error: `OpenRouter error: ${upstream.status}`, detail: detail.slice(0, 500) }, 502);
+    console.error(`Gemini error ${upstream.status}:`, detail);
+    return jsonResponse({ error: `Gemini error: ${upstream.status}`, detail: detail.slice(0, 500) }, 502);
   }
 
   const data = (await upstream.json()) as {
-    choices?: { message?: { content?: string } }[];
+    candidates?: { content?: { parts?: { text?: string }[] } }[];
   };
-  const raw = data.choices?.[0]?.message?.content;
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
   if (typeof raw !== "string") {
-    return jsonResponse({ error: "Unexpected OpenRouter response shape" }, 502);
+    return jsonResponse({ error: "Unexpected Gemini response shape" }, 502);
   }
 
   return jsonResponse(parseAnswer(raw, validPaths));
