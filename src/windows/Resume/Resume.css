@@ -24,7 +24,7 @@
   font-family: var(--font-mono);
   font-size: 11px;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: all var(--duration-fast) var(--ease-smooth);
 }
 
 .resume-window__btn:hover {
@@ -106,7 +106,7 @@
 .resume-window__contacts a {
   color: var(--text-secondary);
   text-decoration: none;
-  transition: color 0.12s ease;
+  transition: color var(--duration-fast) var(--ease-smooth);
 }
 
 .resume-window__contacts a:hover {

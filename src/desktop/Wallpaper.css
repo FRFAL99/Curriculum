@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   background: var(--bg);
-  transition: background 0.3s ease;
+  transition: background var(--duration-slow) var(--ease-smooth);
   z-index: 0;
 }
 

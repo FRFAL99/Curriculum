@@ -6,10 +6,13 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-window);
-  animation: window-open 0.16s ease-out;
+  animation: window-open var(--duration-slow) var(--ease-smooth);
   overflow: hidden;
-  transition: left 0.16s ease, top 0.16s ease, right 0.16s ease,
-    bottom 0.16s ease, width 0.16s ease;
+  transition: left var(--duration-base) var(--ease-smooth),
+    top var(--duration-base) var(--ease-smooth),
+    right var(--duration-base) var(--ease-smooth),
+    bottom var(--duration-base) var(--ease-smooth),
+    width var(--duration-base) var(--ease-smooth);
 }
 
 @keyframes window-open {
@@ -62,7 +65,7 @@
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition: background var(--duration-fast) var(--ease-smooth), color var(--duration-fast) var(--ease-smooth);
 }
 
 .window__control:hover {

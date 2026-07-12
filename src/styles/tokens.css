@@ -1,60 +1,65 @@
 /*
-  Design tokens — "Engineer's Desk"
-  Ispirazione: quaderno millimetrato + terminale. Un desktop minimale che
-  parla il linguaggio di chi lo costruisce: griglia, coordinate, monospace
-  per il "sistema", sans per il contenuto leggibile.
+  Design tokens — "Warm Minimal / Editorial"
+  Ispirazione: carta calda, spazio bianco, un solo accento terracotta.
+  Un desktop pulito, da portfolio, con motion morbido invece che meccanico.
+  --font-mono resta per la titlebar/system-chrome, --font-sans per il contenuto.
 */
 
 :root {
-  /* ---- Tema scuro (default) ---- */
-  --bg: #14161c;
-  --bg-grid-line: rgba(255, 255, 255, 0.045);
-  --bg-grid-dot: rgba(255, 255, 255, 0.09);
-  --surface: #1c1f28;
-  --surface-elevated: #232733;
-  --border: rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.16);
+  /* ---- Tema scuro ---- */
+  --bg: #1c1815;
+  --bg-grid-line: rgba(255, 246, 230, 0.04);
+  --bg-grid-dot: rgba(255, 246, 230, 0.08);
+  --surface: #242019;
+  --surface-elevated: #2c2721;
+  --border: rgba(255, 246, 230, 0.08);
+  --border-strong: rgba(255, 246, 230, 0.15);
 
-  --text-primary: #e8eaf0;
-  --text-secondary: #8b93a3;
-  --text-tertiary: #565d6b;
+  --text-primary: #f2ede4;
+  --text-secondary: #b3a99a;
+  --text-tertiary: #7a7267;
 
-  --accent: #4fd1c5;
-  --accent-strong: #7ce4da;
-  --accent-warm: #f5a623;
+  --accent: #e2853f;
+  --accent-strong: #f0a563;
+  --accent-warm: #ef6f5f;
 
-  --shadow-window: 0 20px 60px rgba(0, 0, 0, 0.45);
-  --shadow-dock: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-window: 0 24px 70px rgba(10, 8, 6, 0.5);
+  --shadow-dock: 0 12px 34px rgba(10, 8, 6, 0.4);
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
 
   --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 0.15s;
+  --duration-base: 0.22s;
+  --duration-slow: 0.32s;
 
   color-scheme: dark;
 }
 
 [data-theme="light"] {
-  --bg: #f2f2ee;
-  --bg-grid-line: rgba(20, 22, 28, 0.06);
-  --bg-grid-dot: rgba(20, 22, 28, 0.12);
+  --bg: #faf8f4;
+  --bg-grid-line: rgba(35, 28, 20, 0.05);
+  --bg-grid-dot: rgba(35, 28, 20, 0.1);
   --surface: #ffffff;
   --surface-elevated: #ffffff;
-  --border: rgba(20, 22, 28, 0.1);
-  --border-strong: rgba(20, 22, 28, 0.18);
+  --border: rgba(35, 28, 20, 0.09);
+  --border-strong: rgba(35, 28, 20, 0.16);
 
-  --text-primary: #14161c;
-  --text-secondary: #565d6b;
-  --text-tertiary: #8b93a3;
+  --text-primary: #231f1a;
+  --text-secondary: #6b6255;
+  --text-tertiary: #a39a8b;
 
-  --accent: #0f9c8f;
-  --accent-strong: #0c7d73;
-  --accent-warm: #c47d1a;
+  --accent: #a8541f;
+  --accent-strong: #82400f;
+  --accent-warm: #c1442f;
 
-  --shadow-window: 0 20px 60px rgba(20, 22, 28, 0.12);
-  --shadow-dock: 0 10px 30px rgba(20, 22, 28, 0.1);
+  --shadow-window: 0 24px 60px rgba(35, 28, 20, 0.1);
+  --shadow-dock: 0 10px 28px rgba(35, 28, 20, 0.08);
 
   color-scheme: light;
 }

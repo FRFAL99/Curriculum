@@ -16,7 +16,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 10px 14px;
-  transition: border-color 0.16s ease;
+  transition: border-color var(--duration-base) var(--ease-smooth);
 }
 
 .contact-card:hover {
@@ -41,7 +41,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.16s ease;
+  transition: all var(--duration-base) var(--ease-smooth);
 }
 
 .contact-card:hover .contact-card__icon-wrapper {
@@ -66,7 +66,7 @@
 .contact-card__value {
   font-size: 13.5px;
   color: var(--text-secondary);
-  transition: color 0.12s ease;
+  transition: color var(--duration-fast) var(--ease-smooth);
 }
 
 .contact-card:hover .contact-card__value {
@@ -84,7 +84,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.12s ease;
+  transition: all var(--duration-fast) var(--ease-smooth);
 }
 
 .contact-card__copy-btn:hover {
@@ -94,7 +94,7 @@
 
 .contact-card__copied-icon {
   color: var(--accent);
-  animation: check-pop 0.2s ease;
+  animation: check-pop var(--duration-base) var(--ease-smooth);
 }
 
 @keyframes check-pop {

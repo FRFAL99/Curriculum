@@ -40,7 +40,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1;
-  transition: all 0.2s ease;
+  transition: all var(--duration-base) var(--ease-smooth);
 }
 
 .timeline__node--current {
@@ -67,7 +67,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 16px 18px;
-  transition: border-color 0.16s ease, transform 0.16s ease;
+  transition: border-color var(--duration-base) var(--ease-smooth), transform var(--duration-base) var(--ease-smooth);
 }
 
 .timeline__content:hover {
