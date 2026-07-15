@@ -1,5 +1,5 @@
 import { getAllDocs, type KnowledgeDoc } from "../../lib/knowledgeBase";
-import { renderBlock } from "../../lib/markdown";
+import { renderBlock, getReadingTime } from "../../lib/markdown";
 import { useLanguage } from "../../context/useLanguage";
 import type { TranslationKey } from "../../context/translations";
 import "./KnowledgeDocument.css";
@@ -32,11 +32,6 @@ function getTitle(doc: KnowledgeDoc): string {
   const field = TITLE_FIELD[doc.type] ?? "title";
   const value = (doc.frontmatter as Record<string, unknown>)[field];
   return typeof value === "string" ? value : doc.slug;
-}
-
-function getReadingTime(body: string): number {
-  const words = body.trim().split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.round(words / 200));
 }
 
 function getTags(doc: KnowledgeDoc): string[] | undefined {

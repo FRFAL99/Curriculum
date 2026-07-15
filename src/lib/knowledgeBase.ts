@@ -114,10 +114,15 @@ export interface ProjectFrontmatter {
 export interface DeveloperNoteFrontmatter {
   slug: string;
   title: string;
-  logId: string;
   date: string;
-  status: string;
   order: number;
+  /** Estratto breve per la card indice; se assente si usa getOverviewExcerpt. */
+  summary?: string;
+  /** Tag editoriali mostrati nella card e nel lettore. */
+  tags?: string[];
+  /** Campi legacy stile LOG/changelog, opzionali (non usati nello stile blog). */
+  logId?: string;
+  status?: string;
 }
 
 export interface SkillCategory {

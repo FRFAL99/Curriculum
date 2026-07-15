@@ -33,3 +33,13 @@ export function getOverviewExcerpt(body: string): string {
   const match = body.match(/##\s+Overview\s*\n([\s\S]*?)(?=\n##\s|$)/i);
   return (match ? match[1] : body).trim();
 }
+
+/**
+ * Tempo di lettura stimato in minuti (~200 parole/min), minimo 1.
+ * Estratto qui per essere riusato dal Knowledge Document Viewer e dalla
+ * sezione Developer Notes.
+ */
+export function getReadingTime(body: string): number {
+  const words = body.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
+}

@@ -4,6 +4,7 @@ import { Wallpaper } from "./Wallpaper";
 import { DesktopIcon } from "./DesktopIcon";
 import { Dock } from "./Dock";
 import { KnowledgeExplorer } from "./KnowledgeExplorer";
+import { DeveloperNotesSection } from "./DeveloperNotesSection";
 import { WindowManager } from "./WindowManager";
 import { useWindowManager } from "./useWindowManager";
 import { useLanguage } from "../context/useLanguage";
@@ -12,6 +13,7 @@ import { AssistantWindow } from "../windows/Assistant";
 import "./Desktop.css";
 
 type Theme = "light" | "dark";
+type Tab = "home" | "notes";
 
 const THEME_KEY = "theme";
 
@@ -25,10 +27,20 @@ function getInitialTheme(): Theme {
   return prefersLight ? "light" : "dark";
 }
 
+/** Tab iniziale da hash URL (#notes) — rende la sezione condivisibile via link. */
+function getInitialTab(): Tab {
+  if (typeof window !== "undefined" && window.location.hash === "#notes") {
+    return "notes";
+  }
+  return "home";
+}
+
 export function Desktop() {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [activeTab, setActiveTab] = useState<Tab>(getInitialTab);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { windows, openWindow, toggleFromDock } = useWindowManager();
+  const { t } = useLanguage();
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -39,12 +51,37 @@ export function Desktop() {
     if (e.target === e.currentTarget) setSelectedId(null);
   }
 
+  function selectTab(tab: Tab) {
+    setActiveTab(tab);
+    if (typeof window !== "undefined") {
+      window.location.hash = tab === "notes" ? "notes" : "";
+    }
+  }
+
   return (
     <div className="desktop" onClick={handleDesktopClick}>
       <Wallpaper />
 
       <div className="desktop__topbar">
-        <span className="desktop__brand">Francesco Fallavena</span>
+        <div className="desktop__topbar-left">
+          <span className="desktop__brand">Francesco Fallavena</span>
+          <nav className="desktop__tabs">
+            <button
+              type="button"
+              className={`desktop__tab ${activeTab === "home" ? "desktop__tab--active" : ""}`}
+              onClick={() => selectTab("home")}
+            >
+              {t("tabHome")}
+            </button>
+            <button
+              type="button"
+              className={`desktop__tab ${activeTab === "notes" ? "desktop__tab--active" : ""}`}
+              onClick={() => selectTab("notes")}
+            >
+              {t("tabDeveloperNotes")}
+            </button>
+          </nav>
+        </div>
         <div className="desktop__topbar-right">
           <LanguageSwitcher />
           <span className="desktop__topbar-separator">·</span>
@@ -52,27 +89,33 @@ export function Desktop() {
         </div>
       </div>
 
-      <div className="desktop__icons-col">
-        <div className="desktop__icons" onClick={handleDesktopClick}>
-          {windowsConfig.filter((w) => !w.hidden).map((w) => (
-            <DesktopIcon
-              key={w.id}
-              id={w.id}
-              label={w.title}
-              icon={w.icon}
-              selected={selectedId === w.id}
-              onSelect={setSelectedId}
-              onOpen={openWindow}
-            />
-          ))}
-        </div>
-      </div>
+      {activeTab === "home" ? (
+        <>
+          <div className="desktop__icons-col">
+            <div className="desktop__icons" onClick={handleDesktopClick}>
+              {windowsConfig.filter((w) => !w.hidden).map((w) => (
+                <DesktopIcon
+                  key={w.id}
+                  id={w.id}
+                  label={w.title}
+                  icon={w.icon}
+                  selected={selectedId === w.id}
+                  onSelect={setSelectedId}
+                  onOpen={openWindow}
+                />
+              ))}
+            </div>
+          </div>
 
-      <div className="desktop__assistant-col">
-        <AssistantWindow />
-      </div>
+          <div className="desktop__assistant-col">
+            <AssistantWindow />
+          </div>
 
-      <KnowledgeExplorer />
+          <KnowledgeExplorer />
+        </>
+      ) : (
+        <DeveloperNotesSection />
+      )}
 
       <WindowManager />
 

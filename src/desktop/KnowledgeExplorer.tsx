@@ -5,7 +5,6 @@ import {
   FolderKanban,
   Sparkles,
   GraduationCap,
-  Terminal,
   ChevronDown,
   ChevronRight,
   PanelLeft,
@@ -14,7 +13,6 @@ import {
 } from "lucide-react";
 import {
   getAbout,
-  getDeveloperNotes,
   getEducation,
   getExperience,
   getProjects,
@@ -137,16 +135,6 @@ export function KnowledgeExplorer() {
         titleKey: "educationTitle",
         items: getEducation(language).map((doc) => {
           const itemLabel = label(doc, "degree");
-          return { path: doc.path, label: itemLabel, searchText: searchTextFor(doc, itemLabel) };
-        }),
-      },
-      {
-        kind: "branch",
-        id: "developer-notes",
-        icon: Terminal,
-        titleKey: "developerNotesTitle",
-        items: getDeveloperNotes(language).map((doc) => {
-          const itemLabel = label(doc, "title");
           return { path: doc.path, label: itemLabel, searchText: searchTextFor(doc, itemLabel) };
         }),
       },

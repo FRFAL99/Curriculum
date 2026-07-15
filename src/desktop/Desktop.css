@@ -14,11 +14,50 @@
   padding: 18px 296px;
 }
 
+.desktop__topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-width: 0;
+}
+
 .desktop__brand {
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.06em;
   color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.desktop__tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.desktop__tab {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease-smooth),
+    background var(--duration-fast) var(--ease-smooth);
+}
+
+.desktop__tab:hover {
+  color: var(--text-primary);
+}
+
+.desktop__tab--active {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  font-weight: 600;
 }
 
 .desktop__clock {
@@ -74,6 +113,15 @@
   }
 
   .desktop__brand {
+    display: none;
+  }
+
+  .desktop__topbar-left {
+    gap: 0;
+  }
+
+  .desktop__tab {
+    padding: 4px 8px;
     font-size: 11px;
   }
 }

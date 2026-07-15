@@ -6,7 +6,6 @@ import {
   History,
   Sparkles,
   Mail,
-  Terminal,
   BookOpen,
 } from "lucide-react";
 import { ResumeWindow } from "../windows/Resume";
@@ -14,7 +13,6 @@ import { ProjectsWindow } from "../windows/Projects";
 import { ExperienceWindow } from "../windows/Experience";
 import { SkillsWindow } from "../windows/Skills";
 import { ContactWindow } from "../windows/Contact";
-import { DeveloperNotesWindow } from "../windows/DeveloperNotes";
 import { KnowledgeDocumentWindow } from "../windows/KnowledgeDocument";
 
 /**
@@ -86,14 +84,6 @@ export const windowsConfig: WindowConfig[] = [
     component: ContactWindow,
     inDock: true,
     width: 420,
-  },
-  {
-    id: "developer-notes",
-    title: "Developer Notes",
-    icon: Terminal,
-    component: DeveloperNotesWindow,
-    inDock: false,
-    width: 520,
   },
   {
     id: "knowledge-document",
