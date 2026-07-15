@@ -279,14 +279,15 @@ knowledge-base/   Single Source of Truth dei contenuti (Fase 8)
   education/      un file .it.md + .en.md per titolo di studio
   skills.md       lang-neutral, label di categoria bilingue in frontmatter
   projects/       un file .it.md + .en.md per progetto
-  developer-notes/ un file .it.md + .en.md per nota
+  developer-notes/ un file .it.md + .en.md per articolo (long-form, sezione a tab)
 
 src/
   desktop/
-    Desktop.tsx              Layout principale, stato tema/selezione
+    Desktop.tsx              Layout principale, stato tema/tab, deep-link #notes
     Wallpaper.tsx             Sfondo a griglia + coordinate
     Dock.tsx                  Barra inferiore, indicatore finestre aperte
     DesktopIcon.tsx           Icona singola selezionabile
+    DeveloperNotesSection.tsx Sezione a tutta pagina (tab): indice articoli + lettore
     Window.tsx                Finestra reale: drag, focus, minimizza, chiudi
     WindowManager.tsx         Renderizza le finestre aperte dal context
     WindowManagerContext.tsx  Stato centralizzato (reducer) di tutte le finestre
@@ -297,7 +298,7 @@ src/
     Experience/    Timeline verticale
     Skills/        Competenze per categoria (no barre percentuali)
     Contact/       Link rapidi + copia negli appunti
-    DeveloperNotes/ Casi di problem solving
+    KnowledgeDocument/ Viewer generico di un documento della KB (markdown)
   components/
     SocialIcons.tsx GitHub/LinkedIn (non più in lucide-react)
   context/
@@ -308,7 +309,7 @@ src/
     windows.ts        Config centrale delle finestre
   lib/
     knowledgeBase.ts  Loader tipizzato della Knowledge Base (Fase 8)
-    markdown.ts       Helper di rendering Markdown → HTML (renderInline/renderBlock)
+    markdown.ts       Helper Markdown → HTML (renderInline/renderBlock) + getReadingTime
   utils/
     storage.ts        Wrapper sicuro su localStorage (get/set JSON)
     useIsMobile.ts     Hook breakpoint mobile (640px), sincronizzato col CSS
