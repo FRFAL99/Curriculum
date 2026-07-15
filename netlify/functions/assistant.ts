@@ -88,6 +88,31 @@ function jsonResponse(body: unknown, status = 200): Response {
   });
 }
 
+const OVERLOAD_RETRY_DELAYS_MS = [500, 1500];
+
+/**
+ * Calls Gemini's generateContent for one model, retrying on 503 (transient
+ * "high demand" overload — separate from the 429 rate-limit case) with a
+ * short backoff. Each Gemini model has its own capacity pool, so retrying
+ * the same model only helps with brief spikes, not a sustained outage.
+ */
+async function callGemini(apiKey: string, model: string, requestBody: unknown): Promise<Response> {
+  let attempt = 0;
+  while (true) {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      method: "POST",
+      headers: {
+        "x-goog-api-key": apiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+    if (res.status !== 503 || attempt >= OVERLOAD_RETRY_DELAYS_MS.length) return res;
+    await new Promise((resolve) => setTimeout(resolve, OVERLOAD_RETRY_DELAYS_MS[attempt]));
+    attempt += 1;
+  }
+}
+
 export default async (req: Request): Promise<Response> => {
   if (req.method !== "POST") {
     return jsonResponse({ error: "Method Not Allowed" }, 405);
@@ -116,6 +141,9 @@ export default async (req: Request): Promise<Response> => {
     return jsonResponse({ error: "Server misconfigured: missing GEMINI_API_KEY" }, 500);
   }
   const model = process.env.GEMINI_MODEL ?? "gemini-flash-latest";
+  // Different model = different capacity pool: if the primary is overloaded
+  // (503) even after retries, a distinct model is likely unaffected.
+  const fallbackModel = process.env.GEMINI_FALLBACK_MODEL ?? "gemini-flash-lite-latest";
 
   let docs: ReturnType<typeof loadKnowledgeBase>;
   try {
@@ -134,21 +162,22 @@ export default async (req: Request): Promise<Response> => {
     { role: "user", parts: [{ text: message }] },
   ];
 
+  const requestBody = {
+    systemInstruction: { parts: [{ text: buildSystemPrompt(language, docs) }] },
+    contents,
+    generationConfig: { temperature: 0.3, maxOutputTokens: 1000, thinkingConfig: { thinkingBudget: 0 } },
+  };
+
   const requestStartedAt = Date.now();
+  let usedModel = model;
   let upstream: Response;
   try {
-    upstream = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: "POST",
-      headers: {
-        "x-goog-api-key": apiKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: buildSystemPrompt(language, docs) }] },
-        contents,
-        generationConfig: { temperature: 0.3, maxOutputTokens: 1000, thinkingConfig: { thinkingBudget: 0 } },
-      }),
-    });
+    upstream = await callGemini(apiKey, model, requestBody);
+    if (upstream.status === 503 && fallbackModel !== model) {
+      console.error(`Gemini model ${model} still overloaded after retries, falling back to ${fallbackModel}`);
+      usedModel = fallbackModel;
+      upstream = await callGemini(apiKey, fallbackModel, requestBody);
+    }
   } catch (err) {
     console.error("Gemini fetch failed:", err);
     return jsonResponse({ error: "Failed to reach Gemini" }, 502);
@@ -177,7 +206,7 @@ export default async (req: Request): Promise<Response> => {
   const elapsedMs = Date.now() - requestStartedAt;
   const outputTokens = data.usageMetadata?.candidatesTokenCount ?? 0;
   const stats = {
-    model,
+    model: usedModel,
     inputTokens: data.usageMetadata?.promptTokenCount ?? 0,
     outputTokens,
     totalTokens: data.usageMetadata?.totalTokenCount ?? 0,
