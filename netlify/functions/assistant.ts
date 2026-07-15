@@ -3,7 +3,7 @@ import { loadKnowledgeBase } from "./lib/kb";
 /**
  * AI Assistant — Fase 10.
  *
- * Un'unica chiamata a Gemini: lo stesso prompt classifica lo scope
+ * Un'unica chiamata a OpenRouter: lo stesso prompt classifica lo scope
  * della domanda (IN_SCOPE/PARTIALLY_IN_SCOPE/OUT_OF_SCOPE, criterio dal
  * documento di visione "Knowledge Base + AI Assistant") e genera la
  * risposta grounded. Niente retrieval semantico/vector DB: la Knowledge
@@ -95,31 +95,6 @@ function jsonResponse(body: unknown, status = 200): Response {
   });
 }
 
-const OVERLOAD_RETRY_DELAYS_MS = [500, 1500];
-
-/**
- * Calls Gemini's generateContent for one model, retrying on 503 (transient
- * "high demand" overload — separate from the 429 rate-limit case) with a
- * short backoff. Each Gemini model has its own capacity pool, so retrying
- * the same model only helps with brief spikes, not a sustained outage.
- */
-async function callGemini(apiKey: string, model: string, requestBody: unknown): Promise<Response> {
-  let attempt = 0;
-  while (true) {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: "POST",
-      headers: {
-        "x-goog-api-key": apiKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
-    if (res.status !== 503 || attempt >= OVERLOAD_RETRY_DELAYS_MS.length) return res;
-    await new Promise((resolve) => setTimeout(resolve, OVERLOAD_RETRY_DELAYS_MS[attempt]));
-    attempt += 1;
-  }
-}
-
 export default async (req: Request): Promise<Response> => {
   if (req.method !== "POST") {
     return jsonResponse({ error: "Method Not Allowed" }, 405);
@@ -143,14 +118,11 @@ export default async (req: Request): Promise<Response> => {
   }
   const history = (rawHistory as ChatMessage[] | undefined) ?? [];
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    return jsonResponse({ error: "Server misconfigured: missing GEMINI_API_KEY" }, 500);
+    return jsonResponse({ error: "Server misconfigured: missing OPENROUTER_API_KEY" }, 500);
   }
-  const model = process.env.GEMINI_MODEL ?? "gemini-flash-latest";
-  // Different model = different capacity pool: if the primary is overloaded
-  // (503) even after retries, a distinct model is likely unaffected.
-  const fallbackModel = process.env.GEMINI_FALLBACK_MODEL ?? "gemini-flash-lite-latest";
+  const model = process.env.OPENROUTER_MODEL ?? "openai/gpt-oss-20b:free";
 
   let docs: ReturnType<typeof loadKnowledgeBase>;
   try {
@@ -161,62 +133,57 @@ export default async (req: Request): Promise<Response> => {
   }
   const validPaths = new Set(docs.map((doc) => doc.path));
 
-  const contents = [
-    ...history.map((m) => ({
-      role: m.role === "assistant" ? "model" : "user",
-      parts: [{ text: m.content }],
-    })),
-    { role: "user", parts: [{ text: message }] },
+  const messages = [
+    { role: "system", content: buildSystemPrompt(language, docs) },
+    ...history,
+    { role: "user", content: message },
   ];
 
-  const requestBody = {
-    systemInstruction: { parts: [{ text: buildSystemPrompt(language, docs) }] },
-    contents,
-    generationConfig: { temperature: 0.3, maxOutputTokens: 1000, thinkingConfig: { thinkingBudget: 0 } },
-  };
-
   const requestStartedAt = Date.now();
-  let usedModel = model;
   let upstream: Response;
   try {
-    upstream = await callGemini(apiKey, model, requestBody);
-    if (upstream.status === 503 && fallbackModel !== model) {
-      console.error(`Gemini model ${model} still overloaded after retries, falling back to ${fallbackModel}`);
-      usedModel = fallbackModel;
-      upstream = await callGemini(apiKey, fallbackModel, requestBody);
-    }
+    upstream = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://curriculumfrfal.netlify.app",
+        "X-Title": "Francesco Fallavena - Portfolio Assistant",
+      },
+      body: JSON.stringify({ model, messages, temperature: 0.3, max_tokens: 1000 }),
+    });
   } catch (err) {
-    console.error("Gemini fetch failed:", err);
-    return jsonResponse({ error: "Failed to reach Gemini" }, 502);
+    console.error("OpenRouter fetch failed:", err);
+    return jsonResponse({ error: "Failed to reach OpenRouter" }, 502);
   }
 
   if (upstream.status === 429) {
-    console.error("Gemini rate limit hit");
+    console.error("OpenRouter rate limit hit");
     return jsonResponse({ error: "rate_limited" }, 429);
   }
 
   if (!upstream.ok) {
     const detail = await upstream.text().catch(() => "");
-    console.error(`Gemini error ${upstream.status}:`, detail);
-    return jsonResponse({ error: `Gemini error: ${upstream.status}`, detail: detail.slice(0, 500) }, 502);
+    console.error(`OpenRouter error ${upstream.status}:`, detail);
+    return jsonResponse({ error: `OpenRouter error: ${upstream.status}`, detail: detail.slice(0, 500) }, 502);
   }
 
   const data = (await upstream.json()) as {
-    candidates?: { content?: { parts?: { text?: string }[] } }[];
-    usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; totalTokenCount?: number };
+    choices?: { message?: { content?: string } }[];
+    usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
   };
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  const raw = data.choices?.[0]?.message?.content;
   if (typeof raw !== "string") {
-    return jsonResponse({ error: "Unexpected Gemini response shape" }, 502);
+    return jsonResponse({ error: "Unexpected OpenRouter response shape" }, 502);
   }
 
   const elapsedMs = Date.now() - requestStartedAt;
-  const outputTokens = data.usageMetadata?.candidatesTokenCount ?? 0;
+  const outputTokens = data.usage?.completion_tokens ?? 0;
   const stats = {
-    model: usedModel,
-    inputTokens: data.usageMetadata?.promptTokenCount ?? 0,
+    model,
+    inputTokens: data.usage?.prompt_tokens ?? 0,
     outputTokens,
-    totalTokens: data.usageMetadata?.totalTokenCount ?? 0,
+    totalTokens: data.usage?.total_tokens ?? 0,
     elapsedMs,
     tokensPerSecond: outputTokens > 0 ? Math.round((outputTokens / (elapsedMs / 1000)) * 10) / 10 : 0,
   };
