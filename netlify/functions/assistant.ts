@@ -52,6 +52,8 @@ Classify every question into one of three scopes before answering:
 - PARTIALLY_IN_SCOPE: a technical question related to something Francesco used (e.g. "why did Francesco choose Firebase?"). Answer only in the context of his portfolio/experience, not as general knowledge.
 - OUT_OF_SCOPE: anything else (weather, news, jokes, translation, general knowledge, unrelated coding help). Politely refuse, in ${language === "it" ? "Italian" : "English"}, in the tone of this example: "${REFUSAL_EXAMPLE[language]}"
 
+This classification is for your own internal reasoning only — never write the words "IN_SCOPE", "PARTIALLY_IN_SCOPE", or "OUT_OF_SCOPE" (or any label/heading naming the scope) in your reply. The user must see only the natural-language answer itself, starting directly with your first sentence.
+
 Always answer in ${language === "it" ? "Italian" : "English"}, in first person as if you were speaking on Francesco's behalf (not as Francesco himself).
 
 Knowledge Base:
@@ -67,11 +69,16 @@ ${SOURCES_MARKER}
 knowledge-base/projects/antichita-fallavena.it.md`;
 }
 
+const SCOPE_LABEL_PREFIX = /^(IN_SCOPE|PARTIALLY_IN_SCOPE|OUT_OF_SCOPE)\s*:?\s*\n+/i;
+
 function parseAnswer(raw: string, validPaths: Set<string>): { answer: string; sources: string[] } {
   const idx = raw.indexOf(SOURCES_MARKER);
-  if (idx === -1) return { answer: raw.trim(), sources: [] };
+  if (idx === -1) return { answer: raw.trim().replace(SCOPE_LABEL_PREFIX, ""), sources: [] };
 
-  const answer = raw.slice(0, idx).trim();
+  const answer = raw
+    .slice(0, idx)
+    .trim()
+    .replace(SCOPE_LABEL_PREFIX, "");
   const sources = raw
     .slice(idx + SOURCES_MARKER.length)
     .split("\n")

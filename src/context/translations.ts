@@ -56,6 +56,10 @@ export const translations = {
     retry: "Riprova",
     send: "Invia",
     resetConversation: "Nuova conversazione",
+    assistantStatModel: "Modello",
+    assistantStatTokens: "Token in ingresso → in uscita",
+    assistantStatTime: "Tempo di risposta",
+    assistantStatSpeed: "Velocità di generazione",
   },
   en: {
     // Topbar & System
@@ -101,6 +105,10 @@ export const translations = {
     retry: "Retry",
     send: "Send",
     resetConversation: "New conversation",
+    assistantStatModel: "Model",
+    assistantStatTokens: "Input → output tokens",
+    assistantStatTime: "Response time",
+    assistantStatSpeed: "Generation speed",
   }
 };
 

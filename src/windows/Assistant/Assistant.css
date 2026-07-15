@@ -215,13 +215,24 @@
 .assistant-msg__stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   margin-top: 6px;
   padding-top: 6px;
   border-top: 1px solid var(--border);
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-tertiary);
+}
+
+.assistant-msg__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.assistant-msg__stat svg {
+  flex-shrink: 0;
+  opacity: 0.75;
 }
 
 .assistant-window__error {

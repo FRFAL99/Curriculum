@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { Bot, User, Send, RotateCcw } from "lucide-react";
+import { Bot, User, Send, RotateCcw, Cpu, Hash, Clock, Gauge } from "lucide-react";
 import { useLanguage } from "../../context/useLanguage";
 import { useWindowManager } from "../../desktop/useWindowManager";
 import { conversationStarters } from "../../context/translations";
@@ -256,12 +256,22 @@ export function AssistantWindow() {
               )}
               {m.stats && i !== revealingIndex && (
                 <div className="assistant-msg__stats">
-                  <span>{m.stats.model}</span>
-                  <span>
-                    {m.stats.inputTokens}→{m.stats.outputTokens} tok
+                  <span className="assistant-msg__stat" title={t("assistantStatModel")}>
+                    <Cpu size={11} strokeWidth={2} />
+                    {m.stats.model}
                   </span>
-                  <span>{(m.stats.elapsedMs / 1000).toFixed(1)}s</span>
-                  <span>{m.stats.tokensPerSecond.toFixed(1)} t/s</span>
+                  <span className="assistant-msg__stat" title={t("assistantStatTokens")}>
+                    <Hash size={11} strokeWidth={2} />
+                    {m.stats.inputTokens}→{m.stats.outputTokens}
+                  </span>
+                  <span className="assistant-msg__stat" title={t("assistantStatTime")}>
+                    <Clock size={11} strokeWidth={2} />
+                    {(m.stats.elapsedMs / 1000).toFixed(1)}s
+                  </span>
+                  <span className="assistant-msg__stat" title={t("assistantStatSpeed")}>
+                    <Gauge size={11} strokeWidth={2} />
+                    {m.stats.tokensPerSecond.toFixed(1)} t/s
+                  </span>
                 </div>
               )}
             </div>
