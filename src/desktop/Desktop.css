@@ -99,7 +99,10 @@
 
 @media (max-width: 640px) {
   .desktop__topbar {
-    padding: 18px 24px;
+    /* padding-left extra per non finire sotto al toggle della Knowledge Base
+       (fixed, top-left): così i tab non gli si sovrappongono più. */
+    padding: 12px 14px 12px 58px;
+    gap: 8px;
   }
 
   .desktop__icons-col {
@@ -117,12 +120,21 @@
   }
 
   .desktop__topbar-left {
-    gap: 0;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
   }
 
   .desktop__tab {
-    padding: 4px 8px;
+    padding: 4px 9px;
     font-size: 11px;
+  }
+
+  /* L'orologio (e il suo separatore) è decorativo: su mobile occupa troppo
+     spazio e mandava a capo la riga. Restano solo tab + switch lingua. */
+  .desktop__clock,
+  .desktop__topbar-separator {
+    display: none;
   }
 }
 
