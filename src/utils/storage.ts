@@ -23,3 +23,17 @@ export function writeJSON(key: string, value: unknown): void {
     // semplicemente senza persistenza.
   }
 }
+
+/**
+ * Rimuove una o più chiavi da localStorage, ignorando errori (storage non
+ * disponibile ecc.). Usato al boot per far ripartire il sito sempre "pulito"
+ * (nessuna finestra aperta, chat vuota) senza però perdere la continuità
+ * dentro la stessa sessione, dove la persistenza resta attiva.
+ */
+export function removeKeys(keys: string[]): void {
+  try {
+    for (const key of keys) localStorage.removeItem(key);
+  } catch {
+    // Storage non disponibile: nulla da ripulire.
+  }
+}
