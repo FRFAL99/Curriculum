@@ -69,6 +69,11 @@
   font-weight: 600;
 }
 
+/* Voce "Knowledge Base" del menu: solo nel dropdown mobile (vedi @media). */
+.desktop__tab--kb {
+  display: none;
+}
+
 /* Hamburger dei tab: nascosto su desktop, visibile solo su mobile. */
 .desktop__menu-toggle {
   display: none;
@@ -210,9 +215,7 @@
 
 @media (max-width: 640px) {
   .desktop__topbar {
-    /* padding-left extra per non finire sotto al toggle della Knowledge Base
-       (fixed, top-left): così i tab non gli si sovrappongono più. */
-    padding: 12px 14px 12px 58px;
+    padding: 12px 14px;
     gap: 8px;
   }
 
@@ -255,6 +258,17 @@
     text-align: left;
     padding: 10px 12px;
     font-size: 13px;
+  }
+
+  /* La voce Knowledge Base compare solo nel dropdown mobile, separata dai tab. */
+  .desktop__tab--kb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
   }
 
   /* L'orologio (e il suo separatore) è decorativo: su mobile occupa troppo

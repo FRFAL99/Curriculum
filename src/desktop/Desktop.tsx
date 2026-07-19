@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Sun, Moon, Menu } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Sun, Moon, Menu, PanelLeft } from "lucide-react";
 import { Wallpaper } from "./Wallpaper";
 import { KnowledgeExplorer } from "./KnowledgeExplorer";
 import { DeveloperNotesSection } from "./DeveloperNotesSection";
@@ -47,6 +47,8 @@ export function Desktop() {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
   const [activeTab, setActiveTab] = useState<Tab>(getInitialTab);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [kbOpen, setKbOpen] = useState(false);
+  const menuWrapRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -62,9 +64,22 @@ export function Desktop() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
+  // Chiude l'hamburger quando si clicca fuori dal menu.
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onPointerDown(e: PointerEvent) {
+      if (menuWrapRef.current && !menuWrapRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [menuOpen]);
+
   function selectTab(tab: Tab) {
     setActiveTab(tab);
     setMenuOpen(false);
+    setKbOpen(false);
     if (typeof window !== "undefined") {
       window.location.hash = TAB_HASH[tab];
     }
@@ -83,7 +98,7 @@ export function Desktop() {
       <Wallpaper />
 
       <header className="desktop__topbar">
-        <div className="desktop__topbar-left">
+        <div className="desktop__topbar-left" ref={menuWrapRef}>
           <span className="desktop__brand">Francesco Fallavena</span>
           <button
             type="button"
@@ -106,6 +121,21 @@ export function Desktop() {
                 {tab.label}
               </button>
             ))}
+            {/* Solo mobile (via CSS) e solo in Home: apre la Knowledge Base,
+                così non c'è più il pulsante doc accanto all'hamburger. */}
+            {activeTab === "home" && (
+              <button
+                type="button"
+                className="desktop__tab desktop__tab--kb"
+                onClick={() => {
+                  setKbOpen(true);
+                  setMenuOpen(false);
+                }}
+              >
+                <PanelLeft size={14} strokeWidth={1.8} />
+                <span>{t("knowledgeExplorerTitle")}</span>
+              </button>
+            )}
           </nav>
         </div>
         <div className="desktop__topbar-right">
@@ -124,7 +154,7 @@ export function Desktop() {
         </div>
       </header>
 
-      {activeTab === "home" && <HomeSection />}
+      {activeTab === "home" && <HomeSection kbOpen={kbOpen} setKbOpen={setKbOpen} />}
 
       {activeTab === "resume" && (
         <div className="tab-section">
@@ -142,7 +172,13 @@ export function Desktop() {
 }
 
 /** Home: solo l'AI Assistant a tutta pagina, con la Knowledge Base come doc laterale. */
-function HomeSection() {
+function HomeSection({
+  kbOpen,
+  setKbOpen,
+}: {
+  kbOpen: boolean;
+  setKbOpen: (v: boolean) => void;
+}) {
   const [docPath, setDocPath] = useState<string | null>(null);
 
   return (
@@ -161,7 +197,12 @@ function HomeSection() {
         )}
       </div>
 
-      <KnowledgeExplorer activePath={docPath} onOpenDoc={setDocPath} />
+      <KnowledgeExplorer
+        activePath={docPath}
+        onOpenDoc={setDocPath}
+        mobileOpen={kbOpen}
+        onMobileOpenChange={setKbOpen}
+      />
     </>
   );
 }

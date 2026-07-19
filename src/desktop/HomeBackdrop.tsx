@@ -67,6 +67,7 @@ export function HomeBackdrop() {
           d={CURVE}
           fill="none"
           stroke="url(#hb-curve)"
+          vectorEffect="non-scaling-stroke"
         />
 
         {DOTS.map(([x, y]) => (

@@ -7,7 +7,6 @@ import {
   GraduationCap,
   ChevronDown,
   ChevronRight,
-  PanelLeft,
   Search,
   type LucideIcon,
 } from "lucide-react";
@@ -79,13 +78,16 @@ function searchTextFor(
 export function KnowledgeExplorer({
   activePath,
   onOpenDoc,
+  mobileOpen,
+  onMobileOpenChange,
 }: {
   activePath: string | null;
   onOpenDoc: (path: string) => void;
+  mobileOpen: boolean;
+  onMobileOpenChange: (open: boolean) => void;
 }) {
   const { language, t } = useLanguage();
   const isMobile = useIsMobile();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() =>
     readJSON(STORAGE_KEY, {} as Record<string, boolean>),
@@ -182,7 +184,7 @@ export function KnowledgeExplorer({
   function handleOpen(path?: string) {
     if (!path) return;
     onOpenDoc(path);
-    if (isMobile) setMobileOpen(false);
+    if (isMobile) onMobileOpenChange(false);
   }
 
   const panel = (
@@ -283,23 +285,12 @@ export function KnowledgeExplorer({
   );
 
   if (isMobile) {
+    if (!mobileOpen) return null;
     return (
-      <>
-        <button
-          type="button"
-          className="kb-explorer__toggle"
-          aria-label={t("knowledgeExplorerToggle")}
-          onClick={() => setMobileOpen((v) => !v)}
-        >
-          <PanelLeft size={18} strokeWidth={1.7} />
-        </button>
-        {mobileOpen && (
-          <div className="kb-explorer kb-explorer--mobile">
-            <div className="kb-explorer__backdrop" onClick={() => setMobileOpen(false)} />
-            {panel}
-          </div>
-        )}
-      </>
+      <div className="kb-explorer kb-explorer--mobile">
+        <div className="kb-explorer__backdrop" onClick={() => onMobileOpenChange(false)} />
+        {panel}
+      </div>
     );
   }
 

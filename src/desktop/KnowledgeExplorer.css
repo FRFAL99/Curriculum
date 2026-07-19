@@ -120,28 +120,7 @@
   padding: 6px 8px;
 }
 
-.kb-explorer__toggle {
-  position: fixed;
-  top: 12px;
-  left: 14px;
-  z-index: 25;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
 @media (max-width: 640px) {
-  .kb-explorer__toggle {
-    display: flex;
-  }
-
   .kb-explorer--mobile {
     position: fixed;
     inset: 0;
