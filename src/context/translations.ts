@@ -149,11 +149,13 @@ export const conversationStarters: Record<Language, { label: string; prompt: str
     { label: "Progetti", prompt: "Di quale progetto sei più orgoglioso?" },
     { label: "Antichità Fallavena", prompt: "Spiegami il progetto Antichità Fallavena" },
     { label: "Backend", prompt: "Mostrami la tua esperienza backend" },
+    { label: "Contatti", prompt: "Come posso contattarti e quali sono le tue disponibilità?" },
   ],
   en: [
     { label: "Experience", prompt: "Tell me about your experience" },
     { label: "Projects", prompt: "Which project are you most proud of?" },
     { label: "Antichità Fallavena", prompt: "Explain the Antichità Fallavena project" },
     { label: "Backend", prompt: "Show your backend experience" },
+    { label: "Contact", prompt: "How can I contact you and what's your availability?" },
   ],
 };

@@ -25,7 +25,7 @@ interface ChatMessage {
 
 const STORAGE_KEY = "assistantConversation";
 const MAX_HISTORY = 10;
-const MAX_STARTERS = 4;
+const MAX_STARTERS = 5;
 
 export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => void }) {
   const { language, t } = useLanguage();
