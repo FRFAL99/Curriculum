@@ -6,14 +6,6 @@
   z-index: 0;
 }
 
-.wallpaper__grid {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(var(--bg-grid-dot) 1px, transparent 1px);
-  background-size: 28px 28px;
-  background-position: -4px -4px;
-}
-
 .wallpaper__vignette {
   position: absolute;
   inset: 0;
@@ -23,16 +15,4 @@
     var(--bg) 100%
   );
   opacity: 0.6;
-}
-
-.wallpaper__coords {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: var(--text-tertiary);
-  pointer-events: none;
-  user-select: none;
 }

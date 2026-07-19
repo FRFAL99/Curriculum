@@ -1,0 +1,85 @@
+.home-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 1;
+}
+
+.home-backdrop__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Alone luminoso soffuso (mood contemplativo). */
+.home-backdrop__aura-in {
+  stop-color: var(--accent);
+  stop-opacity: 0.08;
+}
+.home-backdrop__aura-out {
+  stop-color: var(--accent);
+  stop-opacity: 0;
+}
+.home-backdrop__aura {
+  animation: hb-breathe 24s ease-in-out infinite;
+}
+
+/* Curva di interpolazione: sfuma agli estremi (continuità/infinito). */
+.home-backdrop__curve-edge {
+  stop-color: var(--accent);
+  stop-opacity: 0;
+}
+.home-backdrop__curve-mid {
+  stop-color: var(--accent);
+  stop-opacity: 0.62;
+}
+.home-backdrop__curve {
+  stroke-width: 1.5;
+  opacity: 0.7;
+}
+
+/* Punti della costellazione + nodi interpolati. */
+.home-backdrop__dot {
+  fill: var(--text-tertiary);
+  opacity: 0.32;
+}
+.home-backdrop__node {
+  fill: var(--accent);
+  opacity: 0.42;
+}
+
+/* Razzetto: elemento focale in fondo alla curva, un filo più marcato. */
+.home-backdrop__rocket-body {
+  fill: var(--accent);
+  opacity: 0.55;
+}
+.home-backdrop__rocket-fin {
+  fill: var(--accent-strong);
+  opacity: 0.5;
+}
+.home-backdrop__rocket-window {
+  fill: var(--bg);
+  opacity: 0.7;
+}
+.home-backdrop__rocket-flame {
+  fill: var(--accent-warm);
+  opacity: 0.6;
+}
+
+/* Su tema chiaro l'accento è più scuro sul fondo carta: abbasso un filo. */
+[data-theme="light"] .home-backdrop {
+  opacity: 0.85;
+}
+
+@keyframes hb-breathe {
+  0%,
+  100% {
+    opacity: 0.78;
+  }
+  50% {
+    opacity: 1;
+  }
+}

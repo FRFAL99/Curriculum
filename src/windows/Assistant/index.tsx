@@ -94,21 +94,44 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
         body: JSON.stringify({ message: lastUserMessage.content, language, history }),
         signal: controller.signal,
       });
-      const data = await res.json();
+
+      // Parsing difensivo: se la function non è attiva (es. `npm run dev` senza
+      // Netlify) o risponde con corpo vuoto/non-JSON, evitiamo il criptico
+      // "Unexpected end of JSON input" e mostriamo un messaggio chiaro.
+      const raw = await res.text();
+      let data: { answer?: string; sources?: string[]; stats?: ChatStats; error?: string } = {};
+      if (raw) {
+        try {
+          data = JSON.parse(raw);
+        } catch {
+          throw new Error(
+            res.ok
+              ? "Risposta non valida dal server (atteso JSON). L'assistente AI richiede la Netlify Function: in locale usa `npm run dev:full`."
+              : `Errore ${res.status} nella chiamata all'assistente.`,
+          );
+        }
+      }
       if (!res.ok) {
         const message =
           res.status === 429
             ? t("assistantRateLimited")
             : typeof data.error === "string"
               ? data.error
-              : "Errore sconosciuto";
+              : `Errore ${res.status} nella chiamata all'assistente.`;
         throw new Error(message);
       }
 
-      startReveal(data.answer as string, currentMessages.length);
+      const { answer, sources, stats } = data;
+      if (typeof answer !== "string") {
+        throw new Error(
+          "Nessuna risposta dall'assistente. In locale l'AI richiede la Netlify Function (`npm run dev:full`); in produzione verifica le variabili d'ambiente OpenRouter.",
+        );
+      }
+
+      startReveal(answer, currentMessages.length);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.answer, sources: data.sources, stats: data.stats },
+        { role: "assistant", content: answer, sources, stats },
       ]);
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;

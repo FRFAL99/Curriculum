@@ -4,6 +4,7 @@ import { Wallpaper } from "./Wallpaper";
 import { KnowledgeExplorer } from "./KnowledgeExplorer";
 import { DeveloperNotesSection } from "./DeveloperNotesSection";
 import { DocumentDetail } from "./DocumentDetail";
+import { HomeBackdrop } from "./HomeBackdrop";
 import { HomeFooter } from "./HomeFooter";
 import { useLanguage } from "../context/useLanguage";
 import { readJSON, writeJSON } from "../utils/storage";
@@ -150,10 +151,13 @@ function HomeSection() {
         {docPath ? (
           <DocumentDetail path={docPath} onBack={() => setDocPath(null)} />
         ) : (
-          <div className="home__inner">
-            <AssistantWindow onOpenDoc={setDocPath} />
-            <HomeFooter />
-          </div>
+          <>
+            <HomeBackdrop />
+            <div className="home__inner">
+              <AssistantWindow onOpenDoc={setDocPath} />
+              <HomeFooter />
+            </div>
+          </>
         )}
       </div>
 

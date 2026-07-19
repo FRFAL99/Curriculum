@@ -193,6 +193,8 @@
    larghezza leggibile e a tutta altezza dell'area Home; il footer contatti
    resta pinnato in fondo. */
 .home__inner {
+  position: relative;
+  z-index: 1;
   max-width: 760px;
   height: 100%;
   margin: 0 auto;
