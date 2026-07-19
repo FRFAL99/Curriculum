@@ -1,19 +1,28 @@
+import { useState } from "react";
 import { useLanguage } from "../../context/useLanguage";
-import { useWindowManager } from "../../desktop/useWindowManager";
 import { getProjects } from "../../lib/knowledgeBase";
 import { renderInline, getOverviewExcerpt } from "../../lib/markdown";
 import { ExternalLink, Code, FileText } from "lucide-react";
 import { GithubIcon } from "../../components/SocialIcons";
+import { DocumentDetail } from "../../desktop/DocumentDetail";
 import "./Projects.css";
 
 export function ProjectsWindow() {
   const { language, t } = useLanguage();
-  const { openWindow } = useWindowManager();
   const projects = getProjects(language);
+  const [selectedPath, setSelectedPath] = useState<string | null>(null);
+
+  if (selectedPath) {
+    return (
+      <div className="tab-section">
+        <DocumentDetail path={selectedPath} onBack={() => setSelectedPath(null)} />
+      </div>
+    );
+  }
 
   return (
-    <div className="projects-window">
-      <div className="projects-grid">
+    <div className="tab-section">
+      <div className="projects-grid projects-grid--page">
         {projects.map((proj) => {
           const { title, image, demoUrl, githubUrl, stack } = proj.frontmatter;
 
@@ -81,7 +90,7 @@ export function ProjectsWindow() {
                 <button
                   type="button"
                   className="project-card__cta"
-                  onClick={() => openWindow("knowledge-document", { path: proj.path })}
+                  onClick={() => setSelectedPath(proj.path)}
                 >
                   <FileText size={13} />
                   <span>{t("viewCaseStudy")}</span>

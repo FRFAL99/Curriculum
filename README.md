@@ -1,7 +1,13 @@
-# Portfolio v2 — Desktop
+# Portfolio v2
 
-Migrazione del portfolio a un "desktop" minimale, secondo
-`Curriculum_Portfolio_v2_Roadmap.md`. Stack: **React + TypeScript + Vite**.
+Portfolio personale con AI Assistant e contenuti guidati da Markdown
+(`knowledge-base/**` come Single Source of Truth per UI e AI). Stack:
+**React + TypeScript + Vite**.
+
+> Nota storica: nato come "desktop" minimale (finestre/dock/icone, Fasi 1-17;
+> vedi i log storici sotto e in `docs/`), dalla **Fase 18** è stato convertito
+> in una **landing page classica con Home + tab** (`docs/FASE18_LOG.md`). Le
+> sezioni "Stato — Fase N" qui sotto restano come log storico.
 
 ## Avvio in locale
 
@@ -283,30 +289,25 @@ knowledge-base/   Single Source of Truth dei contenuti (Fase 8)
 
 src/
   desktop/
-    Desktop.tsx              Layout principale, stato tema/tab, deep-link #notes
+    Desktop.tsx              Shell: topbar a 4 tab (Home/Resume/Projects/Notes),
+                             stato tema/tab, deep-link via hash, hamburger mobile
     Wallpaper.tsx             Sfondo a griglia + coordinate
-    Dock.tsx                  Barra inferiore, indicatore finestre aperte
-    DesktopIcon.tsx           Icona singola selezionabile
+    HomeHero.tsx              Hero della Home (nome/ruolo/CTA) da about.md
+    HomeContact.tsx           Sezione contatti della Home (KB-driven, copia link)
     DeveloperNotesSection.tsx Sezione a tutta pagina (tab): indice articoli + lettore
-    Window.tsx                Finestra reale: drag, focus, minimizza, chiudi
-    WindowManager.tsx         Renderizza le finestre aperte dal context
-    WindowManagerContext.tsx  Stato centralizzato (reducer) di tutte le finestre
-    useWindowManager.ts       Hook di accesso al context
-  windows/
-    Resume/       CV completo + PrintableResume.tsx (layout per il PDF)
-    Projects/      Card progetti con immagine/stack/link
-    Experience/    Timeline verticale
-    Skills/        Competenze per categoria (no barre percentuali)
-    Contact/       Link rapidi + copia negli appunti
-    KnowledgeDocument/ Viewer generico di un documento della KB (markdown)
+    DocumentDetail.tsx        Viewer doc inline (case study / KB) con "torna indietro"
+    KnowledgeExplorer.tsx     Doc laterale della Home (albero KB + ricerca)
+  windows/                    Contenuti di sezione (resi full-page nei tab, non più finestre)
+    Resume/       CV completo (Experience + Education + Skills) + PrintableResume.tsx
+    Projects/      Card progetti + case study inline (DocumentDetail)
+    Skills/        Competenze per categoria (riusata dentro il Resume)
+    Assistant/     Chat AI "Ask about Francesco" (Home)
   components/
     SocialIcons.tsx GitHub/LinkedIn (non più in lucide-react)
   context/
     LanguageContext.tsx  Provider IT/EN
     translations.ts       Dati di traduzione
     useLanguage.ts        Hook di accesso al context lingua
-  config/
-    windows.ts        Config centrale delle finestre
   lib/
     knowledgeBase.ts  Loader tipizzato della Knowledge Base (Fase 8)
     markdown.ts       Helper Markdown → HTML (renderInline/renderBlock) + getReadingTime

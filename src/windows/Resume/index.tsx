@@ -3,6 +3,7 @@ import { Download, Mail, Phone, MapPin } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "../../components/SocialIcons";
 import { getAbout, getContacts, getSocials, getExperience, getEducation } from "../../lib/knowledgeBase";
 import { renderInline } from "../../lib/markdown";
+import { SkillsWindow } from "../Skills";
 import "./Resume.css";
 
 export function ResumeWindow() {
@@ -142,6 +143,12 @@ export function ResumeWindow() {
                 {edu.body && <p className="resume-window__edu-thesis">{edu.body}</p>}
               </div>
             ))}
+          </section>
+
+          {/* Technical Skills (inglobato dalla ex finestra Skills) */}
+          <section className="resume-window__section">
+            <h2 className="resume-window__section-title">{t("skillsTitle")}</h2>
+            <SkillsWindow />
           </section>
 
           {/* Additional Experience */}

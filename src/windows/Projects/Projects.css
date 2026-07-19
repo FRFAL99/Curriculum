@@ -8,6 +8,21 @@
   gap: 20px;
 }
 
+/* Variante full-page (tab Projects): griglia responsive centrata. */
+.projects-grid--page {
+  max-width: 940px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 640px) {
+  .projects-grid--page {
+    grid-template-columns: 1fr;
+  }
+}
+
 .project-card {
   background: var(--surface);
   border: 1px solid var(--border);

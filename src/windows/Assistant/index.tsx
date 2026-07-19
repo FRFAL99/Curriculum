@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Bot, User, Send, RotateCcw, Cpu, Hash, Clock, Gauge } from "lucide-react";
 import { useLanguage } from "../../context/useLanguage";
-import { useWindowManager } from "../../desktop/useWindowManager";
 import { conversationStarters } from "../../context/translations";
 import { readJSON, writeJSON } from "../../utils/storage";
 import { renderBlock } from "../../lib/markdown";
@@ -28,9 +27,8 @@ const STORAGE_KEY = "assistantConversation";
 const MAX_HISTORY = 10;
 const MAX_STARTERS = 4;
 
-export function AssistantWindow() {
+export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => void }) {
   const { language, t } = useLanguage();
-  const { openWindow } = useWindowManager();
   const [messages, setMessages] = useState<ChatMessage[]>(() => readJSON(STORAGE_KEY, []));
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -247,7 +245,7 @@ export function AssistantWindow() {
                       key={source}
                       type="button"
                       className="assistant-msg__source"
-                      onClick={() => openWindow("knowledge-document", { path: source })}
+                      onClick={() => onOpenDoc?.(source)}
                     >
                       📄 {source}
                     </button>

@@ -5,13 +5,22 @@
   overflow: hidden;
 }
 
+/* ---- Topbar ---- */
+
 .desktop__topbar {
-  position: relative;
-  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 296px;
+  gap: 16px;
+  padding: 14px 28px;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
 }
 
 .desktop__topbar-left {
@@ -32,14 +41,14 @@
 .desktop__tabs {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .desktop__tab {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 12px;
@@ -60,82 +69,19 @@
   font-weight: 600;
 }
 
-.desktop__clock {
+/* Hamburger dei tab: nascosto su desktop, visibile solo su mobile. */
+.desktop__menu-toggle {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 6px 12px;
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.03em;
-  color: var(--text-secondary);
-  text-transform: capitalize;
-}
-
-.desktop__icons-col {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 264px;
-  z-index: 5;
-  padding-top: 62px;
-  overflow-y: auto;
-}
-
-.desktop__icons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  justify-items: center;
-  gap: 4px;
-  padding: 8px 12px;
-}
-
-.desktop__assistant-col {
-  position: fixed;
-  top: 0;
-  left: 264px;
-  right: 264px;
-  bottom: 0;
-  z-index: 5;
-  padding: 62px 28px 96px;
-}
-
-@media (max-width: 640px) {
-  .desktop__topbar {
-    /* padding-left extra per non finire sotto al toggle della Knowledge Base
-       (fixed, top-left): così i tab non gli si sovrappongono più. */
-    padding: 12px 14px 12px 58px;
-    gap: 8px;
-  }
-
-  .desktop__icons-col {
-    display: none;
-  }
-
-  .desktop__assistant-col {
-    left: 0;
-    right: 0;
-    padding: 62px 12px 96px;
-  }
-
-  .desktop__brand {
-    display: none;
-  }
-
-  .desktop__topbar-left {
-    gap: 4px;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .desktop__tab {
-    padding: 4px 9px;
-    font-size: 11px;
-  }
-
-  /* L'orologio (e il suo separatore) è decorativo: su mobile occupa troppo
-     spazio e mandava a capo la riga. Restano solo tab + switch lingua. */
-  .desktop__clock,
-  .desktop__topbar-separator {
-    display: none;
-  }
+  color: var(--text-primary);
 }
 
 .desktop__topbar-right {
@@ -148,6 +94,34 @@
   color: var(--text-tertiary);
   font-family: var(--font-mono);
   font-size: 12px;
+}
+
+.desktop__clock {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.desktop__theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-smooth),
+    border-color var(--duration-fast) var(--ease-smooth);
+}
+
+.desktop__theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .desktop__lang-switcher {
@@ -181,4 +155,123 @@
 .desktop__lang-divider {
   color: var(--text-tertiary);
   user-select: none;
+}
+
+/* ---- Sezioni full-page (Resume, Projects, Notes) ---- */
+
+.tab-section {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  padding: 76px 28px 56px;
+  overflow-y: auto;
+}
+
+.tab-section__inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.tab-section__inner--wide {
+  max-width: 940px;
+}
+
+/* ---- Home ---- */
+
+.home__main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 264px;
+  bottom: 0;
+  z-index: 5;
+  padding: 76px 32px 48px;
+  overflow-y: auto;
+}
+
+.home__stack {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.home__assistant {
+  height: min(560px, 68vh);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  padding: 18px;
+}
+
+@media (max-width: 640px) {
+  .desktop__topbar {
+    /* padding-left extra per non finire sotto al toggle della Knowledge Base
+       (fixed, top-left): così i tab non gli si sovrappongono più. */
+    padding: 12px 14px 12px 58px;
+    gap: 8px;
+  }
+
+  .desktop__brand {
+    display: none;
+  }
+
+  .desktop__topbar-left {
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* I tab collassano in un menu a tendina attivato dall'hamburger. */
+  .desktop__menu-toggle {
+    display: inline-flex;
+  }
+
+  .desktop__tabs {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    background: color-mix(in srgb, var(--bg) 98%, transparent);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-window);
+  }
+
+  .desktop__tabs--open {
+    display: flex;
+  }
+
+  .desktop__tab {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  /* L'orologio (e il suo separatore) è decorativo: su mobile occupa troppo
+     spazio e mandava a capo la riga. Restano tab + lingua + tema. */
+  .desktop__clock,
+  .desktop__topbar-separator {
+    display: none;
+  }
+
+  .home__main {
+    right: 0;
+    padding: 70px 16px 48px;
+  }
+
+  .tab-section {
+    padding: 70px 16px 48px;
+  }
+
+  .home__assistant {
+    height: min(520px, 72vh);
+    padding: 12px;
+  }
 }

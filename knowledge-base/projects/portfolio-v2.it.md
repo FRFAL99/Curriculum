@@ -2,8 +2,8 @@
 type: project
 lang: it
 slug: portfolio-v2
-title: "Portfolio v2 — Desktop"
-stack: ["React", "TypeScript", "Vite", "CSS Variables", "Lucide Icons"]
+title: "Portfolio v2"
+stack: ["React", "TypeScript", "Vite", "Netlify Functions", "OpenRouter"]
 image: /images/portfolio_v2.jpg
 demoUrl: "#"
 githubUrl: https://github.com/FRFAL99/Curriculum
@@ -12,20 +12,20 @@ order: 2
 
 ## Overview
 
-Il mio nuovo portfolio interattivo in stile desktop engineer. Costruito con React, TypeScript e Vite, con drag delle finestre, orologio di sistema, coordinate del mouse e switch multilingua. È anche il progetto che stai guardando ora.
+Il mio portfolio interattivo: una landing page con Home e tab (Curriculum, Progetti, Developer Notes) e un assistente AI che risponde su di me, grounded su una Knowledge Base in Markdown. Costruito con React, TypeScript e Vite, con tema chiaro/scuro e multilingua IT/EN. È anche il progetto che stai guardando ora.
 
 ## Problem
 
-Il vecchio portfolio aveva contenuti duplicati in tre punti diversi (ResumeWindow, ExperienceWindow, PrintableResume), difficili da mantenere allineati, e nessuna base dati pronta per un futuro assistente AI grounded sui dati reali.
+Il vecchio portfolio aveva gli stessi contenuti duplicati in tre punti diversi (Resume, Experience, PrintableResume), difficili da mantenere allineati, e nessuna base dati pronta per un assistente AI grounded sui dati reali.
 
 ## Solution
 
-Architettura "desktop-style" con finestre trascinabili, e dalla Fase 8 una Knowledge Base in Markdown con frontmatter come Single Source of Truth, letta a build-time e condivisa da tutti i componenti — sito, e in futuro l'assistente AI.
+Una Knowledge Base in Markdown con frontmatter come Single Source of Truth, letta a build-time dalla UI e a runtime dalla Netlify Function dell'assistente AI: gli stessi file `.md` alimentano sito e AI, così aggiungere un contenuto lo rende disponibile ovunque senza toccare il codice. L'interfaccia è una landing page classica con Home + tab (evoluta da un primo prototipo in stile desktop), con l'AI che cita le fonti effettivamente usate.
 
 ## Challenges
 
-Sincronizzare stato e interazioni di più finestre (drag, minimize, maximize, persistenza in localStorage), gestire il multilingua IT/EN su tutti i contenuti, e un bug non banale nel polyfill di `Buffer` necessario per far funzionare `gray-matter` nel browser.
+Tenere UI e AI perfettamente allineate da un'unica fonte Markdown, dare grounding all'assistente con citazione delle fonti reali (niente allucinazioni fuori scope), gestire il multilingua IT/EN su tutti i contenuti, e un bug non banale nel polyfill di `Buffer` necessario per far funzionare `gray-matter` nel browser.
 
 ## Future Improvements
 
-Knowledge Document Viewer (questa fase), poi un assistente AI grounded sulla Knowledge Base con Explainability delle fonti citate.
+Deep-link al singolo case study/articolo, cross-reference tra documenti della Knowledge Base e ricerca/categorizzazione degli articoli.

@@ -19,7 +19,6 @@ import {
   getSkills,
 } from "../lib/knowledgeBase";
 import { useLanguage } from "../context/useLanguage";
-import { useWindowManager } from "./useWindowManager";
 import { useIsMobile } from "../utils/useIsMobile";
 import { readJSON, writeJSON } from "../utils/storage";
 import type { TranslationKey } from "../context/translations";
@@ -77,9 +76,14 @@ function searchTextFor(
   return [itemLabel, doc.body, ...tags].join(" ").toLowerCase();
 }
 
-export function KnowledgeExplorer() {
+export function KnowledgeExplorer({
+  activePath,
+  onOpenDoc,
+}: {
+  activePath: string | null;
+  onOpenDoc: (path: string) => void;
+}) {
   const { language, t } = useLanguage();
-  const { windows, openWindow } = useWindowManager();
   const isMobile = useIsMobile();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -163,12 +167,6 @@ export function KnowledgeExplorer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, trimmedQuery]);
 
-  const activeDocWindow = windows["knowledge-document"];
-  const activePath =
-    activeDocWindow && !activeDocWindow.minimized
-      ? (activeDocWindow.payload as { path?: string } | undefined)?.path
-      : undefined;
-
   function isExpanded(id: string): boolean {
     return expanded[id] ?? true;
   }
@@ -183,7 +181,7 @@ export function KnowledgeExplorer() {
 
   function handleOpen(path?: string) {
     if (!path) return;
-    openWindow("knowledge-document", { path });
+    onOpenDoc(path);
     if (isMobile) setMobileOpen(false);
   }
 

@@ -6,12 +6,11 @@ import './index.css'
 import App from './App.tsx'
 import { removeKeys } from './utils/storage'
 
-// Ogni apertura del sito riparte "pulita": nessuna finestra aperta e chat
-// vuota. Puliamo lo stato persistito UNA VOLTA al boot, prima del render;
-// durante la sessione la persistenza resta attiva, così cambiare tab
-// (Home ↔ Developer Notes) non azzera una conversazione in corso.
-// Le preferenze (tema, lingua) restano salvate.
-removeKeys(['windowManagerState', 'assistantConversation'])
+// Ogni apertura del sito riparte "pulita": chat vuota. Puliamo lo stato
+// persistito UNA VOLTA al boot, prima del render; durante la sessione la
+// persistenza resta attiva, così cambiare tab non azzera una conversazione
+// in corso. Le preferenze (tema, lingua) restano salvate.
+removeKeys(['assistantConversation'])
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
