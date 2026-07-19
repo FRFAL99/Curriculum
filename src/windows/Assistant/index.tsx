@@ -218,12 +218,12 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
             <div className="assistant-window__starters">
               {conversationStarters[language].slice(0, MAX_STARTERS).map((starter) => (
                 <button
-                  key={starter}
+                  key={starter.label}
                   type="button"
                   className="assistant-window__starter"
-                  onClick={() => handleSend(starter)}
+                  onClick={() => handleSend(starter.prompt)}
                 >
-                  {starter}
+                  {starter.label}
                 </button>
               ))}
             </div>

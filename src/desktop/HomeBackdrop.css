@@ -77,8 +77,8 @@
   opacity: 0.85;
 }
 
-/* Mobile: la composizione è scalata parecchio; ingrandisco punti e nodi e alzo
-   l'opacità così lo sfondo resta leggibile invece di sparire in puntini fini. */
+/* Mobile: composizione verticale dedicata (vedi HomeBackdrop.tsx). Punti un
+   filo più grandi/opachi per restare leggibili. */
 @media (max-width: 640px) {
   .home-backdrop {
     opacity: 1;
@@ -87,12 +87,12 @@
     opacity: 0.9;
   }
   .home-backdrop__dot {
-    r: 5.5;
-    opacity: 0.36;
+    r: 3.2;
+    opacity: 0.34;
   }
   .home-backdrop__node {
-    r: 8;
-    opacity: 0.46;
+    r: 5;
+    opacity: 0.44;
   }
 }
 

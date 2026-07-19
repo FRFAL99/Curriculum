@@ -138,26 +138,22 @@ export type TranslationKey = keyof typeof translations.it;
 
 /**
  * Suggerimenti di conversazione (documento di visione "Knowledge Base +
- * AI Assistant"). Array, non stringa: tenuto fuori da `translations` per
- * non alterare il tipo di ritorno `string` di `t()` in `LanguageContext.tsx`.
+ * AI Assistant"). Ogni voce ha una `label` breve (mostrata sul chip, per
+ * stare tutta su una riga sotto la barra) e un `prompt` completo (il testo
+ * effettivamente inviato all'AI). Tenuto fuori da `translations` per non
+ * alterare il tipo di ritorno `string` di `t()` in `LanguageContext.tsx`.
  */
-export const conversationStarters: Record<Language, string[]> = {
+export const conversationStarters: Record<Language, { label: string; prompt: string }[]> = {
   it: [
-    "Raccontami della tua esperienza",
-    "Di quale progetto sei più orgoglioso?",
-    "Spiegami Antichità Fallavena",
-    "Mostrami la tua esperienza backend",
-    "Quali tecnologie usi di più?",
-    "Come hai costruito questo portfolio?",
-    "Cosa stai imparando ora?",
+    { label: "Esperienza", prompt: "Raccontami della tua esperienza" },
+    { label: "Progetti", prompt: "Di quale progetto sei più orgoglioso?" },
+    { label: "Antichità Fallavena", prompt: "Spiegami il progetto Antichità Fallavena" },
+    { label: "Backend", prompt: "Mostrami la tua esperienza backend" },
   ],
   en: [
-    "Tell me about your experience",
-    "Which project are you most proud of?",
-    "Explain Antichità Fallavena",
-    "Show your backend experience",
-    "Which technologies do you use the most?",
-    "How did you build this portfolio?",
-    "What are you currently learning?",
+    { label: "Experience", prompt: "Tell me about your experience" },
+    { label: "Projects", prompt: "Which project are you most proud of?" },
+    { label: "Antichità Fallavena", prompt: "Explain the Antichità Fallavena project" },
+    { label: "Backend", prompt: "Show your backend experience" },
   ],
 };
