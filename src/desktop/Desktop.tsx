@@ -4,8 +4,7 @@ import { Wallpaper } from "./Wallpaper";
 import { KnowledgeExplorer } from "./KnowledgeExplorer";
 import { DeveloperNotesSection } from "./DeveloperNotesSection";
 import { DocumentDetail } from "./DocumentDetail";
-import { HomeHero } from "./HomeHero";
-import { HomeContact } from "./HomeContact";
+import { HomeFooter } from "./HomeFooter";
 import { useLanguage } from "../context/useLanguage";
 import { readJSON, writeJSON } from "../utils/storage";
 import { AssistantWindow } from "../windows/Assistant";
@@ -124,7 +123,7 @@ export function Desktop() {
         </div>
       </header>
 
-      {activeTab === "home" && <HomeSection onNavigate={selectTab} />}
+      {activeTab === "home" && <HomeSection />}
 
       {activeTab === "resume" && (
         <div className="tab-section">
@@ -141,8 +140,8 @@ export function Desktop() {
   );
 }
 
-/** Home: hero + assistant + contatti, con la Knowledge Base come doc laterale. */
-function HomeSection({ onNavigate }: { onNavigate: (tab: "resume" | "projects") => void }) {
+/** Home: solo l'AI Assistant a tutta pagina, con la Knowledge Base come doc laterale. */
+function HomeSection() {
   const [docPath, setDocPath] = useState<string | null>(null);
 
   return (
@@ -151,12 +150,9 @@ function HomeSection({ onNavigate }: { onNavigate: (tab: "resume" | "projects") 
         {docPath ? (
           <DocumentDetail path={docPath} onBack={() => setDocPath(null)} />
         ) : (
-          <div className="home__stack">
-            <HomeHero onNavigate={onNavigate} />
-            <div className="home__assistant">
-              <AssistantWindow onOpenDoc={setDocPath} />
-            </div>
-            <HomeContact />
+          <div className="home__inner">
+            <AssistantWindow onOpenDoc={setDocPath} />
+            <HomeFooter />
           </div>
         )}
       </div>
