@@ -15,32 +15,30 @@ devlog e il registro tiene lo stato delle Fasi. STATO resta sotto le 100 righe.
 **Il sito è online su Netlify** come landing page a quattro tab (Home con AI Assistant, Resume,
 Projects, Notes), in italiano e inglese, dalla Fase 18 (19 luglio 2026).
 
-**Venti Fasi chiuse, dalla 1 alla 20**, elencate in [registro.md](registro.md). Le ultime due,
-del 6 ottobre, hanno rimesso in piedi l'AI Assistant: fallback su più modelli `:free` di
-OpenRouter, risposte non più troncate, quota protetta da un rate limit per visitatore, errori
-tradotti.
+**Ventitré Fasi chiuse, dalla 1 alla 23**, elencate in [registro.md](registro.md). Le Fasi 19 e 20
+hanno rimesso in piedi l'AI Assistant (fallback su più modelli `:free` di OpenRouter, risposte non
+più troncate, quota protetta, errori tradotti); le 21–23 (piano v1) danno al link un'anteprima e
+al sito un profilo leggibile senza JavaScript.
 
 **Controlli**: `npm run lint` e `npm run build` puliti, in CI su ogni PR. Test automatici: nessuno.
 
-**Piano aperto**: [v1, il link condiviso si presenta da solo](piano-v1-il-link-condiviso-si-presenta.md),
-Fasi 21–23: chiuse la 21 (titolo, description e Open Graph generati dalla KB) e la 22
-(immagine di anteprima `public/og.png`), resta l'HTML statico (23).
+**Nessun piano aperto.** Il [piano v1](piano-v1-il-link-condiviso-si-presenta.md) è chiuso: il link
+condiviso mostra titolo, descrizione e immagine, e il sito si legge anche senza JavaScript. Il
+prossimo numero libero è il **24**.
 
 ## Cosa manca
 
 In ordine di priorità, dall'analisi del 6 ottobre 2026. Ognuna è candidata a un piano.
 
-1. **L'HTML iniziale è un `<div>` vuoto**: chi non esegue JavaScript non vede nessun contenuto
-   (piano v1, Fase 23).
-2. **Il JavaScript è un unico file da 569 KB (163 KB gzip).** Dentro ci sono `gray-matter` e il
+1. **Il JavaScript è un unico file da 569 KB (163 KB gzip).** Dentro ci sono `gray-matter` e il
    polyfill `Buffer`, che servono solo a leggere il frontmatter e si possono spostare nella
    build; i tab si possono caricare in modo pigro.
-3. **Nessun test.** La regola delle coppie `.it.md`/`.en.md` è affidata alla disciplina, e la
+2. **Nessun test.** La regola delle coppie `.it.md`/`.en.md` è affidata alla disciplina, e la
    logica della function (fallback dei modelli, limiti della cronologia) non ha test.
-4. **Pochi contenuti.** Due progetti, di cui uno è il sito stesso, e due Developer Notes. Serve
+3. **Pochi contenuti.** Due progetti, di cui uno è il sito stesso, e due Developer Notes. Serve
    materiale di Francesco.
-5. **Accessibilità e prestazioni da telefono mai misurate** (Lighthouse a larghezza mobile).
-6. **Nessun dato su chi visita e cosa chiede all'Assistant.** Opzionale.
+4. **Accessibilità e prestazioni da telefono mai misurate** (Lighthouse a larghezza mobile).
+5. **Nessun dato su chi visita e cosa chiede all'Assistant.** Opzionale.
 
 ## Cosa è bloccato
 
