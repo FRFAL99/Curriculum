@@ -30,6 +30,7 @@ npm run dev:full   # frontend + Netlify Function dell'Assistant (serve .env, ved
 npm run lint       # oxlint
 npm run build      # tsc -b + vite build → dist/
 npm run preview    # serve dist/ in locale
+npm run og         # rigenera public/og.png, l'immagine di anteprima del link
 ```
 
 La CI GitHub (`.github/workflows/ci.yml`) esegue lint e build su ogni PR e su ogni push su `main`.

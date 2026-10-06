@@ -42,6 +42,12 @@ scrive `<title>` («nome — ruolo»), meta description (le prime frasi del corp
 Open Graph e Twitter card. L'anteprima è in inglese per scelta (piano v1); `og:url` e `canonical`
 usano la variabile `URL` che Netlify imposta in build, e mancano nelle build locali.
 
+L'immagine di anteprima è `public/og.png` (1200×630), **committata**: la genera `npm run og`
+(`scripts/og-image.mjs`) leggendo nome, ruolo e luogo da `about.en.md`, con un Chromium
+(`CHROMIUM_PATH`, altrimenti Google Chrome installato). La build fallisce se manca. Nelle
+anteprime di deploy `og:image` punta all'anteprima stessa (`DEPLOY_PRIME_URL`), in produzione a
+`URL`.
+
 ## La UI
 
 ```

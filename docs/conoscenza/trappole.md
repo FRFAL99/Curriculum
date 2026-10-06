@@ -23,5 +23,8 @@ non solo nel devlog. La più frequente in alto.
 6. **Il rate limit di una function non si dichiara in `netlify.toml`.** Va nel `config`
    esportato dalla function, insieme al `path`; per questo `/api/assistant` non è più un
    `[[redirects]]` (Fase 20).
-7. **Un 429 di Netlify non ha corpo JSON.** La UI deve trattare ogni 429 come «troppe
+7. **Cambiare nome, ruolo o luogo in `about.en.md` non aggiorna l'immagine di anteprima.**
+   `public/og.png` è un file committato: va rigenerato con `npm run og` e committato insieme alla
+   modifica della KB (piano v1, Fase 22). Titolo e description invece si aggiornano da soli.
+8. **Un 429 di Netlify non ha corpo JSON.** La UI deve trattare ogni 429 come «troppe
    richieste» guardando lo stato HTTP, non il corpo (Fase 20).
