@@ -88,8 +88,19 @@ vuota.
   `netlify/functions/assistant.ts` (non in `netlify.toml`).
 - **Input**: `{ message, language, history? }`. Limiti: messaggio ≤ 2000 caratteri, cronologia
   ≤ 10 messaggi, ognuno ≤ 4000 caratteri, totale ≤ 12000, altrimenti 400.
-- **Contesto**: tutta la KB nella lingua richiesta, più i file lang-neutral, va nel prompt; la risposta chiude con un blocco
-  fonti che la UI mostra come link ai documenti.
+- **Contesto**: tutta la KB nella lingua richiesta, più i file lang-neutral, va nel prompt.
+- **Formato della risposta del modello**: il testo, poi `---FOLLOWUPS---` con fino a tre domande
+  suggerite, poi `---SOURCES---` con i percorsi dei documenti usati. Le funzioni che separano le
+  parti stanno in `netlify/functions/lib/answer.ts`.
+- **Streaming**: la function chiede a OpenRouter `stream: true` e risponde in NDJSON: righe
+  `{ "delta" }` col testo man mano che arriva (`visibleAnswer` non lascia mai passare marcatori o
+  l'etichetta di scope) e una riga `{ "done": true, answer, sources, followups, stats }`. Prima del
+  primo testo gli errori sono codici HTTP con corpo JSON; dopo, una riga `{ "error" }`.
+- **Nella chat**: le fonti diventano link ai documenti; le domande suggerite chip sotto l'ultima
+  risposta; dalla seconda risposta compare un invito al contatto (email e LinkedIn da
+  `config/*.md`, PDF con `window.print()`). La domanda di avvio su un progetto viene dal primo
+  progetto per `order`.
+- **Niente si salva lato server**: la conversazione vive solo nel browser (scelta di Francesco).
 - **Modelli**: `OPENROUTER_MODEL` se impostato, poi i default `:free` di `DEFAULT_MODELS`, al
   massimo tre tentativi.
 - **Quota**: piano gratuito di OpenRouter (50 richieste/giorno sui `:free`), protetto da un rate

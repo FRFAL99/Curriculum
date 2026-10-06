@@ -6,13 +6,13 @@ categories:
     labels:
       it: Linguaggi
       en: Languages
-    skills: ["C#", "JavaScript", "SQL", "HTML"]
+    skills: ["C#", "JavaScript", "TypeScript", "SQL", "HTML"]
   - key: skillsFramework
     icon: Layers
     labels:
       it: Framework & Tech
       en: Framework & Tech
-    skills: [".NET", "React", "Azure"]
+    skills: [".NET", "React", "Next.js", "Azure", "Firebase"]
   - key: skillsCloud
     icon: Cloud
     labels:

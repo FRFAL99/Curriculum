@@ -18,6 +18,43 @@ Non serve leggerlo per intero: `grep -n '^## ' docs/devlog.md` ne dà l'indice.
 
 ---
 
+## 2026-10-06 — Fasi 29-32: la conversazione va avanti, e il piano v4 è chiuso
+
+Piano: [piano-v4-la-conversazione-va-avanti.md](piano-v4-la-conversazione-va-avanti.md). Da una
+lista di idee Francesco ha escluso tre cose: più quota OpenRouter, salvare le chat dei visitatori,
+«incolla un annuncio di lavoro». Il resto è qui.
+
+**Fase 29 — domande suggerite.** Il prompt chiede fino a tre domande dopo `---FOLLOWUPS---`,
+prima delle fonti. Il parsing è uscito da `assistant.ts` ed è andato in
+`netlify/functions/lib/answer.ts`, che accetta i due blocchi in qualunque ordine, toglie elenchi e
+virgolette, scarta i doppioni e le domande lunghe.
+
+**Fase 30 — streaming.** OpenRouter risponde in SSE, la function rimanda NDJSON. La parte
+delicata è `visibleAnswer`: deve trattenere l'inizio finché può essere `IN_SCOPE:` e la coda
+finché può essere l'inizio di un marcatore, e crescere solo per aggiunta. Un test la prova su
+pezzi da 1 a 13 caratteri. L'animazione finta `startReveal` è sparita.
+
+**Fase 31 — invito al contatto.** Dopo la seconda risposta, Email, LinkedIn e PDF; si chiude con
+una X.
+
+**Fase 32 — avvio dalla KB e contenuti coerenti.** La domanda di avvio «Antichità Fallavena» era
+scritta in `translations.ts`: ora viene dal primo progetto della KB. `skills.md` cita TypeScript,
+Next.js e Firebase, già presenti nei progetti. `portfolio-v2` racconta il polyfill `Buffer` al
+passato.
+
+### Verifica
+
+- `npm run lint`, `npm test` (190 test), `npm run build` e `npm run size` passano.
+- A 390 px, tema chiaro e scuro, con la function vera e OpenRouter finto (stream lento in un
+  middleware di `vite`, non committato): testo che compare a pezzi, campo disabilitato durante lo
+  streaming, tre domande suggerite, invito al contatto dalla seconda risposta, nessun errore in
+  console. Le competenze nel Resume vanno a capo bene.
+- Anteprima Netlify con la chiave vera: la risposta arriva in 49 righe NDJSON distribuite su
+  1,3 s, dopo circa 4 s di attesa del modello; tre domande suggerite e due fonti, nessun
+  marcatore nel testo.
+
+---
+
 ## 2026-10-06 — Fasi 27-28: il sito pesa meno, e il piano v3 è chiuso
 
 Chi apriva il sito scaricava 569 KB di JavaScript (163 KB gzip). Ora 336 KB (107 gzip, 103 col

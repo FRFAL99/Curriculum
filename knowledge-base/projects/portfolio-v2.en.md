@@ -24,7 +24,7 @@ A Markdown Knowledge Base with frontmatter as the Single Source of Truth, read a
 
 ## Challenges
 
-Keeping the UI and the AI perfectly aligned from a single Markdown source, grounding the assistant with citations of real sources (no out-of-scope hallucinations), handling IT/EN content everywhere, and a non-obvious bug in the `Buffer` polyfill needed to make `gray-matter` work in the browser.
+Keeping the UI and the AI perfectly aligned from a single Markdown source, grounding the assistant with citations of real sources (no out-of-scope hallucinations), handling IT/EN content everywhere, and keeping the site light: `gray-matter` needed a `Buffer` polyfill in the browser, a non-obvious bug at first, and was later moved to build time, cutting the JavaScript from 569 KB to 336 KB.
 
 ## Future Improvements
 

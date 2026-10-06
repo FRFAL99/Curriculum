@@ -73,6 +73,10 @@ export const translations = {
     assistantStatTokens: "Token in ingresso → in uscita",
     assistantStatTime: "Tempo di risposta",
     assistantStatSpeed: "Velocità di generazione",
+    assistantFollowups: "Domande suggerite",
+    assistantContactPrompt: "Ti interessa il profilo di Francesco? Scrivigli direttamente.",
+    assistantContactEmail: "Email",
+    assistantProjectStarter: "Spiegami il progetto {title}",
   },
   en: {
     // Topbar & System
@@ -135,6 +139,10 @@ export const translations = {
     assistantStatTokens: "Input → output tokens",
     assistantStatTime: "Response time",
     assistantStatSpeed: "Generation speed",
+    assistantFollowups: "Suggested questions",
+    assistantContactPrompt: "Interested in Francesco's profile? Reach out to him directly.",
+    assistantContactEmail: "Email",
+    assistantProjectStarter: "Explain the {title} project",
   }
 };
 
@@ -146,19 +154,20 @@ export type TranslationKey = keyof typeof translations.it;
  * stare tutta su una riga sotto la barra) e un `prompt` completo (il testo
  * effettivamente inviato all'AI). Tenuto fuori da `translations` per non
  * alterare il tipo di ritorno `string` di `t()` in `LanguageContext.tsx`.
+ *
+ * Nessuna voce nomina un progetto: quella sul progetto in evidenza la
+ * aggiunge l'Assistant leggendo la knowledge base (piano v4).
  */
 export const conversationStarters: Record<Language, { label: string; prompt: string }[]> = {
   it: [
     { label: "Esperienza", prompt: "Raccontami l'esperienza lavorativa di Francesco" },
     { label: "Progetti", prompt: "Quali progetti ha realizzato Francesco?" },
-    { label: "Antichità Fallavena", prompt: "Spiegami il progetto Antichità Fallavena" },
     { label: "Backend", prompt: "Che esperienza backend ha Francesco?" },
     { label: "Contatti", prompt: "Come posso contattare Francesco e qual è la sua disponibilità?" },
   ],
   en: [
     { label: "Experience", prompt: "Tell me about Francesco's work experience" },
     { label: "Projects", prompt: "Which projects has Francesco built?" },
-    { label: "Antichità Fallavena", prompt: "Explain the Antichità Fallavena project" },
     { label: "Backend", prompt: "What backend experience does Francesco have?" },
     { label: "Contact", prompt: "How can I contact Francesco and what's his availability?" },
   ],
