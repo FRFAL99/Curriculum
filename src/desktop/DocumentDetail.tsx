@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react";
-import { getAllDocs, type KnowledgeDoc } from "../lib/knowledgeBase";
+import { getAllDocs, getDocTitle, type KnowledgeDoc } from "../lib/knowledgeBase";
 import { renderBlock, getReadingTime } from "../lib/markdown";
 import { useLanguage } from "../context/useLanguage";
 import type { TranslationKey } from "../context/translations";
@@ -25,18 +25,6 @@ const TAG_FIELD: Record<string, string> = {
   project: "stack",
   experience: "skills",
 };
-
-const TITLE_FIELD: Record<string, string> = {
-  experience: "role",
-  education: "degree",
-  about: "name",
-};
-
-function getTitle(doc: KnowledgeDoc): string {
-  const field = TITLE_FIELD[doc.type] ?? "title";
-  const value = (doc.frontmatter as Record<string, unknown>)[field];
-  return typeof value === "string" ? value : doc.slug;
-}
 
 function getTags(doc: KnowledgeDoc): string[] | undefined {
   const field = TAG_FIELD[doc.type];
@@ -80,7 +68,7 @@ function DocumentBody({ doc }: { doc: KnowledgeDoc }) {
 
   return (
     <>
-      <h1 className="doc-detail__title">{getTitle(doc)}</h1>
+      <h1 className="doc-detail__title">{getDocTitle(doc)}</h1>
 
       <div className="doc-detail__meta">
         {typeLabelKey && <span className="doc-detail__badge">{t(typeLabelKey)}</span>}

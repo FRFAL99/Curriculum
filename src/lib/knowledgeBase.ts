@@ -186,6 +186,19 @@ export function getSocials(): KnowledgeDoc<SocialFrontmatter> | undefined {
   return byType("social")[0] as unknown as KnowledgeDoc<SocialFrontmatter> | undefined;
 }
 
+const TITLE_FIELD: Record<string, string> = {
+  experience: "role",
+  education: "degree",
+  about: "name",
+};
+
+/** Titolo leggibile di un documento (campo del frontmatter per tipo, altrimenti lo slug). */
+export function getDocTitle(doc: KnowledgeDoc): string {
+  const field = TITLE_FIELD[doc.type] ?? "title";
+  const value = (doc.frontmatter as Record<string, unknown>)[field];
+  return typeof value === "string" ? value : doc.slug;
+}
+
 /**
  * Tutti i documenti, non filtrati. Non ancora usato da nessun componente:
  * pensato per il retrieval dell'AI Assistant (Fase 10) e per il Knowledge

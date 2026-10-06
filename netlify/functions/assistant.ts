@@ -14,6 +14,14 @@ import { loadKnowledgeBase } from "./lib/kb";
 const SOURCES_MARKER = "---SOURCES---";
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_HISTORY_LENGTH = 10;
+// La cronologia arriva dal browser: senza tetti chiunque può gonfiare il
+// prompt e consumare in poche chiamate la quota giornaliera dei modelli :free.
+const MAX_HISTORY_ITEM_LENGTH = 4000;
+const MAX_HISTORY_TOTAL_LENGTH = 12000;
+// I modelli :free di ripiego "ragionano" prima di rispondere e il
+// ragionamento conta nei token di output: con 1000 le risposte lunghe si
+// troncavano prima del blocco fonti.
+const MAX_OUTPUT_TOKENS = 2500;
 
 /**
  * Modelli :free usati in cascata tramite il parametro `models` di
@@ -45,10 +53,13 @@ const REFUSAL_EXAMPLE: Record<"it" | "en", string> = {
 
 function isValidHistory(value: unknown): value is ChatMessage[] {
   if (!Array.isArray(value) || value.length > MAX_HISTORY_LENGTH) return false;
+  let total = 0;
   return value.every((m) => {
     if (!m || typeof m !== "object") return false;
     const { role, content } = m as Record<string, unknown>;
-    return (role === "user" || role === "assistant") && typeof content === "string";
+    if ((role !== "user" && role !== "assistant") || typeof content !== "string") return false;
+    total += content.length;
+    return content.length <= MAX_HISTORY_ITEM_LENGTH && total <= MAX_HISTORY_TOTAL_LENGTH;
   });
 }
 
@@ -66,7 +77,9 @@ Classify every question into one of three scopes before answering:
 
 This classification is for your own internal reasoning only — never write the words "IN_SCOPE", "PARTIALLY_IN_SCOPE", or "OUT_OF_SCOPE" (or any label/heading naming the scope) in your reply. The user must see only the natural-language answer itself, starting directly with your first sentence.
 
-Always answer in ${language === "it" ? "Italian" : "English"}, in first person as if you were speaking on Francesco's behalf (not as Francesco himself).
+Always answer in ${language === "it" ? "Italian" : "English"}. You are an assistant speaking about Francesco, not Francesco himself: always refer to him in the third person by name (e.g. "${language === "it" ? "Francesco ha lavorato…" : "Francesco has worked…"}"), never with "I"/"my", even when the visitor addresses him as "you".
+
+Never add facts, opinions or preferences that are not in the Knowledge Base (e.g. which project is his favourite, skills or tasks not listed, dates). If the Knowledge Base does not cover what was asked, say so briefly and offer what it does cover.
 
 Knowledge Base:
 
@@ -126,7 +139,12 @@ export default async (req: Request): Promise<Response> => {
   }
   const language: "it" | "en" = rawLanguage === "en" ? "en" : "it";
   if (rawHistory !== undefined && !isValidHistory(rawHistory)) {
-    return jsonResponse({ error: `"history" must be an array of at most ${MAX_HISTORY_LENGTH} {role, content} messages` }, 400);
+    return jsonResponse(
+      {
+        error: `"history" must be an array of at most ${MAX_HISTORY_LENGTH} {role, content} messages, each up to ${MAX_HISTORY_ITEM_LENGTH} characters and ${MAX_HISTORY_TOTAL_LENGTH} in total`,
+      },
+      400,
+    );
   }
   const history = (rawHistory as ChatMessage[] | undefined) ?? [];
 
@@ -165,11 +183,18 @@ export default async (req: Request): Promise<Response> => {
         "HTTP-Referer": "https://curriculumfrfal.netlify.app",
         "X-Title": "Francesco Fallavena - Portfolio Assistant",
       },
-      body: JSON.stringify({ models, messages, temperature: 0.3, max_tokens: 1000 }),
+      body: JSON.stringify({
+        models,
+        messages,
+        temperature: 0.3,
+        max_tokens: MAX_OUTPUT_TOKENS,
+        // Ragionamento breve e non restituito: ignorato dai modelli che non ragionano.
+        reasoning: { effort: "low", exclude: true },
+      }),
     });
   } catch (err) {
     console.error("OpenRouter fetch failed:", err);
-    return jsonResponse({ error: "Failed to reach OpenRouter" }, 502);
+    return jsonResponse({ error: "upstream_unreachable" }, 502);
   }
 
   if (upstream.status === 429) {
@@ -180,17 +205,23 @@ export default async (req: Request): Promise<Response> => {
   if (!upstream.ok) {
     const detail = await upstream.text().catch(() => "");
     console.error(`OpenRouter error ${upstream.status}:`, detail);
-    return jsonResponse({ error: `OpenRouter error: ${upstream.status}`, detail: detail.slice(0, 500) }, 502);
+    // Il dettaglio resta nei log della function: al visitatore basta sapere
+    // che l'assistente non è disponibile (la UI mostra un messaggio tradotto).
+    return jsonResponse({ error: "upstream_error" }, 502);
   }
 
   const data = (await upstream.json()) as {
     model?: string;
-    choices?: { message?: { content?: string } }[];
+    choices?: { message?: { content?: string }; finish_reason?: string }[];
     usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
   };
   const raw = data.choices?.[0]?.message?.content;
   if (typeof raw !== "string") {
-    return jsonResponse({ error: "Unexpected OpenRouter response shape" }, 502);
+    console.error("Unexpected OpenRouter response shape:", JSON.stringify(data).slice(0, 500));
+    return jsonResponse({ error: "upstream_error" }, 502);
+  }
+  if (data.choices?.[0]?.finish_reason === "length") {
+    console.warn(`OpenRouter answer truncated at ${MAX_OUTPUT_TOKENS} tokens (model ${data.model})`);
   }
 
   const elapsedMs = Date.now() - requestStartedAt;
@@ -205,4 +236,19 @@ export default async (req: Request): Promise<Response> => {
   };
 
   return jsonResponse({ ...parseAnswer(raw, validPaths), stats });
+};
+
+/**
+ * Percorso pubblico e rate limit per visitatore (regola nativa Netlify,
+ * disponibile anche sul piano gratuito). I limiti non si possono definire in
+ * `netlify.toml` per le function, per questo il percorso vive qui e non più
+ * in un `[[redirects]]`. Oltre il limite Netlify risponde 429 da solo.
+ */
+export const config = {
+  path: "/api/assistant",
+  rateLimit: {
+    windowLimit: 10,
+    windowSize: 60,
+    aggregateBy: ["ip", "domain"],
+  },
 };
