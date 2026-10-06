@@ -48,7 +48,7 @@ Un piano nuovo parte da `docs/piano-TEMPLATE.md`.
 
 ## Rituale di fine Fase (`/fine-fase`)
 
-1. `npm run lint` (oxlint) e `npm run build` (`tsc -b` + `vite build`) passano.
+1. `npm run lint` (oxlint), `npm test` (vitest) e `npm run build` (`tsc -b` + `vite build`) passano.
 2. Il sito è usato molto da mobile: ogni modifica UI si verifica anche a larghezza telefono.
 3. `docs/registro.md`: la riga della Fase passa a ✅.
 4. `docs/devlog.md`: voce nuova **in testa**, `## AAAA-MM-GG — Fase N: <titolo>`, chiusa da
@@ -59,8 +59,11 @@ Un piano nuovo parte da `docs/piano-TEMPLATE.md`.
    `docs/conoscenza/trappole.md`.
 7. Commit su un branch e PR verso `main`.
 
-Anche le correzioni piccole fuori piano chiudono con lint, build, verifica mobile e una voce di
-devlog.
+Anche le correzioni piccole fuori piano chiudono con lint, test, build, verifica mobile e una voce
+di devlog.
+
+Un piano si consegna in **un'unica PR**, una per piano, non una per Fase (chiesto da Francesco il
+6 ottobre 2026).
 
 ## Dove si scrive cosa
 

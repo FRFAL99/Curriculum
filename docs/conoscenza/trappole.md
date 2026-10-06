@@ -26,5 +26,9 @@ non solo nel devlog. La più frequente in alto.
 7. **Cambiare nome, ruolo o luogo in `about.en.md` non aggiorna l'immagine di anteprima.**
    `public/og.png` è un file committato: va rigenerato con `npm run og` e committato insieme alla
    modifica della KB (piano v1, Fase 22). Titolo e description invece si aggiornano da soli.
-8. **Un 429 di Netlify non ha corpo JSON.** La UI deve trattare ogni 429 come «troppe
+8. **`npm i` con una devDependency nuova può rompersi sui peer di `netlify-cli`.** Pinna
+   `@opentelemetry/api` a `~1.8.0` e va in conflitto con chi ne chiede `^1.9.0` (è successo con
+   Vitest). Il `overrides` in `package.json` lo tiene a 1.9.1: riguarda solo strumenti di
+   sviluppo.
+9. **Un 429 di Netlify non ha corpo JSON.** La UI deve trattare ogni 429 come «troppe
    richieste» guardando lo stato HTTP, non il corpo (Fase 20).

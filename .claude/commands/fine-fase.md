@@ -8,10 +8,10 @@ $ARGUMENTS
 **Fermati al primo rosso e dillo.** Non proseguire «tanto poi si sistema», e non riportare come
 fatto ciò che non è passato.
 
-## 1. Lint e build, nell'ordine della CI
+## 1. Lint, test e build, nell'ordine della CI
 
 ```bash
-npm run lint && npm run build
+npm run lint && npm test && npm run build
 ```
 
 ## 2. Il sito a larghezza telefono
@@ -48,3 +48,6 @@ cancella**. STATO resta sotto le 100 righe.
 
 Commit in italiano, conventional (`feat(scope): …`, `fix(scope): …`), su un branch, e PR verso
 `main`: **chiedendo prima all'utente**. Mai push diretto su `main`.
+
+Un piano si consegna in **un'unica PR**: se il piano ha altre Fasi aperte, il commit resta sul
+branch e la PR si apre quando l'ultima Fase è chiusa.
