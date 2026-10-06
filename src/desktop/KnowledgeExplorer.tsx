@@ -132,7 +132,12 @@ export function KnowledgeExplorer({
         icon: Sparkles,
         titleKey: "skillsTitle",
         path: skills?.path,
-        searchText: skills ? skills.body.toLowerCase() : undefined,
+        searchText: skills
+          ? skills.frontmatter.categories
+              .flatMap((c) => [c.labels.it, c.labels.en, ...c.skills])
+              .join(" ")
+              .toLowerCase()
+          : undefined,
       },
       {
         kind: "branch",

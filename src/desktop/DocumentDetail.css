@@ -75,6 +75,10 @@
   color: var(--text-secondary);
 }
 
+.doc-detail__skills {
+  margin-top: 8px;
+}
+
 .doc-detail__body {
   font-family: var(--font-sans);
   font-size: 16px;
