@@ -103,5 +103,10 @@ vuota.
 - Netlify pubblica `dist/` con Node 22; le function stanno in `netlify/functions`.
 - `npm run dev` avvia solo il frontend; `npm run dev:full` (netlify dev) anche la function, e
   richiede `OPENROUTER_API_KEY` in `.env` (vedi `.env.example`).
-- CI (`.github/workflows/ci.yml`): `npm run lint` e `npm run build` su ogni PR e su ogni push su
-  `main`. Test automatici: nessuno, per ora.
+- `npm test` = `vitest run`: i test stanno in `tests/` e girano in Node, senza chiave OpenRouter e
+  senza rete. Coprono la knowledge base vera (coppie `.it.md`/`.en.md`, `type`, campi
+  obbligatori), la function dell'Assistant chiamata dalla sua porta d'ingresso con `fetch`
+  sostituita, il plugin `kb-head` e gli helper Markdown. `tsconfig.tests.json` li fa controllare
+  anche da `tsc -b`.
+- CI (`.github/workflows/ci.yml`): `npm run lint`, `npm test` e `npm run build` su ogni PR e su
+  ogni push su `main`.

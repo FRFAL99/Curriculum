@@ -18,6 +18,52 @@ Non serve leggerlo per intero: `grep -n '^## ' docs/devlog.md` ne dà l'indice.
 
 ---
 
+## 2026-10-06 — Fasi 24-26: i test, e il piano v2 è chiuso
+
+Il repo non aveva test. Ora ne ha 156, con Vitest, in `tests/`, lanciati da `npm test` e in CI fra
+lint e build.
+
+**Fase 24 — la knowledge base.** I test leggono i `.md` veri e controllano le regole che finora
+reggevano sulla sola disciplina: ogni `.it.md` ha il suo `.en.md`, con lo stesso `type` e lo
+stesso `slug`; `lang` nel frontmatter coincide col nome del file; i file lang-neutral non lo
+dichiarano; ci sono i campi che i getter di `src/lib/knowledgeBase.ts` leggono senza verificarli;
+l'immagine di un progetto esiste davvero in `public/`.
+
+**Fase 25 — l'AI Assistant.** La function si prova dalla sua porta d'ingresso, con una `Request`
+vera e `fetch` sostituita: nessuna chiave, nessuna rete, nessuna quota consumata. Coperti i tetti
+della cronologia delle Fasi 19-20, la cascata dei tre modelli `:free` con `OPENROUTER_MODEL`
+davanti, la KB filtrata per lingua, le fonti scartate se il percorso non esiste, e il fatto che un
+errore di OpenRouter non arrivi al visitatore con il suo dettaglio.
+
+**Fase 26 — `kb-head` e Markdown.** Il codice del piano v1 gira solo in build, quindi un suo
+errore si scoprirebbe guardando l'anteprima di un link già condiviso. I test controllano titolo,
+Open Graph, l'immagine che nelle anteprime punta all'anteprima, il JSON-LD senza telefono, e
+l'escape: un `</script>` o un `<img onerror>` che arrivassero dalla knowledge base non devono
+uscire dal loro contenitore.
+
+**Scostamenti dal piano.** Tre.
+
+1. `npm i -D vitest` falliva: `netlify-cli` pinna `@opentelemetry/api` a `~1.8.0` e Vitest ne
+   chiede `^1.9.0`. Risolto con un `overrides` in `package.json`, che tocca solo strumenti di
+   sviluppo. La riga è anche in `conoscenza/trappole.md`.
+2. `tsc -b` non vedeva `tests/`: aggiunto `tsconfig.tests.json` fra le referenze, così un test che
+   non compila rompe la build come il resto del codice.
+3. Il primo test sul corpo dei documenti chiedeva che nessuno fosse vuoto, e falliva su
+   `education/perito-informatica`: il corpo di un titolo di studio è la tesi, e `Resume/index.tsx:143`
+   la rende solo se c'è. Il test è stato corretto, non il contenuto.
+
+Su richiesta di Francesco le tre Fasi arrivano in **un'unica PR**: da qui in avanti un piano si
+consegna in una PR sola, regola scritta in `CLAUDE.md` e in `/fine-fase`.
+
+### Verifica
+
+- `npm test`: 156 test verdi in meno di un secondo. `npm run lint` e `npm run build` passano.
+- Provato che i test servano: togliendo `projects/portfolio-v2.en.md` fallisce «esiste in italiano
+  e in inglese»; rinominando `company` in `xtel.en.md` fallisce «ha i campi obbligatori».
+- Nessuna modifica alla UI: questo piano non tocca `src/` se non in lettura.
+
+---
+
 ## 2026-10-06 — Fase 23: il sito si legge anche senza JavaScript, e il piano v1 è chiuso
 
 Fino a oggi chi apriva il sito senza eseguire JavaScript (molti crawler, i lettori che lo

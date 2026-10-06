@@ -57,6 +57,6 @@ Dalla Fase 21 la colonna `Piano` indica il file `piano-vN-*.md`.
 | 21 | Head generato dalla KB, `lang` coerente    | v1            | ✅     | 2026-10-06 |
 | 22 | Immagine di anteprima `og.png`             | v1            | ✅     | 2026-10-06 |
 | 23 | HTML statico in `#root` + JSON-LD `Person` | v1            | ✅     | 2026-10-06 |
-| 24 | Vitest, `npm test` in CI, test della KB    | v2            | ⬜     |            |
-| 25 | Test dell'AI Assistant                     | v2            | ⬜     |            |
-| 26 | Test di `kb-head` e helper Markdown        | v2            | ⬜     |            |
+| 24 | Vitest, `npm test` in CI, test della KB    | v2            | ✅     | 2026-10-06 |
+| 25 | Test dell'AI Assistant                     | v2            | ✅     | 2026-10-06 |
+| 26 | Test di `kb-head` e helper Markdown        | v2            | ✅     | 2026-10-06 |
