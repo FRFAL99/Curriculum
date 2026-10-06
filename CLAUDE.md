@@ -48,7 +48,8 @@ Un piano nuovo parte da `docs/piano-TEMPLATE.md`.
 
 ## Rituale di fine Fase (`/fine-fase`)
 
-1. `npm run lint` (oxlint), `npm test` (vitest) e `npm run build` (`tsc -b` + `vite build`) passano.
+1. `npm run lint` (oxlint), `npm test` (vitest), `npm run build` (`tsc -b` + `vite build`) e
+   `npm run size` (JavaScript sotto 120 KB gzip) passano.
 2. Il sito è usato molto da mobile: ogni modifica UI si verifica anche a larghezza telefono.
 3. `docs/registro.md`: la riga della Fase passa a ✅.
 4. `docs/devlog.md`: voce nuova **in testa**, `## AAAA-MM-GG — Fase N: <titolo>`, chiusa da

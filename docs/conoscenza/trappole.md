@@ -17,9 +17,11 @@ non solo nel devlog. La più frequente in alto.
 4. **I modelli che ragionano consumano i token di output.** Con `max_tokens` basso la risposta
    si tronca a metà e senza fonti (Fase 20). Oggi `max_tokens` è 2500 e il ragionamento è
    chiesto `low` ed escluso dalla risposta; un `finish_reason` = `length` finisce nei log.
-5. **`Buffer is not defined` e schermo bianco.** `gray-matter` usa `Buffer`, che il browser non
-   ha: il polyfill in `src/polyfills.ts` deve restare importato per primo in `src/main.tsx`
-   (Fase 8).
+5. **`gray-matter` non va importato nel codice del browser.** Porta con sé `esprima`, `js-yaml` e
+   il bisogno di un polyfill `Buffer` (schermo bianco senza, Fase 8): 210 KB. Dal piano v3 il
+   frontmatter si legge in build con `?kb` (`vite/kb-frontmatter.ts`); `npm run size` fallisce se
+   torna nel bundle. Il frontmatter arriva come JSON: una data YAML senza virgolette diventerebbe
+   una stringa, e un test lo impedisce.
 6. **Il rate limit di una function non si dichiara in `netlify.toml`.** Va nel `config`
    esportato dalla function, insieme al `path`; per questo `/api/assistant` non è più un
    `[[redirects]]` (Fase 20).

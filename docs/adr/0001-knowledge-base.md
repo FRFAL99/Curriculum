@@ -97,6 +97,9 @@ che leggere un array YAML già pronto.
   `Buffer` internamente, non fornito dal browser — richiede il polyfill
   `buffer` + `src/polyfills.ts` (vedi la Fase 8 in `docs/devlog.md`, Step 6, e il
   warning `eval` non bloccante allo Step 3).
+  *Aggiornamento, piano v3 (2026-10-06):* il frontmatter ora si legge in build
+  (`vite/kb-frontmatter.ts`); `gray-matter` non è più nel browser e il
+  polyfill è stato rimosso. La decisione di questo ADR non cambia.
 - `src/data/*.json` rimossi (sostituiti).
 - Aggiungere un nuovo fatto (nuova esperienza, nuovo progetto) oggi
   significa: creare due file `.md` (it/en) nella cartella giusta — nessuna

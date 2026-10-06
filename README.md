@@ -31,6 +31,7 @@ npm run lint       # oxlint
 npm run build      # tsc -b + vite build → dist/
 npm run preview    # serve dist/ in locale
 npm test           # vitest run: knowledge base, AI Assistant, plugin dell'anteprima
+npm run size       # dopo la build: il JavaScript resta sotto 120 KB gzip
 npm run og         # rigenera public/og.png, l'immagine di anteprima del link
 ```
 
