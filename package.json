@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "buffer": "^6.0.3",
+    "dompurify": "^3.4.16",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.24.0",
     "marked": "^18.0.6",

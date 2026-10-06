@@ -63,7 +63,9 @@ export const translations = {
     // Assistant Window (Fase 11)
     assistantPlaceholder: "Scrivi un messaggio...",
     assistantThinking: "Sto pensando...",
-    assistantRateLimited: "Abbiamo raggiunto il limite di richieste gratuite per oggi. Riprova tra qualche minuto.",
+    assistantTitle: "Chiedi di Francesco",
+    assistantRateLimited: "Troppe richieste in poco tempo. Riprova tra qualche minuto.",
+    assistantUnavailable: "L'assistente non è disponibile in questo momento. Riprova tra poco.",
     retry: "Riprova",
     send: "Invia",
     resetConversation: "Nuova conversazione",
@@ -123,7 +125,9 @@ export const translations = {
     // Assistant Window (Fase 11)
     assistantPlaceholder: "Type a message...",
     assistantThinking: "Thinking...",
-    assistantRateLimited: "We've hit today's free request limit. Please try again in a few minutes.",
+    assistantTitle: "Ask about Francesco",
+    assistantRateLimited: "Too many requests in a short time. Please try again in a few minutes.",
+    assistantUnavailable: "The assistant isn't available right now. Please try again shortly.",
     retry: "Retry",
     send: "Send",
     resetConversation: "New conversation",
@@ -145,17 +149,17 @@ export type TranslationKey = keyof typeof translations.it;
  */
 export const conversationStarters: Record<Language, { label: string; prompt: string }[]> = {
   it: [
-    { label: "Esperienza", prompt: "Raccontami della tua esperienza" },
-    { label: "Progetti", prompt: "Di quale progetto sei più orgoglioso?" },
+    { label: "Esperienza", prompt: "Raccontami l'esperienza lavorativa di Francesco" },
+    { label: "Progetti", prompt: "Quali progetti ha realizzato Francesco?" },
     { label: "Antichità Fallavena", prompt: "Spiegami il progetto Antichità Fallavena" },
-    { label: "Backend", prompt: "Mostrami la tua esperienza backend" },
-    { label: "Contatti", prompt: "Come posso contattarti e quali sono le tue disponibilità?" },
+    { label: "Backend", prompt: "Che esperienza backend ha Francesco?" },
+    { label: "Contatti", prompt: "Come posso contattare Francesco e qual è la sua disponibilità?" },
   ],
   en: [
-    { label: "Experience", prompt: "Tell me about your experience" },
-    { label: "Projects", prompt: "Which project are you most proud of?" },
+    { label: "Experience", prompt: "Tell me about Francesco's work experience" },
+    { label: "Projects", prompt: "Which projects has Francesco built?" },
     { label: "Antichità Fallavena", prompt: "Explain the Antichità Fallavena project" },
-    { label: "Backend", prompt: "Show your backend experience" },
-    { label: "Contact", prompt: "How can I contact you and what's your availability?" },
+    { label: "Backend", prompt: "What backend experience does Francesco have?" },
+    { label: "Contact", prompt: "How can I contact Francesco and what's his availability?" },
   ],
 };

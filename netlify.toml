@@ -18,7 +18,5 @@
   # deploy, causando 500 in produzione pur funzionando in locale.
   included_files = ["knowledge-base/**"]
 
-[[redirects]]
-  from = "/api/assistant"
-  to = "/.netlify/functions/assistant"
-  status = 200
+# /api/assistant è dichiarato nel `config` della function (assistant.ts),
+# insieme al rate limit per visitatore: niente più redirect qui.

@@ -5,6 +5,9 @@ import { useLanguage } from "../../context/useLanguage";
 import { conversationStarters } from "../../context/translations";
 import { readJSON, writeJSON } from "../../utils/storage";
 import { renderBlock } from "../../lib/markdown";
+import { getAllDocs, getDocTitle } from "../../lib/knowledgeBase";
+import type { TranslationKey } from "../../context/translations";
+import DOMPurify from "dompurify";
 import "./Assistant.css";
 
 interface ChatStats {
@@ -26,6 +29,28 @@ interface ChatMessage {
 const STORAGE_KEY = "assistantConversation";
 const MAX_HISTORY = 10;
 const MAX_STARTERS = 5;
+
+// Fonti senza un titolo nel frontmatter (documenti lang-neutral).
+const SOURCE_LABEL_KEY: Record<string, TranslationKey> = {
+  skills: "skillsTitle",
+  contact: "contactTitle",
+  social: "contactTitle",
+};
+
+function sourceLabel(path: string, t: (key: TranslationKey) => string): string {
+  const doc = getAllDocs().find((d) => d.path === path);
+  if (!doc) return path.split("/").pop() ?? path;
+  const key = SOURCE_LABEL_KEY[doc.type];
+  return key ? t(key) : getDocTitle(doc);
+}
+
+// Il testo arriva da un modello: lo si ripulisce prima di inserirlo come HTML.
+function renderAnswer(markdown: string): string {
+  return DOMPurify.sanitize(renderBlock(markdown));
+}
+
+/** Errore già pronto da mostrare al visitatore, nella lingua del sito. */
+class AssistantError extends Error {}
 
 export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => void }) {
   const { language, t } = useLanguage();
@@ -95,37 +120,29 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
         signal: controller.signal,
       });
 
-      // Parsing difensivo: se la function non è attiva (es. `npm run dev` senza
-      // Netlify) o risponde con corpo vuoto/non-JSON, evitiamo il criptico
-      // "Unexpected end of JSON input" e mostriamo un messaggio chiaro.
+      // 429 arriva sia dal rate limit Netlify (corpo non JSON) sia dalla
+      // quota OpenRouter: in entrambi i casi basta riprovare più tardi.
+      if (res.status === 429) throw new AssistantError(t("assistantRateLimited"));
+
+      // Parsing difensivo: la function può mancare (es. `npm run dev` senza
+      // Netlify) o rispondere con corpo vuoto/non JSON.
       const raw = await res.text();
       let data: { answer?: string; sources?: string[]; stats?: ChatStats; error?: string } = {};
-      if (raw) {
-        try {
-          data = JSON.parse(raw);
-        } catch {
-          throw new Error(
-            res.ok
-              ? "Risposta non valida dal server (atteso JSON). L'assistente AI richiede la Netlify Function: in locale usa `npm run dev:full`."
-              : `Errore ${res.status} nella chiamata all'assistente.`,
-          );
-        }
-      }
-      if (!res.ok) {
-        const message =
-          res.status === 429
-            ? t("assistantRateLimited")
-            : typeof data.error === "string"
-              ? data.error
-              : `Errore ${res.status} nella chiamata all'assistente.`;
-        throw new Error(message);
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        // gestito sotto: niente `answer`
       }
 
       const { answer, sources, stats } = data;
-      if (typeof answer !== "string") {
-        throw new Error(
-          "Nessuna risposta dall'assistente. In locale l'AI richiede la Netlify Function (`npm run dev:full`); in produzione verifica le variabili d'ambiente OpenRouter.",
-        );
+      if (!res.ok || typeof answer !== "string") {
+        console.error(`Assistant error ${res.status}:`, data.error ?? raw.slice(0, 200));
+        if (import.meta.env.DEV) {
+          throw new AssistantError(
+            `${t("assistantUnavailable")} (HTTP ${res.status}${data.error ? `, ${data.error}` : ""}; in locale serve \`npm run dev:full\`)`,
+          );
+        }
+        throw new AssistantError(t("assistantUnavailable"));
       }
 
       startReveal(answer, currentMessages.length);
@@ -135,7 +152,8 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
       ]);
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
-      setError(err instanceof Error ? err.message : String(err));
+      if (!(err instanceof AssistantError)) console.error("Assistant request failed:", err);
+      setError(err instanceof AssistantError ? err.message : t("assistantUnavailable"));
     } finally {
       if (abortRef.current === controller) {
         setLoading(false);
@@ -193,7 +211,7 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
     <div className="assistant-window__header">
       <div className="assistant-window__header-title">
         <Bot size={16} strokeWidth={1.8} />
-        <span>Ask about Francesco</span>
+        <span>{t("assistantTitle")}</span>
       </div>
       {messages.length > 0 && (
         <button
@@ -213,7 +231,7 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
       <div className="assistant-window">
         <div className="assistant-window__empty">
           <div className="assistant-window__empty-inner">
-            <h2 className="assistant-window__intro-title">Ask about Francesco</h2>
+            <h2 className="assistant-window__intro-title">{t("assistantTitle")}</h2>
             {renderInputRow()}
             <div className="assistant-window__starters">
               {conversationStarters[language].slice(0, MAX_STARTERS).map((starter) => (
@@ -255,7 +273,7 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
               {m.role === "assistant" ? (
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: renderBlock(i === revealingIndex ? m.content.slice(0, revealedLength) : m.content),
+                    __html: renderAnswer(i === revealingIndex ? m.content.slice(0, revealedLength) : m.content),
                   }}
                 />
               ) : (
@@ -269,8 +287,9 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
                       type="button"
                       className="assistant-msg__source"
                       onClick={() => onOpenDoc?.(source)}
+                      title={source}
                     >
-                      📄 {source}
+                      📄 {sourceLabel(source, t)}
                     </button>
                   ))}
                 </div>

@@ -239,7 +239,9 @@ Solo backend in questa fase, nessuna UI (arriva in Fase 11).
       `src/lib/knowledgeBase.ts` usa `import.meta.glob`, solo Vite, non
       disponibile dentro una Netlify Function
 - [x] `netlify.toml`: `[functions]` con `included_files` per i `.md`
-      letti a runtime, redirect `/api/assistant`
+      letti a runtime, redirect `/api/assistant` (dalla Fase 20 il percorso e il
+      rate limit per visitatore sono nel `config` della function, vedi
+      [`docs/FASE20_LOG.md`](./docs/FASE20_LOG.md))
 - [x] Tooling locale: `netlify-cli`, script `npm run dev:full`,
       `.env.example`, `.gitignore` aggiornato per `.env`/`.netlify`
 - [x] `tsconfig.functions.json` referenziato dal `tsconfig.json` radice:
