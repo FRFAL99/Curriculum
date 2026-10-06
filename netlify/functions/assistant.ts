@@ -15,6 +15,18 @@ const SOURCES_MARKER = "---SOURCES---";
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_HISTORY_LENGTH = 10;
 
+/**
+ * Modelli :free usati in cascata tramite il parametro `models` di
+ * OpenRouter: se il primo è stato rimosso dal free tier (404) o è
+ * saturo (429 upstream), OpenRouter passa al successivo. Il catalogo
+ * :free cambia spesso, quindi un solo id fisso prima o poi si rompe.
+ */
+const DEFAULT_MODELS = [
+  "nvidia/nemotron-3-super-120b-a12b:free",
+  "google/gemma-4-31b-it:free",
+  "google/gemma-4-26b-a4b-it:free",
+];
+
 interface ChatMessage {
   role: "user" | "assistant";
   content: string;
@@ -122,7 +134,10 @@ export default async (req: Request): Promise<Response> => {
   if (!apiKey) {
     return jsonResponse({ error: "Server misconfigured: missing OPENROUTER_API_KEY" }, 500);
   }
-  const model = process.env.OPENROUTER_MODEL ?? "openai/gpt-oss-20b:free";
+  // OPENROUTER_MODEL (se impostato) ha la precedenza, i default restano come fallback.
+  const envModel = process.env.OPENROUTER_MODEL?.trim();
+  // OpenRouter accetta al massimo 3 modelli nell'array `models`.
+  const models = [...new Set([...(envModel ? [envModel] : []), ...DEFAULT_MODELS])].slice(0, 3);
 
   let docs: ReturnType<typeof loadKnowledgeBase>;
   try {
@@ -150,7 +165,7 @@ export default async (req: Request): Promise<Response> => {
         "HTTP-Referer": "https://curriculumfrfal.netlify.app",
         "X-Title": "Francesco Fallavena - Portfolio Assistant",
       },
-      body: JSON.stringify({ model, messages, temperature: 0.3, max_tokens: 1000 }),
+      body: JSON.stringify({ models, messages, temperature: 0.3, max_tokens: 1000 }),
     });
   } catch (err) {
     console.error("OpenRouter fetch failed:", err);
@@ -169,6 +184,7 @@ export default async (req: Request): Promise<Response> => {
   }
 
   const data = (await upstream.json()) as {
+    model?: string;
     choices?: { message?: { content?: string } }[];
     usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
   };
@@ -180,7 +196,7 @@ export default async (req: Request): Promise<Response> => {
   const elapsedMs = Date.now() - requestStartedAt;
   const outputTokens = data.usage?.completion_tokens ?? 0;
   const stats = {
-    model,
+    model: data.model ?? models[0],
     inputTokens: data.usage?.prompt_tokens ?? 0,
     outputTokens,
     totalTokens: data.usage?.total_tokens ?? 0,
