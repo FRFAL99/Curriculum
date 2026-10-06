@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
+import { kbFrontmatter, parseKbFile } from "../vite/kb-frontmatter";
 
 /**
  * Controlla la knowledge base vera (piano v2, Fase 24).
@@ -37,7 +37,7 @@ const DOCS: Doc[] = walk(KB_ROOT).map((file) => {
   const rel = path.relative(KB_ROOT, file).split(path.sep).join("/");
   const withoutExt = rel.replace(/\.md$/, "");
   const langMatch = withoutExt.match(/\.(it|en)$/);
-  const { data, content } = matter(fs.readFileSync(file, "utf-8"));
+  const { data, content } = parseKbFile(fs.readFileSync(file, "utf-8"));
   return {
     path: `knowledge-base/${rel}`,
     key: langMatch ? withoutExt.replace(/\.(it|en)$/, "") : withoutExt,
@@ -99,6 +99,12 @@ describe("frontmatter", () => {
     expect(missing).toEqual([]);
   });
 
+  // Il frontmatter arriva al browser come JSON (vite/kb-frontmatter.ts): una
+  // data YAML senza virgolette diventerebbe una stringa diversa, in silenzio.
+  it.each(DOCS.map((d) => [d.path, d] as const))("%s ha un frontmatter che sopravvive a JSON", (_path, doc) => {
+    expect(JSON.parse(JSON.stringify(doc.data))).toEqual(doc.data);
+  });
+
   it.each(localized.map((d) => [d.path, d] as const))(
     "%s ha lang coerente col nome del file",
     (_path, doc) => {
@@ -135,5 +141,25 @@ describe("corpo", () => {
 
   it.each(withBody.map((d) => [d.path, d] as const))("%s non è vuoto", (_path, doc) => {
     expect(doc.body.length).toBeGreaterThan(0);
+  });
+});
+
+describe("plugin kb-frontmatter", () => {
+  const load = kbFrontmatter().load as (this: { addWatchFile: (f: string) => void }, id: string) => { code: string } | null;
+  const ctx = { addWatchFile: () => {} };
+
+  it("ignora i moduli senza ?kb", () => {
+    expect(load.call(ctx, path.join(KB_ROOT, "about.en.md"))).toBeNull();
+    expect(load.call(ctx, path.join(KB_ROOT, "about.en.md") + "?raw")).toBeNull();
+  });
+
+  it("esporta frontmatter e corpo già separati, senza il testo YAML", () => {
+    const result = load.call(ctx, path.join(KB_ROOT, "about.en.md") + "?kb");
+    const json = result!.code.replace(/^export default /, "").replace(/;$/, "");
+    const parsed = JSON.parse(json) as { data: Record<string, unknown>; content: string };
+    expect(parsed.data.type).toBe("about");
+    expect(parsed.data.lang).toBe("en");
+    expect(parsed.content).not.toMatch(/^---/);
+    expect(parsed.content.trim().length).toBeGreaterThan(0);
   });
 });

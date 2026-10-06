@@ -1,4 +1,3 @@
-import matter from "gray-matter";
 import type { Language } from "../context/translations";
 
 /**
@@ -16,11 +15,14 @@ import type { Language } from "../context/translations";
 // Vite: pattern ancorato alla root del progetto (vite.config.ts di default
 // non cambia `root`, quindi "/knowledge-base" corrisponde alla cartella
 // alla radice del repo, accanto a src/).
-const rawFiles = import.meta.glob("/knowledge-base/**/*.md", {
+// Il suffisso `?kb` passa ogni file dal plugin vite/kb-frontmatter.ts, che
+// separa frontmatter e corpo in build: nel browser arriva già `{ data, content }`
+// e gray-matter (con il suo YAML e il polyfill Buffer) resta fuori dal bundle.
+const parsedFiles = import.meta.glob("/knowledge-base/**/*.md", {
   eager: true,
-  query: "?raw",
+  query: "?kb",
   import: "default",
-}) as Record<string, string>;
+}) as Record<string, { data: Record<string, unknown>; content: string }>;
 
 export interface KnowledgeDoc<TFrontmatter = Record<string, unknown>> {
   /** Percorso relativo, es. "knowledge-base/projects/antichita-fallavena.it.md" */
@@ -36,8 +38,7 @@ export interface KnowledgeDoc<TFrontmatter = Record<string, unknown>> {
 }
 
 function parseAll(): KnowledgeDoc[] {
-  return Object.entries(rawFiles).map(([path, raw]) => {
-    const { data, content } = matter(raw);
+  return Object.entries(parsedFiles).map(([path, { data, content }]) => {
     const filename = path.split("/").pop()!.replace(/\.md$/, "");
     const langMatch = filename.match(/\.(it|en)$/);
     const lang = langMatch ? (langMatch[1] as Language) : undefined;

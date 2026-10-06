@@ -18,6 +18,36 @@ Non serve leggerlo per intero: `grep -n '^## ' docs/devlog.md` ne dà l'indice.
 
 ---
 
+## 2026-10-06 — Fasi 27-28: il sito pesa meno, e il piano v3 è chiuso
+
+Chi apriva il sito scaricava 569 KB di JavaScript (163 KB gzip). Ora 336 KB (107 gzip, 103 col
+gzip di Node che usa `npm run size`). Piano: [piano-v3-il-sito-pesa-meno.md](piano-v3-il-sito-pesa-meno.md).
+
+**Fase 27 — il frontmatter si legge in build.** La source map della build diceva dove stava il
+peso: 210 KB servivano solo a separare frontmatter e corpo dei `.md` nel browser (`esprima` 133,
+`js-yaml` 41, il polyfill `buffer` 24, `gray-matter`). Il nuovo plugin `vite/kb-frontmatter.ts`
+risolve gli import `*.md?kb` in `{ data, content }` già pronti; `src/lib/knowledgeBase.ts` cambia
+solo la query del glob, e `src/polyfills.ts` e la dipendenza `buffer` spariscono. I test della KB
+ora leggono i file con lo stesso parser del sito e controllano che ogni frontmatter sopravviva a
+JSON.
+
+**Fase 28 — un tetto.** `npm run size` misura i `.js` di `dist/assets` con gzip e fallisce sopra
+120 KB; gira in CI dopo la build, non dentro `npm run build`, così un deploy di soli contenuti non
+si blocca.
+
+**Scostamenti dal piano.** Il caricamento pigro dei tab, che `STATO.md` citava, non si fa: il
+codice di Resume, Projects e Notes pesa meno di 10 KB gzip e il CV stampabile è sempre montato.
+Il motivo è nel piano, fra le cose fuori.
+
+### Verifica
+
+- `npm run lint`, `npm test` (179 test), `npm run build` e `npm run size` passano.
+- Playwright a 390 px, su `vite preview` e su `npm run dev`: Home, Resume, Projects e Notes
+  mostrano gli stessi testi, in inglese e in italiano, senza errori in console.
+- In `npm run dev`, cambiare `role` in `about.it.md` aggiorna il Resume aperto senza riavviare.
+
+---
+
 ## 2026-10-06 — Fasi 24-26: i test, e il piano v2 è chiuso
 
 Il repo non aveva test. Ora ne ha 156, con Vitest, in `tests/`, lanciati da `npm test` e in CI fra

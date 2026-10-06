@@ -11,7 +11,7 @@ fatto ciò che non è passato.
 ## 1. Lint, test e build, nell'ordine della CI
 
 ```bash
-npm run lint && npm test && npm run build
+npm run lint && npm test && npm run build && npm run size
 ```
 
 ## 2. Il sito a larghezza telefono

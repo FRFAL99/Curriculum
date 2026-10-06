@@ -29,7 +29,7 @@ La stessa cartella è letta da due loader diversi:
 
 | Chi legge | Loader                         | Come                                                        |
 | --------- | ------------------------------ | ----------------------------------------------------------- |
-| La UI     | `src/lib/knowledgeBase.ts`     | `import.meta.glob` a build time, frontmatter con `gray-matter` |
+| La UI     | `src/lib/knowledgeBase.ts`     | `import.meta.glob` con `?kb` a build time: il plugin `vite/kb-frontmatter.ts` separa frontmatter e corpo con `gray-matter` in Node, nel browser arriva JSON |
 | L'AI      | `netlify/functions/lib/kb.ts`  | `fs` a runtime nella function; i `.md` arrivano nel bundle grazie a `included_files` in `netlify.toml` |
 
 `src/context/translations.ts` contiene **solo** etichette di interfaccia, mai contenuto.
@@ -76,7 +76,6 @@ src/
   lib/                        Loader KB, helper Markdown → HTML
   utils/                      localStorage sicuro, hook useIsMobile (640 px)
   styles/tokens.css           Palette, font, ombre, radius
-  polyfills.ts                Buffer per gray-matter nel browser
 ```
 
 Il tema (chiaro/scuro) e la lingua sono salvati in `localStorage`. Anche la conversazione con
@@ -108,5 +107,8 @@ vuota.
   obbligatori), la function dell'Assistant chiamata dalla sua porta d'ingresso con `fetch`
   sostituita, il plugin `kb-head` e gli helper Markdown. `tsconfig.tests.json` li fa controllare
   anche da `tsc -b`.
-- CI (`.github/workflows/ci.yml`): `npm run lint`, `npm test` e `npm run build` su ogni PR e su
-  ogni push su `main`.
+- `npm run size` (`scripts/check-bundle.mjs`) misura i `.js` di `dist/assets` con gzip e
+  fallisce sopra 120 KB (piano v3). Oggi un solo file da 103 KB: metà è `react-dom`, il resto
+  `marked` e `dompurify` per le risposte dell'Assistant, i componenti e i testi della KB.
+- CI (`.github/workflows/ci.yml`): `npm run lint`, `npm test`, `npm run build` e `npm run size`
+  su ogni PR e su ogni push su `main`.
