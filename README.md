@@ -54,6 +54,9 @@ prima di consegnare) sono in `CLAUDE.md`. Nelle sessioni Claude Code sul web
 l'hook `.claude/hooks/session-start.sh` esegue `npm ci` all'avvio, così
 `npm run lint` e `npm run build` sono subito disponibili.
 
+La CI GitHub (`.github/workflows/ci.yml`) esegue gli stessi controlli su
+ogni PR e su ogni push su `main`.
+
 ## Stato — Fase 1 (completata in questa consegna)
 
 - [x] Layout Desktop (`src/desktop/Desktop.tsx`)
