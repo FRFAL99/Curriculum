@@ -18,6 +18,31 @@ Non serve leggerlo per intero: `grep -n '^## ' docs/devlog.md` ne dà l'indice.
 
 ---
 
+## 2026-10-06 — Fase 21: il titolo della pagina smette di dire «Desktop»
+
+Il piano v1 comincia dall'`<head>`. Il plugin `vite/kb-head.ts` sostituisce il segnaposto
+`<!-- kb-head -->` di `index.html` con titolo, description, Open Graph e Twitter card letti da
+`about.en.md`: il titolo è ora «Francesco Fallavena — Software Engineer» invece di «Francesco
+Fallavena — Desktop», e cambiando `role` nella KB cambia anche l'anteprima.
+
+**Scostamenti dal piano.** La description prende le prime frasi del corpo di `about` senza superare
+160 caratteri: con il testo attuale entra solo la prima («Software engineer with a background in
+Mathematics and a strong analytical mindset.»), perché con la seconda si arriverebbe a 250.
+`twitter:card` è `summary` finché non c'è l'immagine della Fase 22, che la porterà a
+`summary_large_image`. `lang="en"` in `index.html` era già coerente con la scelta dell'inglese e
+resta; `LanguageContext` lo cambia al montaggio come prima.
+
+### Verifica
+
+- `npm run lint` e `npm run build` passano; `tsconfig.node.json` ora include `vite/**/*.ts`, quindi
+  `tsc -b` controlla anche il plugin.
+- `URL=https://curriculumfrfal.netlify.app npx vite build`: `dist/index.html` contiene title,
+  description, `og:*`, `twitter:*`, `og:url` e `canonical`; senza `URL` gli ultimi due mancano.
+- `vite preview` con Playwright a 390 px: il titolo della scheda è quello nuovo e la Home è
+  identica a prima.
+
+---
+
 ## 2026-10-06 — Fuori piano: la documentazione si riorganizza come JuTrack
 
 I 17 `docs/FASEnn_LOG.md` e le sezioni «Stato — Fase N» del README diventano un unico

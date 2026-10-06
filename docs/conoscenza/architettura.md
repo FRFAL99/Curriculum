@@ -34,6 +34,14 @@ La stessa cartella è letta da due loader diversi:
 
 `src/context/translations.ts` contiene **solo** etichette di interfaccia, mai contenuto.
 
+## L'`<head>` della pagina
+
+`index.html` non contiene testo su Francesco: il segnaposto `<!-- kb-head -->` viene sostituito in
+build (e in `npm run dev`) dal plugin `vite/kb-head.ts`, che legge `knowledge-base/about.en.md` e
+scrive `<title>` («nome — ruolo»), meta description (le prime frasi del corpo, ≤ 160 caratteri),
+Open Graph e Twitter card. L'anteprima è in inglese per scelta (piano v1); `og:url` e `canonical`
+usano la variabile `URL` che Netlify imposta in build, e mancano nelle build locali.
+
 ## La UI
 
 ```

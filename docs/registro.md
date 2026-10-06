@@ -54,6 +54,6 @@ Dalla Fase 21 la colonna `Piano` indica il file `piano-vN-*.md`.
 | 18 | Da «desktop OS» a landing page a tab       | —             | ✅     | 2026-07-19 |
 | 19 | Fix «OpenRouter error: 404»                | —             | ✅     | 2026-10-06 |
 | 20 | Miglioramenti dell'AI Assistant            | —             | ✅     | 2026-10-06 |
-| 21 | Head generato dalla KB, `lang` coerente    | v1            | ⬜     |            |
+| 21 | Head generato dalla KB, `lang` coerente    | v1            | ✅     | 2026-10-06 |
 | 22 | Immagine di anteprima `og.png`             | v1            | ⬜     |            |
 | 23 | HTML statico in `#root` + JSON-LD `Person` | v1            | ⬜     |            |
