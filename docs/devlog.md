@@ -18,6 +18,35 @@ Non serve leggerlo per intero: `grep -n '^## ' docs/devlog.md` ne dà l'indice.
 
 ---
 
+## 2026-10-06 — Fase 23: il sito si legge anche senza JavaScript, e il piano v1 è chiuso
+
+Fino a oggi chi apriva il sito senza eseguire JavaScript (molti crawler, i lettori che lo
+disattivano) trovava un `<div id="root"></div>` vuoto. Ora `vite/kb-head.ts` sostituisce il
+segnaposto `<!-- kb-static -->` con un profilo statico in inglese (nome, ruolo, luogo, il
+riassunto di `about.en.md`, email, LinkedIn, GitHub) e aggiunge al `<head>` uno JSON-LD
+`Person` con gli stessi dati. Con questa Fase il piano v1 è chiuso.
+
+**Il flash che non c'è.** Il piano contava sul fatto che React sostituisce il contenuto di `#root`
+al montaggio, ma fra il parse dell'HTML e il montaggio il profilo si sarebbe visto per un istante.
+Uno script inline in testa al documento aggiunge la classe `js` a `<html>`, e `.js .kb-static`
+non si mostra: chi ha JavaScript non lo vede mai.
+
+**Scostamenti dal piano.** La prima versione usava i colori del tema chiaro, ma il CSS del bundle
+si carica anche senza JavaScript e, senza `data-theme`, mette il fondo scuro: testo scuro su fondo
+scuro. Il profilo ora usa le variabili di `tokens.css`, quindi segue il tema di default, lo scuro.
+Il telefono è rimasto fuori dallo JSON-LD di proposito: il sito lo mostra, ma non serve darlo in
+forma strutturata a chi raccoglie dati.
+
+### Verifica
+
+- `npm run lint` e `npm run build` passano.
+- `vite preview` con Playwright, JavaScript disattivato: profilo leggibile a 390 px e a 1280 px,
+  con sistema in tema chiaro e scuro, senza scroll orizzontale.
+- JavaScript attivo a 390 px: `.kb-static` non c'è più nel DOM e la Home è quella di sempre.
+- `dist/index.html` con `URL` di produzione: JSON-LD con `url`, `email`, `homeLocation`, `sameAs`.
+
+---
+
 ## 2026-10-06 — Fase 22: il link condiviso ha una faccia
 
 `public/og.png` è l'immagine che LinkedIn, WhatsApp e X mostrano accanto al link: 1200×630, fondo

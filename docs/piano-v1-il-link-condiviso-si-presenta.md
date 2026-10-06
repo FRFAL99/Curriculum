@@ -4,6 +4,7 @@
 > di «cosa manca» in `STATO.md`, dall'analisi del sito del 6 ottobre 2026. Scritto il 2026-10-06.
 >
 > **Occupa le Fasi 21–23**, scritte in [registro.md](registro.md) insieme a questo piano.
+> **Chiuso il 2026-10-06**: tutte e tre le Fasi sono ✅.
 >
 > **Ogni misura e ogni riferimento qui sotto è stato letto nel codice**, non dedotto.
 

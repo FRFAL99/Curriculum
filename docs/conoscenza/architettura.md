@@ -36,10 +36,10 @@ La stessa cartella è letta da due loader diversi:
 
 ## L'`<head>` della pagina
 
-`index.html` non contiene testo su Francesco: il segnaposto `<!-- kb-head -->` viene sostituito in
-build (e in `npm run dev`) dal plugin `vite/kb-head.ts`, che legge `knowledge-base/about.en.md` e
-scrive `<title>` («nome — ruolo»), meta description (le prime frasi del corpo, ≤ 160 caratteri),
-Open Graph e Twitter card. L'anteprima è in inglese per scelta (piano v1); `og:url` e `canonical`
+`index.html` non contiene testo su Francesco: i segnaposto `<!-- kb-head -->` e `<!-- kb-static -->`
+vengono sostituiti in build (e in `npm run dev`) dal plugin `vite/kb-head.ts`, che legge
+`knowledge-base/about.en.md` e `config/*.md` e scrive `<title>` («nome — ruolo»), meta description (le prime frasi del corpo, ≤ 160 caratteri),
+Open Graph, Twitter card e uno JSON-LD `Person`. L'anteprima è in inglese per scelta (piano v1); `og:url` e `canonical`
 usano la variabile `URL` che Netlify imposta in build, e mancano nelle build locali.
 
 L'immagine di anteprima è `public/og.png` (1200×630), **committata**: la genera `npm run og`
@@ -47,6 +47,12 @@ L'immagine di anteprima è `public/og.png` (1200×630), **committata**: la gener
 (`CHROMIUM_PATH`, altrimenti Google Chrome installato). La build fallisce se manca. Nelle
 anteprime di deploy `og:image` punta all'anteprima stessa (`DEPLOY_PRIME_URL`), in produzione a
 `URL`.
+
+Dentro `#root` lo stesso plugin mette un profilo statico (`<main class="kb-static">`: nome, ruolo,
+luogo, riassunto, email, LinkedIn, GitHub) per chi non esegue JavaScript. Con JavaScript non si
+vede mai: uno script inline nel `<head>` aggiunge la classe `js` a `<html>`, che lo nasconde, e
+React lo sostituisce al montaggio. Usa le variabili di `tokens.css`, quindi senza JavaScript il
+sito appare nel tema scuro di default.
 
 ## La UI
 
