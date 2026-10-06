@@ -22,9 +22,8 @@ al sito un profilo leggibile senza JavaScript.
 
 **Controlli**: `npm run lint` e `npm run build` puliti, in CI su ogni PR. Test automatici: nessuno.
 
-**Nessun piano aperto.** Il [piano v1](piano-v1-il-link-condiviso-si-presenta.md) è chiuso: il link
-condiviso mostra titolo, descrizione e immagine, e il sito si legge anche senza JavaScript. Il
-prossimo numero libero è il **24**.
+**Piano aperto**: [v2, ogni modifica si controlla da sola](piano-v2-ogni-modifica-si-controlla-da-sola.md),
+Fasi 24–26, tutte da fare. Il piano v1 (Fasi 21–23) è chiuso.
 
 ## Cosa manca
 
@@ -33,7 +32,7 @@ In ordine di priorità, dall'analisi del 6 ottobre 2026. Ognuna è candidata a u
 1. **Il JavaScript è un unico file da 569 KB (163 KB gzip).** Dentro ci sono `gray-matter` e il
    polyfill `Buffer`, che servono solo a leggere il frontmatter e si possono spostare nella
    build; i tab si possono caricare in modo pigro.
-2. **Nessun test.** La regola delle coppie `.it.md`/`.en.md` è affidata alla disciplina, e la
+2. **Nessun test** (piano v2). La regola delle coppie `.it.md`/`.en.md` è affidata alla disciplina, e la
    logica della function (fallback dei modelli, limiti della cronologia) non ha test.
 3. **Pochi contenuti.** Due progetti, di cui uno è il sito stesso, e due Developer Notes. Serve
    materiale di Francesco.

@@ -4,7 +4,7 @@ Una riga per Fase, dalla 1 in avanti. È l'unico posto in cui guardare per saper
 una Fase, a che piano appartiene e se è chiusa**. Com'è andata sta in [devlog.md](devlog.md), dove
 siamo adesso sta in [STATO.md](STATO.md).
 
-## Prossimo numero libero: **24**
+## Prossimo numero libero: **27**
 
 ## Le regole
 
@@ -57,3 +57,6 @@ Dalla Fase 21 la colonna `Piano` indica il file `piano-vN-*.md`.
 | 21 | Head generato dalla KB, `lang` coerente    | v1            | ✅     | 2026-10-06 |
 | 22 | Immagine di anteprima `og.png`             | v1            | ✅     | 2026-10-06 |
 | 23 | HTML statico in `#root` + JSON-LD `Person` | v1            | ✅     | 2026-10-06 |
+| 24 | Vitest, `npm test` in CI, test della KB    | v2            | ⬜     |            |
+| 25 | Test dell'AI Assistant                     | v2            | ⬜     |            |
+| 26 | Test di `kb-head` e helper Markdown        | v2            | ⬜     |            |
