@@ -3,6 +3,7 @@ import { getAllDocs, getDocTitle, type KnowledgeDoc } from "../lib/knowledgeBase
 import { renderBlock, getReadingTime } from "../lib/markdown";
 import { useLanguage } from "../context/useLanguage";
 import type { TranslationKey } from "../context/translations";
+import { SkillsWindow } from "../windows/Skills";
 import "./DocumentDetail.css";
 
 /**
@@ -65,10 +66,14 @@ function DocumentBody({ doc }: { doc: KnowledgeDoc }) {
   const tags = getTags(doc);
   const readingTime = getReadingTime(doc.body);
   const typeLabelKey = TYPE_LABEL_KEY[doc.type];
+  // I documenti senza campo titolo (es. skills.md) ricadrebbero sullo slug:
+  // meglio l'etichetta tradotta del tipo.
+  const docTitle = getDocTitle(doc);
+  const title = docTitle === doc.slug && typeLabelKey ? t(typeLabelKey) : docTitle;
 
   return (
     <>
-      <h1 className="doc-detail__title">{getDocTitle(doc)}</h1>
+      <h1 className="doc-detail__title">{title}</h1>
 
       <div className="doc-detail__meta">
         {typeLabelKey && <span className="doc-detail__badge">{t(typeLabelKey)}</span>}
@@ -88,10 +93,17 @@ function DocumentBody({ doc }: { doc: KnowledgeDoc }) {
         </div>
       )}
 
-      <div
-        className="doc-detail__body"
-        dangerouslySetInnerHTML={{ __html: renderBlock(doc.body) }}
-      />
+      {/* skills.md tiene tutto nel frontmatter (categorie), il body è vuoto */}
+      {doc.type === "skills" ? (
+        <div className="doc-detail__skills">
+          <SkillsWindow />
+        </div>
+      ) : (
+        <div
+          className="doc-detail__body"
+          dangerouslySetInnerHTML={{ __html: renderBlock(doc.body) }}
+        />
+      )}
       <footer className="doc-detail__source">📄 {doc.path}</footer>
     </>
   );
