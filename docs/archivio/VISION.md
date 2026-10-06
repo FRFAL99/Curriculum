@@ -1,5 +1,9 @@
 # Vision — Portfolio Architecture — Knowledge Base + AI Assistant
 
+> **Archiviato il 2026-10-06.** Descrive la direzione delle Fasi 8–17, quando il sito era ancora un
+> «desktop» con finestre. Dalla Fase 18 è una landing page a tab e diversi file citati qui non
+> esistono più. Come funziona il sito oggi: [../conoscenza/architettura.md](../conoscenza/architettura.md).
+
 Documento di visione citato da `docs/FASE8_LOG.md` … `docs/FASE12_LOG.md`
 come riferimento guida per le Fasi 8-12 (Knowledge Base + AI Assistant).
 Fino ad ora esisteva solo nella cronologia di una chat: questo file lo

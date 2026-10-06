@@ -9,7 +9,7 @@ export type Language = "it" | "en";
  * contenuti "di fatto" su Francesco (profilo, esperienze, formazione,
  * competenze, progetti, developer notes) sono stati spostati in
  * `knowledge-base/` e si leggono tramite `src/lib/knowledgeBase.ts`.
- * Vedi `docs/ADR-001-knowledge-base.md` per il criterio di separazione.
+ * Vedi `docs/adr/0001-knowledge-base.md` per il criterio di separazione.
  */
 export const translations = {
   it: {
