@@ -233,7 +233,8 @@ Solo backend in questa fase, nessuna UI (arriva in Fase 11).
 - [x] `netlify/functions/assistant.ts`: riceve `{ message, language,
       history? }`, classifica lo scope della domanda e risponde grounded
       sulla Knowledge Base in un'unica chiamata a OpenRouter (modello
-      free tier di default, configurabile via `OPENROUTER_MODEL`)
+      free tier di default con fallback su altri modelli :free,
+      `OPENROUTER_MODEL` opzionale — vedi [`docs/FASE19_LOG.md`](./docs/FASE19_LOG.md))
 - [x] Loader KB dedicato lato server (`netlify/functions/lib/kb.ts`):
       `src/lib/knowledgeBase.ts` usa `import.meta.glob`, solo Vite, non
       disponibile dentro una Netlify Function
