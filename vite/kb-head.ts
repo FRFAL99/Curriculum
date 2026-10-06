@@ -7,12 +7,15 @@ import type { Plugin } from "vite";
  * Genera l'<head> di index.html dalla knowledge base (piano v1, Fase 21).
  *
  * Titolo, description e Open Graph vengono da `about.en.md`: l'anteprima
- * del link è in inglese per scelta (piano v1, decisione 2). Nessun testo su
+ * del link è in inglese per scelta (piano v1, decisione 2); l'immagine è
+ * public/og.png (Fase 22). Nessun testo su
  * Francesco è scritto in index.html, che contiene solo il segnaposto.
  */
 
 const PLACEHOLDER = "<!-- kb-head -->";
 const DESCRIPTION_MAX = 160;
+/** Generata da `npm run og` (scripts/og-image.mjs) e committata in public/. */
+const OG_IMAGE = "og.png";
 
 interface About {
   name: string;
@@ -50,7 +53,7 @@ function escape(value: string): string {
     .replace(/>/g, "&gt;");
 }
 
-export function renderHead(about: About, siteUrl?: string): string {
+export function renderHead(about: About, siteUrl?: string, assetUrl = siteUrl): string {
   const title = `${about.name} — ${about.role}`;
   const description = describe(about.body);
   const tags = [
@@ -63,15 +66,21 @@ export function renderHead(about: About, siteUrl?: string): string {
     `<meta property="og:description" content="${escape(description)}" />`,
     `<meta property="og:locale" content="en_US" />`,
     `<meta property="og:locale:alternate" content="it_IT" />`,
-    `<meta name="twitter:card" content="summary" />`,
+    `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${escape(title)}" />`,
     `<meta name="twitter:description" content="${escape(description)}" />`,
   ];
   if (siteUrl) {
     const url = siteUrl.replace(/\/+$/, "") + "/";
+    const image = `${(assetUrl ?? url).replace(/\/+$/, "")}/${OG_IMAGE}`;
     tags.push(
       `<meta property="og:url" content="${escape(url)}" />`,
       `<link rel="canonical" href="${escape(url)}" />`,
+      `<meta property="og:image" content="${escape(image)}" />`,
+      `<meta property="og:image:width" content="1200" />`,
+      `<meta property="og:image:height" content="630" />`,
+      `<meta property="og:image:alt" content="${escape(title)}" />`,
+      `<meta name="twitter:image" content="${escape(image)}" />`,
     );
   }
   return tags.join("\n    ");
@@ -88,9 +97,16 @@ export function kbHead(): Plugin {
       if (!html.includes(PLACEHOLDER)) {
         throw new Error(`kb-head: segnaposto ${PLACEHOLDER} assente da index.html`);
       }
+      if (!fs.existsSync(path.join(root, "public", OG_IMAGE))) {
+        throw new Error(`kb-head: public/${OG_IMAGE} assente, lancia \`npm run og\``);
+      }
       // Netlify imposta URL in build (dominio principale del sito, anche
-      // nelle anteprime): senza, og:url e canonical si omettono.
-      return html.replace(PLACEHOLDER, renderHead(readAbout(root), process.env.URL));
+      // nelle anteprime): senza, og:url, canonical e og:image si omettono.
+      // L'immagine di un'anteprima di deploy punta all'anteprima stessa
+      // (DEPLOY_PRIME_URL), perché in produzione og.png potrebbe non esserci ancora.
+      const { URL: siteUrl, CONTEXT, DEPLOY_PRIME_URL } = process.env;
+      const assetUrl = CONTEXT && CONTEXT !== "production" ? DEPLOY_PRIME_URL : siteUrl;
+      return html.replace(PLACEHOLDER, renderHead(readAbout(root), siteUrl, assetUrl ?? siteUrl));
     },
   };
 }

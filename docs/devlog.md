@@ -18,6 +18,30 @@ Non serve leggerlo per intero: `grep -n '^## ' docs/devlog.md` ne dà l'indice.
 
 ---
 
+## 2026-10-06 — Fase 22: il link condiviso ha una faccia
+
+`public/og.png` è l'immagine che LinkedIn, WhatsApp e X mostrano accanto al link: 1200×630, fondo
+carta calda del tema chiaro, nome in JetBrains Mono, ruolo in terracotta, luogo, e la curva con il
+razzo della Home ridotta a una traiettoria verticale sul bordo destro. La genera `npm run og`
+(`scripts/og-image.mjs`) da `about.en.md` con `playwright-core`; il plugin `kb-head` aggiunge
+`og:image` (con dimensioni e alt) e porta la Twitter card a `summary_large_image`.
+
+**Scostamenti dal piano.** Due aggiunte. La prima: nelle anteprime di deploy Netlify `og:image`
+punta all'anteprima stessa (`DEPLOY_PRIME_URL`) e non alla produzione, dove `og.png` non c'è finché
+la PR non è mergiata; `og:url` e `canonical` restano sulla produzione. La seconda: la build si
+ferma se `public/og.png` manca, invece di pubblicare un'anteprima con un'immagine rotta. La
+prima versione dell'immagine aveva la curva che tagliava il nome: spostata a destra.
+
+### Verifica
+
+- `npm run og` con il Chromium di Playwright: PNG 1200×630, 200 KB, controllato a vista.
+- `npm run lint` e `npm run build` passano.
+- Build con `CONTEXT=deploy-preview` e con `CONTEXT=production`: `og:image` punta rispettivamente
+  all'anteprima e a `URL`, `og:url` sempre a `URL`; `dist/og.png` presente.
+- Nessuna modifica alla UI: la Home a 390 px è quella della Fase 21.
+
+---
+
 ## 2026-10-06 — Fase 21: il titolo della pagina smette di dire «Desktop»
 
 Il piano v1 comincia dall'`<head>`. Il plugin `vite/kb-head.ts` sostituisce il segnaposto

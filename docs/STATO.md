@@ -23,15 +23,15 @@ tradotti.
 **Controlli**: `npm run lint` e `npm run build` puliti, in CI su ogni PR. Test automatici: nessuno.
 
 **Piano aperto**: [v1, il link condiviso si presenta da solo](piano-v1-il-link-condiviso-si-presenta.md),
-Fasi 21–23: la 21 è chiusa (titolo, description e Open Graph generati dalla KB), restano
-l'immagine di anteprima (22) e l'HTML statico (23).
+Fasi 21–23: chiuse la 21 (titolo, description e Open Graph generati dalla KB) e la 22
+(immagine di anteprima `public/og.png`), resta l'HTML statico (23).
 
 ## Cosa manca
 
 In ordine di priorità, dall'analisi del 6 ottobre 2026. Ognuna è candidata a un piano.
 
-1. **Il link condiviso non ha ancora un'immagine di anteprima** (piano v1, Fase 22), e l'HTML
-   iniziale è un `<div>` vuoto: chi non esegue JavaScript non vede nessun contenuto (Fase 23).
+1. **L'HTML iniziale è un `<div>` vuoto**: chi non esegue JavaScript non vede nessun contenuto
+   (piano v1, Fase 23).
 2. **Il JavaScript è un unico file da 569 KB (163 KB gzip).** Dentro ci sono `gray-matter` e il
    polyfill `Buffer`, che servono solo a leggere il frontmatter e si possono spostare nella
    build; i tab si possono caricare in modo pigro.
