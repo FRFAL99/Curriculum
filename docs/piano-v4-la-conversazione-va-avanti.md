@@ -100,8 +100,8 @@ aggiunge una domanda sul primo progetto per `order`, con il testo `assistantProj
   suggerite; dopo la seconda risposta compare l'invito al contatto.
 - [x] Nessun `---` né `IN_SCOPE` compare mai nel testo in streaming (test di `answer.ts`, con
   pezzi di ogni grandezza).
-- [ ] Sull'anteprima Netlify la function risponde in streaming con una chiave vera (verificato
-  nella PR).
+- [x] Sull'anteprima Netlify, con la chiave vera, la function risponde in streaming: 49 righe
+  NDJSON in 1,3 s dopo circa 4 s di attesa del modello, con tre domande suggerite e due fonti.
 
 ## Fuori da questo piano
 

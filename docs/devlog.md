@@ -49,6 +49,9 @@ passato.
   middleware di `vite`, non committato): testo che compare a pezzi, campo disabilitato durante lo
   streaming, tre domande suggerite, invito al contatto dalla seconda risposta, nessun errore in
   console. Le competenze nel Resume vanno a capo bene.
+- Anteprima Netlify con la chiave vera: la risposta arriva in 49 righe NDJSON distribuite su
+  1,3 s, dopo circa 4 s di attesa del modello; tre domande suggerite e due fonti, nessun
+  marcatore nel testo.
 
 ---
 
