@@ -1,7 +1,7 @@
 # ADR-001 — Knowledge Base in Markdown come Single Source of Truth
 
 **Stato**: Accettata — implementata in Fase 8
-**Data**: Fase 8 (vedi `docs/FASE8_LOG.md` per il log passo-passo)
+**Data**: Fase 8 (vedi la Fase 8 in `docs/devlog.md` per il log passo-passo)
 
 ## Contesto
 
@@ -95,7 +95,7 @@ che leggere un array YAML già pronto.
   (rendering Markdown → HTML per i campi con `**grassetto**`/liste).
   Compatibili browser via Vite, ma non "gratis": `gray-matter` usa
   `Buffer` internamente, non fornito dal browser — richiede il polyfill
-  `buffer` + `src/polyfills.ts` (vedi `docs/FASE8_LOG.md`, Step 6, e il
+  `buffer` + `src/polyfills.ts` (vedi la Fase 8 in `docs/devlog.md`, Step 6, e il
   warning `eval` non bloccante allo Step 3).
 - `src/data/*.json` rimossi (sostituiti).
 - Aggiungere un nuovo fatto (nuova esperienza, nuovo progetto) oggi
