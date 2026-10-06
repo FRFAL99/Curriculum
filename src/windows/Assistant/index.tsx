@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { Bot, User, Send, RotateCcw, Cpu, Hash, Clock, Gauge } from "lucide-react";
+import { Bot, User, Send, RotateCcw, Cpu, Hash, Clock, Gauge, Mail, Download, X } from "lucide-react";
 import { useLanguage } from "../../context/useLanguage";
+import { LinkedinIcon } from "../../components/SocialIcons";
 import { conversationStarters } from "../../context/translations";
 import { readJSON, writeJSON } from "../../utils/storage";
 import { renderBlock } from "../../lib/markdown";
-import { getAllDocs, getDocTitle } from "../../lib/knowledgeBase";
-import type { TranslationKey } from "../../context/translations";
+import { getAllDocs, getContacts, getDocTitle, getProjects, getSocials } from "../../lib/knowledgeBase";
+import type { Language, TranslationKey } from "../../context/translations";
 import DOMPurify from "dompurify";
 import "./Assistant.css";
 
@@ -23,12 +24,26 @@ interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   sources?: string[];
+  followups?: string[];
   stats?: ChatStats;
+}
+
+/** Una riga NDJSON dello stream della function (vedi netlify/functions/assistant.ts). */
+interface StreamLine {
+  delta?: string;
+  done?: boolean;
+  answer?: string;
+  sources?: string[];
+  followups?: string[];
+  stats?: ChatStats;
+  error?: string;
 }
 
 const STORAGE_KEY = "assistantConversation";
 const MAX_HISTORY = 10;
 const MAX_STARTERS = 5;
+// Dopo quante risposte compare l'invito a contattare Francesco.
+const CONTACT_AFTER_ANSWERS = 2;
 
 // Fonti senza un titolo nel frontmatter (documenti lang-neutral).
 const SOURCE_LABEL_KEY: Record<string, TranslationKey> = {
@@ -36,6 +51,20 @@ const SOURCE_LABEL_KEY: Record<string, TranslationKey> = {
   contact: "contactTitle",
   social: "contactTitle",
 };
+
+/**
+ * Le domande di avvio: quelle generiche di `translations.ts` più una sul primo
+ * progetto della knowledge base (il più basso `order`), dopo «Progetti».
+ */
+function starters(language: Language, t: (key: TranslationKey) => string): { label: string; prompt: string }[] {
+  const list = [...conversationStarters[language]];
+  const project = getProjects(language)[0];
+  if (project) {
+    const title = project.frontmatter.title;
+    list.splice(2, 0, { label: title, prompt: t("assistantProjectStarter").replace("{title}", title) });
+  }
+  return list.slice(0, MAX_STARTERS);
+}
 
 function sourceLabel(path: string, t: (key: TranslationKey) => string): string {
   const doc = getAllDocs().find((d) => d.path === path);
@@ -58,11 +87,16 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [revealedLength, setRevealedLength] = useState(0);
-  const [revealingIndex, setRevealingIndex] = useState<number | null>(null);
+  // Indice del messaggio che sta arrivando in streaming, se ce n'è uno.
+  const [streamingIndex, setStreamingIndex] = useState<number | null>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
-  const revealTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [contactDismissed, setContactDismissed] = useState(false);
+  const busy = loading || streamingIndex !== null;
+  const lastMessage = messages.at(-1);
+  const answerCount = messages.filter((m) => m.role === "assistant").length;
+  const contacts = getContacts();
+  const socials = getSocials();
 
   useEffect(() => {
     writeJSON(STORAGE_KEY, messages);
@@ -70,34 +104,7 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
 
   useEffect(() => {
     messagesRef.current?.scrollTo({ top: messagesRef.current.scrollHeight });
-  }, [messages, loading, revealedLength]);
-
-  useEffect(() => {
-    return () => {
-      if (revealTimerRef.current) clearInterval(revealTimerRef.current);
-    };
-  }, []);
-
-  function startReveal(fullText: string, index: number) {
-    if (revealTimerRef.current) clearInterval(revealTimerRef.current);
-    setRevealingIndex(index);
-    setRevealedLength(0);
-    const TOTAL_TICKS = 60;
-    const TICK_MS = 18;
-    const charsPerTick = Math.max(3, Math.ceil(fullText.length / TOTAL_TICKS));
-    revealTimerRef.current = setInterval(() => {
-      setRevealedLength((prev) => {
-        const next = prev + charsPerTick;
-        if (next >= fullText.length) {
-          if (revealTimerRef.current) clearInterval(revealTimerRef.current);
-          revealTimerRef.current = null;
-          setRevealingIndex(null);
-          return fullText.length;
-        }
-        return next;
-      });
-    }, TICK_MS);
-  }
+  }, [messages, loading]);
 
   async function callAssistant(currentMessages: ChatMessage[]) {
     const lastUserMessage = currentMessages[currentMessages.length - 1];
@@ -124,39 +131,79 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
       // quota OpenRouter: in entrambi i casi basta riprovare più tardi.
       if (res.status === 429) throw new AssistantError(t("assistantRateLimited"));
 
-      // Parsing difensivo: la function può mancare (es. `npm run dev` senza
-      // Netlify) o rispondere con corpo vuoto/non JSON.
-      const raw = await res.text();
-      let data: { answer?: string; sources?: string[]; stats?: ChatStats; error?: string } = {};
-      try {
-        data = raw ? JSON.parse(raw) : {};
-      } catch {
-        // gestito sotto: niente `answer`
-      }
-
-      const { answer, sources, stats } = data;
-      if (!res.ok || typeof answer !== "string") {
-        console.error(`Assistant error ${res.status}:`, data.error ?? raw.slice(0, 200));
+      if (!res.ok || !res.body || !res.headers.get("Content-Type")?.includes("ndjson")) {
+        // Parsing difensivo: la function può mancare (es. `npm run dev` senza
+        // Netlify) o rispondere con corpo vuoto/non JSON.
+        const raw = await res.text();
+        let error: string | undefined;
+        try {
+          error = (JSON.parse(raw) as { error?: string }).error;
+        } catch {
+          // corpo non JSON: basta il codice HTTP
+        }
+        console.error(`Assistant error ${res.status}:`, error ?? raw.slice(0, 200));
         if (import.meta.env.DEV) {
           throw new AssistantError(
-            `${t("assistantUnavailable")} (HTTP ${res.status}${data.error ? `, ${data.error}` : ""}; in locale serve \`npm run dev:full\`)`,
+            `${t("assistantUnavailable")} (HTTP ${res.status}${error ? `, ${error}` : ""}; in locale serve \`npm run dev:full\`)`,
           );
         }
         throw new AssistantError(t("assistantUnavailable"));
       }
 
-      startReveal(answer, currentMessages.length);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: answer, sources, stats },
-      ]);
+      // La risposta arriva a righe NDJSON: `delta` mentre il testo cresce,
+      // `done` con la risposta pulita, fonti, domande e statistiche.
+      const index = currentMessages.length;
+      const update = (patch: Partial<ChatMessage>) =>
+        setMessages((prev) => {
+          const next = [...prev];
+          next[index] = { ...(next[index] ?? { role: "assistant", content: "" }), ...patch };
+          return next;
+        });
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let text = "";
+      let finished = false;
+      setLoading(false);
+      setStreamingIndex(index);
+      for (;;) {
+        const { value, done } = await reader.read();
+        buffer += done ? decoder.decode() : decoder.decode(value, { stream: true });
+        const rows = buffer.split("\n");
+        buffer = done ? "" : (rows.pop() ?? "");
+        for (const row of rows) {
+          if (!row.trim()) continue;
+          const line = JSON.parse(row) as StreamLine;
+          if (line.error) throw new AssistantError(t("assistantUnavailable"));
+          if (typeof line.delta === "string") {
+            text += line.delta;
+            update({ role: "assistant", content: text });
+          }
+          if (line.done && typeof line.answer === "string") {
+            finished = true;
+            update({
+              role: "assistant",
+              content: line.answer,
+              sources: line.sources,
+              followups: line.followups,
+              stats: line.stats,
+            });
+          }
+        }
+        if (done) break;
+      }
+      if (!finished) throw new AssistantError(t("assistantUnavailable"));
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
+      // Una risposta interrotta a metà non resta in chat: si può riprovare.
+      setMessages((prev) => (prev.length > currentMessages.length ? prev.slice(0, currentMessages.length) : prev));
       if (!(err instanceof AssistantError)) console.error("Assistant request failed:", err);
       setError(err instanceof AssistantError ? err.message : t("assistantUnavailable"));
     } finally {
       if (abortRef.current === controller) {
         setLoading(false);
+        setStreamingIndex(null);
         abortRef.current = null;
       }
     }
@@ -164,7 +211,7 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
 
   function handleSend(text: string) {
     const trimmed = text.trim();
-    if (!trimmed || loading) return;
+    if (!trimmed || busy) return;
     setInput("");
     const next: ChatMessage[] = [...messages, { role: "user", content: trimmed }];
     setMessages(next);
@@ -183,8 +230,7 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
   function handleReset() {
     abortRef.current?.abort();
     abortRef.current = null;
-    if (revealTimerRef.current) clearInterval(revealTimerRef.current);
-    setRevealingIndex(null);
+    setStreamingIndex(null);
     setLoading(false);
     setMessages([]);
     setError(null);
@@ -198,9 +244,9 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
           onChange={(e) => setInput(e.target.value)}
           placeholder={t("assistantPlaceholder")}
           maxLength={2000}
-          disabled={loading}
+          disabled={busy}
         />
-        <button type="submit" disabled={loading || !input.trim()} aria-label={t("send")}>
+        <button type="submit" disabled={busy || !input.trim()} aria-label={t("send")}>
           <Send size={16} />
         </button>
       </form>
@@ -234,7 +280,7 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
             <h2 className="assistant-window__intro-title">{t("assistantTitle")}</h2>
             {renderInputRow()}
             <div className="assistant-window__starters">
-              {conversationStarters[language].slice(0, MAX_STARTERS).map((starter) => (
+              {starters(language, t).map((starter) => (
                 <button
                   key={starter.label}
                   type="button"
@@ -273,7 +319,7 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
               {m.role === "assistant" ? (
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: renderAnswer(i === revealingIndex ? m.content.slice(0, revealedLength) : m.content),
+                    __html: renderAnswer(m.content),
                   }}
                 />
               ) : (
@@ -294,7 +340,7 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
                   ))}
                 </div>
               )}
-              {m.stats && i !== revealingIndex && (
+              {m.stats && i !== streamingIndex && (
                 <div className="assistant-msg__stats">
                   <span className="assistant-msg__stat" title={t("assistantStatModel")}>
                     <Cpu size={11} strokeWidth={2} />
@@ -317,6 +363,52 @@ export function AssistantWindow({ onOpenDoc }: { onOpenDoc?: (path: string) => v
             </div>
           </div>
         ))}
+
+        {!busy && lastMessage?.role === "assistant" && lastMessage.followups && lastMessage.followups.length > 0 && (
+          <div className="assistant-window__followups" aria-label={t("assistantFollowups")}>
+            {lastMessage.followups.map((question) => (
+              <button
+                key={question}
+                type="button"
+                className="assistant-window__starter"
+                onClick={() => handleSend(question)}
+              >
+                {question}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {!busy && !contactDismissed && answerCount >= CONTACT_AFTER_ANSWERS && (
+          <div className="assistant-contact">
+            <div className="assistant-contact__head">
+              <span>{t("assistantContactPrompt")}</span>
+              <button
+                type="button"
+                className="assistant-contact__close"
+                onClick={() => setContactDismissed(true)}
+                aria-label={t("close")}
+              >
+                <X size={14} />
+              </button>
+            </div>
+            <div className="assistant-contact__actions">
+              {contacts?.frontmatter.email && (
+                <a className="assistant-contact__action" href={`mailto:${contacts.frontmatter.email}`}>
+                  <Mail size={14} /> {t("assistantContactEmail")}
+                </a>
+              )}
+              {socials?.frontmatter.linkedin && (
+                <a className="assistant-contact__action" href={socials.frontmatter.linkedin} target="_blank" rel="noreferrer">
+                  <LinkedinIcon width={14} height={14} /> LinkedIn
+                </a>
+              )}
+              <button type="button" className="assistant-contact__action" onClick={() => window.print()}>
+                <Download size={14} /> {t("download")}
+              </button>
+            </div>
+          </div>
+        )}
 
         {loading && (
           <div className="assistant-msg assistant-msg--assistant">

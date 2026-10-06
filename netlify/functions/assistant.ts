@@ -1,3 +1,4 @@
+import { FOLLOWUPS_MARKER, MAX_FOLLOWUPS, SOURCES_MARKER, parseAnswer, readSse, visibleAnswer } from "./lib/answer";
 import { loadKnowledgeBase } from "./lib/kb";
 
 /**
@@ -9,9 +10,14 @@ import { loadKnowledgeBase } from "./lib/kb";
  * risposta grounded. Niente retrieval semantico/vector DB: la Knowledge
  * Base è piccola, viene passata per intero (filtrata per lingua) come
  * contesto.
+ *
+ * Dal piano v4 la risposta arriva in streaming: la function legge gli eventi
+ * SSE di OpenRouter e manda al browser righe NDJSON, `{ "delta": "…" }` mentre
+ * il testo arriva e `{ "done": true, answer, sources, followups, stats }` alla
+ * fine. Gli errori che si scoprono prima del primo testo restano codici HTTP
+ * con corpo JSON, come prima; dopo, arrivano come riga `{ "error": "…" }`.
  */
 
-const SOURCES_MARKER = "---SOURCES---";
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_HISTORY_LENGTH = 10;
 // La cronologia arriva dal browser: senza tetti chiunque può gonfiare il
@@ -38,6 +44,20 @@ const DEFAULT_MODELS = [
 interface ChatMessage {
   role: "user" | "assistant";
   content: string;
+}
+
+interface UpstreamUsage {
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  total_tokens?: number;
+}
+
+/** Un evento dello stream di OpenRouter (formato chat completions). */
+interface UpstreamChunk {
+  model?: string;
+  choices?: { delta?: { content?: string | null }; finish_reason?: string | null }[];
+  usage?: UpstreamUsage;
+  error?: unknown;
 }
 
 interface RequestBody {
@@ -87,30 +107,16 @@ ${kbDump}
 
 ---
 
+After the answer, write a line containing exactly ${FOLLOWUPS_MARKER} followed by up to ${MAX_FOLLOWUPS} short follow-up questions (one per line, at most 80 characters each, in ${language === "it" ? "Italian" : "English"}) that the visitor might ask next and that the Knowledge Base above can actually answer. Write them as the visitor would ask them, about Francesco in the third person. Do not repeat a question already asked in this conversation. After an OUT_OF_SCOPE refusal, suggest questions that bring the visitor back to Francesco's profile.
+
 This is a strict formatting rule, not optional: every single response you write, with NO exceptions, MUST end with a line containing exactly ${SOURCES_MARKER} followed by one line per Knowledge Base document path (copy the "### path" lines above verbatim) that you actually used. If you used no document (e.g. an OUT_OF_SCOPE refusal), still write the marker on its own line with nothing after it. Never omit this block.
 
 Example ending for an answer grounded on one document:
+${FOLLOWUPS_MARKER}
+${language === "it" ? "Che tecnologie ha usato per il sito?" : "Which technologies did he use for the site?"}
+${language === "it" ? "Ha esperienza con il cloud?" : "Does he have cloud experience?"}
 ${SOURCES_MARKER}
-knowledge-base/projects/antichita-fallavena.it.md`;
-}
-
-const SCOPE_LABEL_PREFIX = /^(IN_SCOPE|PARTIALLY_IN_SCOPE|OUT_OF_SCOPE)\s*:?\s*\n+/i;
-
-function parseAnswer(raw: string, validPaths: Set<string>): { answer: string; sources: string[] } {
-  const idx = raw.indexOf(SOURCES_MARKER);
-  if (idx === -1) return { answer: raw.trim().replace(SCOPE_LABEL_PREFIX, ""), sources: [] };
-
-  const answer = raw
-    .slice(0, idx)
-    .trim()
-    .replace(SCOPE_LABEL_PREFIX, "");
-  const sources = raw
-    .slice(idx + SOURCES_MARKER.length)
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => validPaths.has(line));
-
-  return { answer, sources };
+knowledge-base/projects/antichita-fallavena.${language}.md`;
 }
 
 function jsonResponse(body: unknown, status = 200): Response {
@@ -186,6 +192,9 @@ export default async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         models,
         messages,
+        stream: true,
+        // L'ultimo evento dello stream porta i token usati (per le statistiche).
+        usage: { include: true },
         temperature: 0.3,
         max_tokens: MAX_OUTPUT_TOKENS,
         // Ragionamento breve e non restituito: ignorato dai modelli che non ragionano.
@@ -210,32 +219,87 @@ export default async (req: Request): Promise<Response> => {
     return jsonResponse({ error: "upstream_error" }, 502);
   }
 
-  const data = (await upstream.json()) as {
-    model?: string;
-    choices?: { message?: { content?: string }; finish_reason?: string }[];
-    usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
-  };
-  const raw = data.choices?.[0]?.message?.content;
-  if (typeof raw !== "string") {
-    console.error("Unexpected OpenRouter response shape:", JSON.stringify(data).slice(0, 500));
+  if (!upstream.body) {
+    console.error("OpenRouter response without a body");
     return jsonResponse({ error: "upstream_error" }, 502);
   }
-  if (data.choices?.[0]?.finish_reason === "length") {
-    console.warn(`OpenRouter answer truncated at ${MAX_OUTPUT_TOKENS} tokens (model ${data.model})`);
+
+  const events = readSse(upstream.body);
+  let raw = "";
+  let model: string | undefined;
+  let finishReason: string | undefined;
+  let usage: UpstreamUsage | undefined;
+
+  /** Legge il prossimo evento; `false` quando lo stream è finito. */
+  async function pull(): Promise<boolean> {
+    const next = await events.next();
+    if (next.done) return false;
+    const chunk = next.value as UpstreamChunk;
+    if (chunk.error) throw new Error(`OpenRouter stream error: ${JSON.stringify(chunk.error).slice(0, 300)}`);
+    model ??= chunk.model;
+    if (chunk.usage) usage = chunk.usage;
+    const choice = chunk.choices?.[0];
+    if (typeof choice?.delta?.content === "string") raw += choice.delta.content;
+    if (choice?.finish_reason) finishReason = choice.finish_reason;
+    return true;
   }
 
-  const elapsedMs = Date.now() - requestStartedAt;
-  const outputTokens = data.usage?.completion_tokens ?? 0;
-  const stats = {
-    model: data.model ?? models[0],
-    inputTokens: data.usage?.prompt_tokens ?? 0,
-    outputTokens,
-    totalTokens: data.usage?.total_tokens ?? 0,
-    elapsedMs,
-    tokensPerSecond: outputTokens > 0 ? Math.round((outputTokens / (elapsedMs / 1000)) * 10) / 10 : 0,
-  };
+  // Si aspetta il primo testo mostrabile prima di rispondere: finché non è
+  // partito niente, un errore resta un codice HTTP che la UI sa tradurre.
+  try {
+    while (visibleAnswer(raw) === "" && (await pull()));
+  } catch (err) {
+    console.error(err);
+    return jsonResponse({ error: "upstream_error" }, 502);
+  }
+  if (raw.trim() === "") {
+    console.error("OpenRouter stream ended without content");
+    return jsonResponse({ error: "upstream_error" }, 502);
+  }
 
-  return jsonResponse({ ...parseAnswer(raw, validPaths), stats });
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const send = (line: unknown) => controller.enqueue(encoder.encode(JSON.stringify(line) + "\n"));
+      let sent = 0;
+      const flush = () => {
+        const visible = visibleAnswer(raw);
+        if (visible.length > sent) {
+          send({ delta: visible.slice(sent) });
+          sent = visible.length;
+        }
+      };
+
+      try {
+        flush();
+        while (await pull()) flush();
+
+        if (finishReason === "length") {
+          console.warn(`OpenRouter answer truncated at ${MAX_OUTPUT_TOKENS} tokens (model ${model})`);
+        }
+        const elapsedMs = Date.now() - requestStartedAt;
+        const outputTokens = usage?.completion_tokens ?? 0;
+        const stats = {
+          model: model ?? models[0],
+          inputTokens: usage?.prompt_tokens ?? 0,
+          outputTokens,
+          totalTokens: usage?.total_tokens ?? 0,
+          elapsedMs,
+          tokensPerSecond: outputTokens > 0 ? Math.round((outputTokens / (elapsedMs / 1000)) * 10) / 10 : 0,
+        };
+        send({ done: true, ...parseAnswer(raw, validPaths), stats });
+      } catch (err) {
+        console.error(err);
+        send({ error: "upstream_error" });
+      }
+      controller.close();
+    },
+  });
+
+  return new Response(stream, {
+    status: 200,
+    headers: { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-cache" },
+  });
 };
 
 /**

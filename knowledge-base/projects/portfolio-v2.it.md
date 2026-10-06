@@ -24,7 +24,7 @@ Una Knowledge Base in Markdown con frontmatter come Single Source of Truth, lett
 
 ## Challenges
 
-Tenere UI e AI perfettamente allineate da un'unica fonte Markdown, dare grounding all'assistente con citazione delle fonti reali (niente allucinazioni fuori scope), gestire il multilingua IT/EN su tutti i contenuti, e un bug non banale nel polyfill di `Buffer` necessario per far funzionare `gray-matter` nel browser.
+Tenere UI e AI perfettamente allineate da un'unica fonte Markdown, dare grounding all'assistente con citazione delle fonti reali (niente allucinazioni fuori scope), gestire il multilingua IT/EN su tutti i contenuti, e tenere il sito leggero: `gray-matter` richiedeva nel browser un polyfill di `Buffer`, all'inizio fonte di un bug non banale, e in seguito è stato spostato in build, portando il JavaScript da 569 KB a 336 KB.
 
 ## Future Improvements
 
