@@ -22,13 +22,14 @@ tradotti.
 
 **Controlli**: `npm run lint` e `npm run build` puliti, in CI su ogni PR. Test automatici: nessuno.
 
-Nessun piano aperto: il prossimo numero libero è il **21**.
+**Piano aperto**: [v1, il link condiviso si presenta da solo](piano-v1-il-link-condiviso-si-presenta.md),
+Fasi 21–23, tutte da fare.
 
 ## Cosa manca
 
 In ordine di priorità, dall'analisi del 6 ottobre 2026. Ognuna è candidata a un piano.
 
-1. **Il link condiviso non ha anteprima.** Il `<title>` è ancora «Francesco Fallavena — Desktop»,
+1. **Il link condiviso non ha anteprima** (piano v1). Il `<title>` è ancora «Francesco Fallavena — Desktop»,
    mancano meta description, Open Graph e immagine di anteprima, e `lang` è fisso su `en` in
    `index.html`. L'HTML iniziale è un `<div>` vuoto: chi non esegue JavaScript non vede nessun
    contenuto.

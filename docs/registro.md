@@ -4,7 +4,7 @@ Una riga per Fase, dalla 1 in avanti. È l'unico posto in cui guardare per saper
 una Fase, a che piano appartiene e se è chiusa**. Com'è andata sta in [devlog.md](devlog.md), dove
 siamo adesso sta in [STATO.md](STATO.md).
 
-## Prossimo numero libero: **21**
+## Prossimo numero libero: **24**
 
 ## Le regole
 
@@ -27,6 +27,8 @@ allora:
   finestre.
 - **visione KB+AI**: [archivio/VISION.md](archivio/VISION.md), Knowledge Base e AI Assistant.
 - **—**: Fasi decise sul momento, senza un documento di piano.
+
+Dalla Fase 21 la colonna `Piano` indica il file `piano-vN-*.md`.
 
 ## La tabella
 
@@ -52,3 +54,6 @@ allora:
 | 18 | Da «desktop OS» a landing page a tab       | —             | ✅     | 2026-07-19 |
 | 19 | Fix «OpenRouter error: 404»                | —             | ✅     | 2026-10-06 |
 | 20 | Miglioramenti dell'AI Assistant            | —             | ✅     | 2026-10-06 |
+| 21 | Head generato dalla KB, `lang` coerente    | v1            | ⬜     |            |
+| 22 | Immagine di anteprima `og.png`             | v1            | ⬜     |            |
+| 23 | HTML statico in `#root` + JSON-LD `Person` | v1            | ⬜     |            |
