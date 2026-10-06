@@ -47,6 +47,13 @@ Se il problema persiste, apri la Console del browser (F12) sulla pagina
 bianca: un errore su `/src/main.tsx` o un "Unexpected token" conferma
 esattamente questa causa.
 
+## Lavorare con Claude Code
+
+Le convenzioni del progetto (lingua, commit, knowledge base it/en, controlli
+prima di consegnare) sono in `CLAUDE.md`. Nelle sessioni Claude Code sul web
+l'hook `.claude/hooks/session-start.sh` esegue `npm ci` all'avvio, così
+`npm run lint` e `npm run build` sono subito disponibili.
+
 ## Stato — Fase 1 (completata in questa consegna)
 
 - [x] Layout Desktop (`src/desktop/Desktop.tsx`)
