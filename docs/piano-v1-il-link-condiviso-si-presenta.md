@@ -57,9 +57,14 @@ titolo «Desktop».
 ### 2. Una lingua per l'anteprima
 
 **Decisione.** L'anteprima e l'HTML statico sono in **una** lingua (le piattaforme ne leggono una
-sola), con `og:locale:alternate` per l'altra. `lang` di `<html>` segue la stessa scelta. Quale
-lingua è una scelta di Francesco: in attesa della risposta si lavora con l'**inglese**, che è
-quello che `index.html` dichiara già oggi.
+sola): l'**inglese**, scelto da Francesco il 6 ottobre, con `og:locale:alternate` `it_IT`.
+`lang` di `<html>` parte da `en` e React lo cambia come oggi in base alla lingua del visitatore.
+
+**Perché.** Il profilo è «disponibile al trasferimento (Italia/Estero)»: l'inglese lo legge
+chiunque riceva il link.
+
+**Scartato.** L'italiano, che è la lingua con cui il sito si apre per la maggior parte dei
+visitatori ma non per un recruiter estero.
 
 ### 3. L'immagine di anteprima si genera dalla KB, una volta
 
